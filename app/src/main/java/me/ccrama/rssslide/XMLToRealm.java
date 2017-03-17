@@ -18,8 +18,7 @@ public class XMLToRealm {
                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Listing l = new Listing();
-                        l.feed = feed;
+                        Listing l = realm.where(Listing.class).equalTo("feed", feed).findFirst();
                         l.time = System.currentTimeMillis();
                         l.init();
                         for(FeedParser.Entry i : items){

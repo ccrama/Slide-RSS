@@ -131,7 +131,7 @@ public class FeedViewSingle extends BaseActivity {
                         final View dialoglayout = localInflater.inflate(R.layout.colorsub, null);
                         ArrayList<String> arrayList = new ArrayList<>();
                         arrayList.add(feed);
-                        SettingsSubAdapter.showSubThemeEditor(arrayList, FeedViewSingle.this,
+                        Palette.showSubThemeEditor(arrayList, FeedViewSingle.this,
                                 dialoglayout);
                         return false;
                     }
@@ -352,7 +352,7 @@ public class FeedViewSingle extends BaseActivity {
                     && position != 3
                     && object instanceof FeedFragment) {
                 mCurrentFragment = ((FeedFragment) object);
-                if (mCurrentFragment.posts == null && mCurrentFragment.isAdded()) {
+                if (mCurrentFragment.dataSet == null && mCurrentFragment.isAdded()) {
                     mCurrentFragment.doAdapter();
 
                 }

@@ -13,6 +13,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 /**
  * Created by Carlos on 3/17/2017.
  */
@@ -21,14 +24,33 @@ public class FeedLoader implements ConversionCallback {
     public Listing listing;
     public boolean nomore;
     public boolean offline;
-    public String feed;
+    public Feed feed;
     Activity context;
+    public boolean loading;
     FeedAdapter adapter;
 
-    public void loadMore(Activity context, String feed, Listing listing, FeedAdapter adapter) {
+    public FeedLoader(final Feed id) {
+        feed = id;
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Listing result = realm.where(Listing.class).equalTo("name", id.name).findFirst();
+                if(result != null){
+                    listing = result;
+                } else {
+                    listing = new Listing();
+                    listing.name = id.name;
+                    listing.feed = id;
+                    realm.copyToRealmOrUpdate(listing);
+                }
+            }
+        });
+    }
+
+    public void loadMore(Activity context, Feed feed, FeedAdapter adapter) {
         this.context = context;
         this.adapter = adapter;
-        new DownloadXmlTask().execute(UserFeeds.urlFromFeed(feed)); //todo turn feed name into feed URL
+        new DownloadXmlTask().execute(feed.url); //todo turn feed name into feed URL
     }
 
     @Override
@@ -38,6 +60,7 @@ public class FeedLoader implements ConversionCallback {
     private class DownloadXmlTask extends AsyncTask<String, Void, List<Article>> {
         @Override
         protected List<Article> doInBackground(String... urls) {
+            loading = true;
             try {
                 return loadXmlFromNetwork(urls[0]);
             } catch (IOException e) {
@@ -52,6 +75,7 @@ public class FeedLoader implements ConversionCallback {
 
         @Override
         protected void onPostExecute(List<Article> articles) {
+            loading = false;
         }
     }
 

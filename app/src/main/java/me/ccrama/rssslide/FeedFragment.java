@@ -26,12 +26,14 @@ import android.widget.TextView;
 import com.mikepenz.itemanimators.AlphaInAnimator;
 import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
+import io.realm.Realm;
+
 public class FeedFragment extends Fragment {
     private static int adapterPosition;
     private static int currentPosition;
     public RecyclerView rv;
     public FeedAdapter adapter;
-    public String id;
+    public Feed id;
     public boolean main;
     public boolean forced;
     int diff;
@@ -63,7 +65,7 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),
-                new ColorPreferences(inflater.getContext()).getThemeSubreddit(id));
+                new ColorPreferences(inflater.getContext()).getThemeSubreddit(id.name));
         final View v = ((LayoutInflater) contextThemeWrapper.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_verticalcontent,
                 container, false);
@@ -92,7 +94,7 @@ public class FeedFragment extends Fragment {
 
         mSwipeRefreshLayout =
                 (SwipeRefreshLayout) v.findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors(id, getContext()));
+        mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors(id.name, getContext()));
 
         /**
          * If using List view mode, we need to remove the start margin from the SwipeRefreshLayout.
@@ -195,7 +197,7 @@ public class FeedFragment extends Fragment {
     public static int getNumColumns(final int orientation) {
         final int numColumns;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.tabletUI) {
-            numColumns = FeedView.dpWidth;
+            numColumns = MainActivity.dpWidth;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT
                 && SettingValues.dualPortrait) {
             numColumns = 2;
@@ -205,6 +207,8 @@ public class FeedFragment extends Fragment {
         return numColumns;
     }
 
+    FeedLoader dataSet;
+
     public void doAdapter() {
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
@@ -213,9 +217,11 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        adapter = new FeedAdapter(getActivity(), id, rv, id, this);
+        dataSet = new FeedLoader(id);
+        adapter = new FeedAdapter(getActivity(), dataSet, rv, id);
         adapter.setHasStableIds(true);
         rv.setAdapter(adapter);
+        dataSet.loadMore(getActivity(), id, adapter);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -225,36 +231,6 @@ public class FeedFragment extends Fragment {
     }
 
     public Listing clearSeenPosts(boolean forever) {
-        if (adapter.dataSet.lis != null) {
-
-            List<Submission> originalDataSetPosts = adapter.dataSet.posts;
-            OfflineSubreddit o =
-                    OfflineSubreddit.getSubreddit(id.toLowerCase(), false, getActivity());
-
-            for (int i = adapter.dataSet.posts.size(); i > -1; i--) {
-                try {
-                    if (HasSeen.getSeen(adapter.dataSet.posts.get(i))) {
-                        if (forever) {
-                            Hidden.setHidden(adapter.dataSet.posts.get(i));
-                        }
-                        o.clearPost(adapter.dataSet.posts.get(i));
-                        adapter.dataSet.posts.remove(i);
-                        if (adapter.dataSet.posts.isEmpty()) {
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            rv.setItemAnimator(new AlphaInAnimator());
-                            adapter.notifyItemRemoved(i + 1);
-                        }
-                    }
-                } catch (IndexOutOfBoundsException e) {
-                    //Let the loop reset itself
-                }
-            }
-            adapter.notifyItemRangeChanged(0, adapter.dataSet.posts.size());
-            o.writeToMemoryNoStorage();
-            rv.setItemAnimator(new SlideUpAlphaAnimator());
-            return originalDataSetPosts;
-        }
 
         return null;
     }
@@ -264,18 +240,21 @@ public class FeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        id = bundle.getString("id", "");
+        String idb= bundle.getString("id", "");
+        id = Realm.getDefaultInstance().where(Feed.class).equalTo("name", idb).findFirstAsync();
         main = bundle.getBoolean("main", false);
         forceLoad = bundle.getBoolean("load", false);
 
     }
 
+    public Article currentArticle;
+
     @Override
     public void onResume() {
         super.onResume();
         if (adapter != null && adapterPosition > 0 && currentPosition == adapterPosition) {
-            if (adapter.dataSet.getPosts().size() >= adapterPosition - 1
-                    && adapter.dataSet.getPosts().get(adapterPosition - 1) == currentSubmission) {
+            if (adapter.dataSet.listing.articles.size() >= adapterPosition - 1
+                    && adapter.dataSet.listing.articles.get(adapterPosition - 1) == currentArticle) {
                 adapter.performClick(adapterPosition);
                 adapterPosition = -1;
             }
@@ -289,7 +268,7 @@ public class FeedFragment extends Fragment {
 
     private void refresh() {
         forced = true;
-        adapter.loadMore(mSwipeRefreshLayout.getContext(), this, true, id);
+        dataSet.loadMore(getActivity(), id, adapter);
     }
 
     public void forceRefresh() {
@@ -304,36 +283,6 @@ public class FeedFragment extends Fragment {
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    public void updateSuccess(final Listing articles, final int startIndex) {
-        if (getActivity() != null) {
-            if (getActivity() instanceof MainActivity) {
-                if (((MainActivity) getActivity()).runAfterLoad != null) {
-                    new Handler().post(((MainActivity) getActivity()).runAfterLoad);
-                }
-            }
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mSwipeRefreshLayout != null) {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    if (startIndex != -1 && !forced) {
-                        adapter.notifyItemRangeInserted(startIndex + 1, posts.posts.size());
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        forced = false;
-                        rv.scrollToPosition(0);
-                        adapter.notifyDataSetChanged();
-                    }
-
-                }
-            });
-
-            if (startIndex < 10) resetScroll();
-        }
-    }
-
     public void resetScroll() {
         if (toolbarScroll == null) {
             toolbarScroll =
@@ -342,7 +291,7 @@ public class FeedFragment extends Fragment {
                         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                             super.onScrolled(recyclerView, dx, dy);
 
-                            if (!posts.loading && !posts.nomore && !posts.offline) {
+                            if (!dataSet.loading) {
                                 visibleItemCount = rv.getLayoutManager().getChildCount();
                                 totalItemCount = rv.getLayoutManager().getItemCount();
 
@@ -356,16 +305,16 @@ public class FeedFragment extends Fragment {
                                         if (SettingValues.scrollSeen
                                                 && pastVisiblesItems > 0
                                                 && SettingValues.storeHistory) {
-                                            HasSeen.addSeenScrolling(posts.posts.get(pastVisiblesItems - 1)
-                                                    .getFullName());
+                                            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                                                @Override
+                                                public void execute(Realm realm) {
+                                                    Article a = dataSet.listing.articles.get(pastVisiblesItems - 1);
+                                                    a.setSeen();
+                                                    realm.copyToRealmOrUpdate(a);
+                                                }
+                                            });
                                         }
                                     }
-                                }
-
-                                if ((visibleItemCount + pastVisiblesItems) + 5 >= totalItemCount) {
-                                    posts.loading = true;
-                                    posts.loadMore(mSwipeRefreshLayout.getContext(),
-                                            FeedFragment.this, false, posts.subreddit);
                                 }
                             }
 

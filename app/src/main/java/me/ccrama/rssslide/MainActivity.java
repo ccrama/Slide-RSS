@@ -89,23 +89,22 @@ public class MainActivity extends BaseActivity {
     // Instance state keys
     static final int SETTINGS_RESULT = 2;
     public static final String EXTRA_PAGE_TO = "pageTo";
-    public static String shouldLoad;
+    public static Feed shouldLoad;
     public static int restartPage;
     public final long ANIMATE_DURATION = 250; //duration of animations
     private final long ANIMATE_DURATION_OFFSET = 45; //offset for smoothing out the exit animations
     public boolean singleMode;
     public ToggleSwipeViewPager pager;
-    public CaseInsensitiveArrayList usedArray;
+    public ArrayList<Feed> usedArray;
     public DrawerLayout drawerLayout;
     public View hea;
     public EditText drawerSearch;
     public View header;
-    public String feedToDo;
     public OverviewPagerAdapter adapter;
     public int toGoto = 0;
     public TabLayout mTabLayout;
     public ListView drawerFeedList;
-    public String selectedFeed; //currently selected feed
+    public Feed selectedFeed; //currently selected feed
     public boolean commentPager = false;
     public String tabViewModeTitle;
     public boolean inNightMode;
@@ -271,7 +270,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int style = new ColorPreferences(MainActivity.this).getThemeSubreddit(
-                                selectedFeed);
+                                selectedFeed.name);
                         final Context contextThemeWrapper =
                                 new ContextThemeWrapper(MainActivity.this, style);
                         LayoutInflater localInflater =
@@ -279,8 +278,8 @@ public class MainActivity extends BaseActivity {
                         final View dialoglayout =
                                 localInflater.inflate(R.layout.colorsub, null);
                         ArrayList<String> arrayList = new ArrayList<>();
-                        arrayList.add(selectedFeed);
-                        SettingsSubAdapter.showSubThemeEditor(arrayList, MainActivity.this,
+                        arrayList.add(selectedFeed.name);
+                        Palette.showSubThemeEditor(arrayList, MainActivity.this,
                                 dialoglayout);
                         return false;
                     }
@@ -290,8 +289,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final String subreddit = usedArray.get(getCurrentPage());
-
         switch (item.getItemId()) {
             case R.id.night: {
                 LayoutInflater inflater = getLayoutInflater();
@@ -856,17 +853,18 @@ public class MainActivity extends BaseActivity {
             restartTheme();
         }
 
+       /* TODO THIS
         if (Settings.changed || SettingsTheme.changed) {
 
             reloadSubs();
             //If the user changed a Setting regarding the app's theme, restartTheme()
-            if (SettingsTheme.changed /* todo maybe later || (usedArray != null && usedArray.size() != UserSubscriptions.getSubscriptions(this).size())*/) {
+            if (SettingsTheme.changed  || (usedArray != null && usedArray.size() != UserSubscriptions.getSubscriptions(this).size())) {
                 restartTheme();
             }
             SettingsTheme.changed = false;
             Settings.changed = false;
             setToolbarClick();
-        }
+        }*/
     }
 
     @Override
@@ -947,9 +945,9 @@ public class MainActivity extends BaseActivity {
         header.findViewById(R.id.nav_settings).setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                Intent i = new Intent(MainActivity.this, Settings.class);
+              /* todo this  Intent i = new Intent(MainActivity.this, Settings.class);
                 startActivity(i);
-                drawerLayout.closeDrawers();
+                drawerLayout.closeDrawers();*/
             }
         });
 
@@ -1062,7 +1060,7 @@ public class MainActivity extends BaseActivity {
                 CLOSE_BUTTON.setVisibility(View.GONE);
 
                 if (SettingValues.single) {
-                    getSupportActionBar().setTitle(selectedFeed);
+                    getSupportActionBar().setTitle(selectedFeed.name);
                 } else {
                     getSupportActionBar().setTitle(tabViewModeTitle);
                 }
@@ -1116,7 +1114,7 @@ public class MainActivity extends BaseActivity {
 
 
         if (SettingValues.single) {
-            getSupportActionBar().setTitle(shouldLoad);
+            getSupportActionBar().setTitle(shouldLoad.name);
         }
 
         setToolbarClick();
@@ -1157,9 +1155,9 @@ public class MainActivity extends BaseActivity {
         ((FeedFragment) adapter.getCurrentFragment()).resetScroll();
     }
 
-    public void setDataSet(List<String> data) {
+    public void setDataSet(List<Feed> data) {
         if (data != null && !data.isEmpty()) {
-            usedArray = new CaseInsensitiveArrayList(data);
+            usedArray = new ArrayList(data);
             if (adapter == null) {
                     adapter = new OverviewPagerAdapter(getSupportFragmentManager());
             } else {
@@ -1176,9 +1174,9 @@ public class MainActivity extends BaseActivity {
             }
             shouldLoad = usedArray.get(toGoto);
             selectedFeed = (usedArray.get(toGoto));
-            themeSystemBars(usedArray.get(toGoto));
+            themeSystemBars(usedArray.get(toGoto).name);
 
-            final String USEDARRAY_0 = usedArray.get(0);
+            final String USEDARRAY_0 = usedArray.get(0).name;
             header.setBackgroundColor(Palette.getColor(USEDARRAY_0));
 
             if (hea != null) {
@@ -1198,12 +1196,12 @@ public class MainActivity extends BaseActivity {
                     scrollToTabAfterLayout(toGoto);
                 }
             } else {
-                getSupportActionBar().setTitle(usedArray.get(toGoto));
+                getSupportActionBar().setTitle(usedArray.get(toGoto).name);
                 pager.setCurrentItem(toGoto);
             }
             setToolbarClick();
 
-            setRecentBar(usedArray.get(toGoto));
+            setRecentBar(usedArray.get(toGoto).name);
         } else {
             UserFeeds.doMainActivitySubs(this);
         }
@@ -1211,19 +1209,9 @@ public class MainActivity extends BaseActivity {
 
     public void setDrawerSubList() {
 
-        ArrayList<String> copy;
+        ArrayList<Feed> copy  = new ArrayList<>(UserFeeds.getAllUserFeeds(this));
 
-        if (NetworkUtil.isConnected(this))
-            copy = new ArrayList<>(usedArray);
-        else {
-            copy = UserFeeds.getAllUserFeeds(this);
-        }
-
-        copy.removeAll(Arrays.asList("", null));
-
-        sideArrayAdapter =
-                new SideArrayAdapter(this, copy, UserFeeds.getAllFeeds(this),
-                        drawerFeedList);
+        sideArrayAdapter = new SideArrayAdapter(this, copy, drawerFeedList);
         drawerFeedList.setAdapter(sideArrayAdapter);
 
         drawerSearch = ((EditText) headerMain.findViewById(R.id.sort));
@@ -1522,14 +1510,14 @@ public class MainActivity extends BaseActivity {
                     FeedFragment page = (FeedFragment) adapter.getCurrentFragment();
 
                     if (hea != null) {
-                        hea.setBackgroundColor(Palette.getColor(selectedFeed));
+                        hea.setBackgroundColor(Palette.getColor(selectedFeed.name));
                         if (accountsArea != null) {
-                            accountsArea.setBackgroundColor(Palette.getDarkerColor(selectedFeed));
+                            accountsArea.setBackgroundColor(Palette.getDarkerColor(selectedFeed.name));
                         }
                     }
 
                     int colorFrom = ((ColorDrawable) header.getBackground()).getColor();
-                    int colorTo = Palette.getColor(selectedFeed);
+                    int colorTo = Palette.getColor(selectedFeed.name);
 
                     ValueAnimator colorAnimation =
                             ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -1555,14 +1543,14 @@ public class MainActivity extends BaseActivity {
                     colorAnimation.setDuration(200);
                     colorAnimation.start();
 
-                    setRecentBar(selectedFeed);
+                    setRecentBar(selectedFeed.name);
 
                     if (SettingValues.single || mTabLayout == null) {
                         //Smooth out the fading animation for the toolbar subreddit search UI
-                        getSupportActionBar().setTitle(selectedFeed);
+                        getSupportActionBar().setTitle(selectedFeed.name);
                     } else {
                         mTabLayout.setSelectedTabIndicatorColor(
-                                new ColorPreferences(MainActivity.this).getColor(selectedFeed));
+                                new ColorPreferences(MainActivity.this).getColor(selectedFeed.name));
                     }
                 }
 
@@ -1594,7 +1582,7 @@ public class MainActivity extends BaseActivity {
             FeedFragment f = new FeedFragment();
             Bundle args = new Bundle();
             String name;
-            name = usedArray.get(i);
+            name = usedArray.get(i).name;
             args.putString("id", name);
             f.setArguments(args);
 
@@ -1626,7 +1614,7 @@ public class MainActivity extends BaseActivity {
                 shouldLoad = usedArray.get(position);
                 shouldLoad = usedArray.get(position);
                 mCurrentFragment = ((FeedFragment) object);
-                if (mCurrentFragment.posts == null && mCurrentFragment.isAdded()) {
+                if (mCurrentFragment.dataSet == null && mCurrentFragment.isAdded()) {
                     mCurrentFragment.doAdapter();
 
                 }
@@ -1642,7 +1630,7 @@ public class MainActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
 
             if (usedArray != null) {
-                return abbreviate(usedArray.get(position), 25);
+                return abbreviate(usedArray.get(position).name, 25);
             } else {
                 return "";
             }

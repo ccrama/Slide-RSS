@@ -43,7 +43,7 @@ public class PopulateArticleViewHolder {
 
     public void showBottomSheet(final Activity mContext,
                                 final Article a, final ArticleViewHolder holder, final Listing posts,
-                                final String baseSub, final RecyclerView recyclerview) {
+                                final Feed baseSub, final RecyclerView recyclerview) {
 
         int[] attrs = new int[]{R.attr.tint};
         TypedArray ta = mContext.obtainStyledAttributes(attrs);
@@ -600,7 +600,7 @@ public class PopulateArticleViewHolder {
         */
     }
 
-    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final Listing parent, final String feed, final RecyclerView list) {
+    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final Listing parent, final Feed feed, final RecyclerView list) {
 
         holder.title.setText(article.getTitle()); // title is a spoiler roboto textview so it will format the html
 
@@ -612,9 +612,9 @@ public class PopulateArticleViewHolder {
             }
         });
 
-        holder.feed.setText(feed);
+        holder.feed.setText(feed.name);
         MainActivity.getImageLoader(context)
-                .displayImage(UserFeeds.getIcon(feed), holder.icon);
+                .displayImage(feed.icon, holder.icon);
 
 
         final ImageView hideButton = (ImageView) holder.hide;
@@ -670,7 +670,7 @@ public class PopulateArticleViewHolder {
 
         });
 
-        holder.info.setText(getInfoSpannable(article, feed, context));
+        holder.info.setText(getInfoSpannable(article, feed.name, context));
 
         holder.body.setVisibility(View.VISIBLE);
         String text = article.summary;

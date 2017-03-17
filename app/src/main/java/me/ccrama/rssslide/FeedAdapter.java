@@ -21,7 +21,7 @@ import io.realm.RealmRecyclerViewAdapter;
 public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.ViewHolder> {
 
     private final RecyclerView listView;
-    public final String feed;
+    public final Feed feed;
     public Activity context;
     public FeedLoader dataSet;
     private final int LOADING_SPINNER = 5;
@@ -30,9 +30,9 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
     private ArrayList<String> seen;
 
     public FeedAdapter(Activity context, FeedLoader dataSet, RecyclerView listView,
-                       String feed) {
+                       Feed feed) {
         super(dataSet.listing.articles, true);
-        this.feed = feed.toLowerCase();
+        this.feed = feed;
         this.listView = listView;
         this.dataSet = dataSet;
         this.context = context;
@@ -163,7 +163,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dataSet.loadMore(context, feed, dataSet.listing, FeedAdapter.this);
+                                dataSet.loadMore(context, feed, FeedAdapter.this);
                             }
                         });
 

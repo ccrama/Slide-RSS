@@ -3,7 +3,6 @@ package me.ccrama.rssslide;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -23,29 +22,24 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 /**
  * Created by ccrama on 8/17/2015.
  */
-public class SideArrayAdapter extends ArrayAdapter<String> {
-    private final List<String> objects;
+public class SideArrayAdapter extends ArrayAdapter<Feed> {
+    private final List<Feed> objects;
     private Filter filter;
-    public CaseInsensitiveArrayList baseItems;
-    public CaseInsensitiveArrayList fitems;
+    public ArrayList<Feed> fitems;
     public ListView parentL;
     public boolean openInSubView = true;
 
-    public SideArrayAdapter(Context context, ArrayList<String> objects,
-                            ArrayList<String> allSubreddits, ListView view) {
+    public SideArrayAdapter(Context context, ArrayList<Feed> objects, ListView view) {
         super(context, 0, objects);
-        this.objects = new ArrayList<>(allSubreddits);
+        this.objects = objects;
         filter = new SubFilter();
-        fitems = new CaseInsensitiveArrayList(objects);
-        baseItems = new CaseInsensitiveArrayList(objects);
+        fitems = new ArrayList<>(objects);
         parentL = view;
-        multiToMatch = UserSubscriptions.getMultiNameToSubs(true);
     }
 
     @Override
@@ -68,7 +62,6 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
     }
 
     int height;
-    Map<String, String> multiToMatch;
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -77,13 +70,8 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
                     .inflate(R.layout.subforsublist, parent, false);
 
             final String sub;
-            final String base = fitems.get(position);
-            if (multiToMatch.containsKey(fitems.get(position)) && !fitems.get(position)
-                    .contains("/m/")) {
-                sub = multiToMatch.get(fitems.get(position));
-            } else {
-                sub = fitems.get(position);
-            }
+            final String base = fitems.get(position).name;
+            sub = fitems.get(position).name;
             final TextView t = ((TextView) convertView.findViewById(R.id.name));
             t.setText(sub);
 
@@ -109,10 +97,9 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
                     : SantitizeField.sanitizeString(
                     sub.replace(getContext().getString(R.string.search_goto) + " ", ""));
 
-            convertView.findViewById(R.id.color).setBackgroundResource(R.drawable.circle);
-            convertView.findViewById(R.id.color)
-                    .getBackground()
-                    .setColorFilter(Palette.getColor(subreddit), PorterDuff.Mode.MULTIPLY);
+            ImageView back = (ImageView) convertView.findViewById(R.id.color);
+            back.setImageDrawable(null);
+            MainActivity.getImageLoader(getContext()).displayImage(fitems.get(position).icon, back);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -144,7 +131,7 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
                                                 R.id.close_search_toolbar)));
                                 if (SettingValues.single) {
                                     ((MainActivity) getContext()).getSupportActionBar()
-                                            .setTitle(((MainActivity) getContext()).selectedSub);
+                                            .setTitle(((MainActivity) getContext()).selectedFeed.name);
                                 } else {
                                     ((MainActivity) getContext()).getSupportActionBar()
                                             .setTitle(
@@ -155,22 +142,10 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
                             Log.e(getClass().getName(), npe.getMessage());
                         }
                         Intent inte = new Intent(getContext(), FeedViewSingle.class);
-                        inte.putExtra(FeedViewSingle.EXTRA_SUBREDDIT, subreddit);
+                        inte.putExtra(FeedViewSingle.EXTRA_FEED, subreddit);
                         ((Activity) getContext()).startActivityForResult(inte, 2001);
                     } else {
-                        if (((MainActivity) getContext()).commentPager
-                                && ((MainActivity) getContext()).adapter instanceof MainActivity.OverviewPagerAdapterComment) {
-                            ((MainActivity) getContext()).openingComments = null;
-                            ((MainActivity) getContext()).toOpenComments = -1;
-                            ((MainActivity.OverviewPagerAdapterComment) ((MainActivity) getContext()).adapter).size =
-                                    (((MainActivity) getContext()).usedArray.size() + 1);
-                            ((MainActivity) getContext()).reloadItemNumber =
-                                    ((MainActivity) getContext()).usedArray.indexOf(base);
-                            ((MainActivity) getContext()).adapter.notifyDataSetChanged();
-                            ((MainActivity) getContext()).doPageSelectedComments(
-                                    ((MainActivity) getContext()).usedArray.indexOf(base));
-                            ((MainActivity) getContext()).reloadItemNumber = -2;
-                        }
+
                         try {
                             //Hide the toolbar search UI with an animation because we're just changing tabs
                             if ((SettingValues.subredditSearchMethod
@@ -227,7 +202,7 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
                                             R.id.close_search_toolbar)));
                             if (SettingValues.single) {
                                 ((MainActivity) getContext()).getSupportActionBar()
-                                        .setTitle(((MainActivity) getContext()).selectedSub);
+                                        .setTitle(((MainActivity) getContext()).selectedFeed.name);
                             } else {
                                 ((MainActivity) getContext()).getSupportActionBar()
                                         .setTitle(((MainActivity) getContext()).tabViewModeTitle);
@@ -237,7 +212,7 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
                         Log.e(getClass().getName(), npe.getMessage());
                     }
                     Intent inte = new Intent(getContext(), FeedViewSingle.class);
-                    inte.putExtra(FeedViewSingle.EXTRA_SUBREDDIT, subreddit);
+                    inte.putExtra(FeedViewSingle.EXTRA_FEED, subreddit);
                     ((Activity) getContext()).startActivityForResult(inte, 2001);
 
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
@@ -275,15 +250,6 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
         return fitems.size() + 1;
     }
 
-    public void updateHistory(ArrayList<String> history) {
-        for (String s : history) {
-            if (!objects.contains(s)) {
-                objects.add(s);
-            }
-        }
-        notifyDataSetChanged();
-    }
-
     private class SubFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -291,20 +257,17 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
             String prefix = constraint.toString().toLowerCase();
 
             if (prefix == null || prefix.isEmpty()) {
-                CaseInsensitiveArrayList list = new CaseInsensitiveArrayList(baseItems);
+                ArrayList<Feed> list = new ArrayList<>(objects);
                 results.values = list;
                 results.count = list.size();
             } else {
                 openInSubView = true;
-                final CaseInsensitiveArrayList list = new CaseInsensitiveArrayList(objects);
-                final CaseInsensitiveArrayList nlist = new CaseInsensitiveArrayList();
+                final ArrayList<Feed> list = new ArrayList<>(objects);
+                final ArrayList<Feed> nlist = new ArrayList<>();
 
-                for (String sub : list) {
-                    if (StringUtils.containsIgnoreCase(sub, prefix)) nlist.add(sub);
-                    if (sub.equals(prefix)) openInSubView = false;
-                }
-                if (openInSubView) {
-                    nlist.add(getContext().getString(R.string.search_goto) + " " + prefix);
+                for (Feed f : list) {
+                    if (StringUtils.containsIgnoreCase(f.name, prefix)) nlist.add(f);
+                    if (f.name.equals(prefix)) openInSubView = false;
                 }
 
                 results.values = nlist;
@@ -317,7 +280,7 @@ public class SideArrayAdapter extends ArrayAdapter<String> {
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            fitems = (CaseInsensitiveArrayList) results.values;
+            fitems = (ArrayList<Feed>) results.values;
             clear();
             if (fitems != null) {
                 addAll(fitems);

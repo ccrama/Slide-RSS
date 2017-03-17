@@ -385,6 +385,7 @@ public class SpoilerRobotoTextView extends RobotoTextView implements ClickableTe
 
                 ta.recycle();
 
+            /* todo make work
                 b.sheet(R.id.open_link, open,
                         getResources().getString(R.string.submission_link_extern));
                 b.sheet(R.id.share_link, share, getResources().getString(R.string.share_link));
@@ -412,7 +413,7 @@ public class SpoilerRobotoTextView extends RobotoTextView implements ClickableTe
                                 break;
                         }
                     }
-                }).show();
+                }).show();*/
         }
     }
 

@@ -12,7 +12,8 @@ public class Listing extends RealmObject{
     RealmList<Article> articles;
 
     @PrimaryKey
-    String feed;
+            String name;
+    Feed feed;
     Long time;
 
     public void init(){

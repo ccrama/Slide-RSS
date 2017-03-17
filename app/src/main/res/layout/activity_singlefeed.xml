@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<me.ccrama.redditslide.Views.SidebarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/anchor"
+            android:layout_width="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="3dp"
+            android:layout_gravity="top|end"
+            android:layout_height="1dp" />
+
+        <me.ccrama.rssslide.ToggleSwipeViewPager
+            android:id="@+id/content_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/orange"
+            android:elevation="16dp"
+            android:orientation="vertical"
+            android:theme="@style/Theme.AppCompat">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_toolbar_height"
+                android:minHeight="@dimen/standard_toolbar_height"
+                android:theme="@style/ActionBarCompat" />
+        </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</me.ccrama.redditslide.Views.SidebarLayout>

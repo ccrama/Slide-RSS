@@ -11,16 +11,16 @@ import io.realm.Realm;
  */
 
 public class XMLToRealm {
-    public static void convert(final String URL, final List<FeedParser.Entry> items, final ConversionCallback c, Activity baseActivity){
+    public static void convert(final String feed, final List<FeedParser.Entry> items, final ConversionCallback c, Activity baseActivity){
         baseActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Listing l = realm.createObject(Listing.class);
+                        Listing l = new Listing();
+                        l.feed = feed;
                         l.time = System.currentTimeMillis();
-                        l.URL = URL;
                         l.init();
                         for(FeedParser.Entry i : items){
                             Article a = new Article();

@@ -2,6 +2,7 @@ package me.ccrama.rssslide;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Carlos on 3/16/2017.
@@ -9,7 +10,9 @@ import io.realm.RealmObject;
 
 public class Listing extends RealmObject{
     RealmList<Article> articles;
-    String URL;
+
+    @PrimaryKey
+    String feed;
     Long time;
 
     public void init(){

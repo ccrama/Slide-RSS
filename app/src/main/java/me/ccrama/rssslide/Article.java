@@ -17,10 +17,11 @@ public class Article extends RealmObject {
     private String title;
     private String link;
     public String summary;
-    private String image;
+    public String image;
     private long published;
     public boolean read;
     public boolean starred;
+    public boolean seen;
 
     public String getId() {
         return id;
@@ -68,6 +69,10 @@ public class Article extends RealmObject {
 
     public void setStarred(boolean starred) {
         this.starred = starred;
+    }
+
+    public void setSeen(){
+        seen = true;
     }
 
     public void setAll(FeedParser.Entry article) {

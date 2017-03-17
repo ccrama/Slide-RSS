@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".SubredditOverview">
+
+    <item
+            android:id="@+id/action_shadowbox"
+            android:icon="@drawable/shadowbox"
+            android:title="@string/general_enable_shadowbox"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/search"
+            android:icon="@drawable/search"
+            android:title="@string/search_title"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/action_refresh"
+            android:icon="@drawable/ic_refresh"
+            android:title="@string/btn_refresh"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/theme"
+            android:title="@string/subreddit_theme"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/hide_posts"
+            android:title="@string/hide_read_posts"
+            app:showAsAction="never"/>
+</menu>

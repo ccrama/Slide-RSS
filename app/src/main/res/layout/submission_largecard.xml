@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    cardview:cardBackgroundColor="?attr/card_background"
+    cardview:cardCornerRadius="2dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground">
+
+        <me.ccrama.rssslide.HeaderImageLinkView
+            android:id="@+id/headerimage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:id="@+id/innerrelative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/headerimage"
+            android:paddingTop="8dp">
+
+            <me.ccrama.rssslide.RoundImageTriangleView
+                android:id="@+id/thumbimage2"
+                android:layout_width="@dimen/big_thumbnail_width"
+                android:layout_height="@dimen/big_thumbnail_height"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="18dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius="2dp" />
+
+            <ImageView
+                android:id="@+id/secondMenu"
+                style="@style/Ripple.List"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:padding="8dp"
+                android:tag="tint"
+                android:layout_marginLeft="-4dp"
+                android:tint="?attr/tint"
+                app:srcCompat="@drawable/down" />
+
+            <RelativeLayout
+                android:id="@+id/inside"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="6dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/thumbimage2">
+
+                <me.ccrama.rssslide.TitleTextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:tag="tint"
+                    android:text="@string/example_title"
+                    android:textColor="?attr/font"
+                    android:textSize="?attr/font_cardtitle" />
+
+                <TextView
+                    android:id="@+id/information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:tag="tintsecond"
+                    android:text="@string/example_time"
+                    android:textSize="?attr/font_cardinfo" />
+
+                <me.ccrama.rssslide.SpoilerRobotoTextView
+                    android:id="@+id/body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/information"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:tag="tintsecond"
+                    android:textColor="?attr/tint"
+                    android:textSize="?attr/font_commentbody"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/innerrelative">
+
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="15dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="4dp"
+                android:tag="tintactionbar"
+                android:tint="?attr/tint"/>
+
+            <TextView
+                android:id="@+id/feed"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textColor="?attr/tint"
+                android:layout_below="@+id/innerrelative"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@+id/scoreimg"
+                android:gravity="center_vertical"
+                android:tag="tintactionbar"
+                android:text="400"
+                android:textSize="?attr/font_cardinfo" />
+
+
+            <ImageView
+                android:id="@+id/save"
+                style="@style/Ripple.List"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_below="@+id/innerrelative"
+                android:layout_toLeftOf="@+id/hide"
+                android:padding="8dp"
+                android:tag="tintactionbar"
+                android:tint="?attr/tint"
+                app:srcCompat="@drawable/iconstarfilled" />
+
+            <ImageView
+                android:id="@+id/hide"
+                style="@style/Ripple.List"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_below="@+id/innerrelative"
+                android:layout_toLeftOf="@+id/mod"
+                android:padding="8dp"
+                android:tag="tintactionbar"
+                android:tint="?attr/tint"
+                app:srcCompat="@drawable/hide" />
+
+            <ImageView
+                android:id="@+id/share"
+                style="@style/Ripple.List"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_below="@+id/innerrelative"
+                android:layout_toLeftOf="@+id/downvote"
+                android:padding="8dp"
+                android:tag="tintactionbar"
+                android:tint="?attr/tint"
+                app:srcCompat="@drawable/ic_menu_share" />
+
+            <ImageView
+                android:id="@+id/menu"
+                style="@style/Ripple.List"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/innerrelative"
+                android:padding="8dp"
+                android:tag="tintactionbar"
+                android:tint="?attr/tint"
+                app:srcCompat="@drawable/more" />
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

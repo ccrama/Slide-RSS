@@ -93,9 +93,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                         });
             }
 
-            final String subreddit = (sub.contains("+") || sub.contains("/m/")) ? sub
-                    : SantitizeField.sanitizeString(
-                    sub.replace(getContext().getString(R.string.search_goto) + " ", ""));
+            final String subreddit = sub;
 
             ImageView back = (ImageView) convertView.findViewById(R.id.icon);
             back.setImageDrawable(null);

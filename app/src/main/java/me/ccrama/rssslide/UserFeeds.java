@@ -32,7 +32,7 @@ public class UserFeeds {
                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        feedList = realm.where(Feed.class).findAll();
+                        feedList = realm.where(Feed.class).findAllSorted("order");
 
                     }
                 });
@@ -44,7 +44,7 @@ public class UserFeeds {
         }
     }
 
-    public static RealmResults<Feed> getAllUserFeeds(MainActivity mainActivity) {
+    public static RealmResults<Feed> getAllUserFeeds() {
         return feedList;
     }
     static InputStream stream = null;
@@ -124,5 +124,19 @@ public class UserFeeds {
 
     public static void addFeed(String url, GenerateFeedCallback c){
 
+    }
+
+    public static void setFeeds(final ArrayList<Feed> subs) {
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for(int i = 0; i < subs.size(); i++){
+                    subs.get(i).order = i;
+                }
+                for(Feed f : subs ){
+                    realm.insertOrUpdate(f);
+                }
+            }
+        });
     }
 }

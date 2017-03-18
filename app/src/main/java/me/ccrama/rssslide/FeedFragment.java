@@ -241,6 +241,7 @@ public class FeedFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         String idb= bundle.getString("id", "");
+        LogUtil.v("Loading " + idb);
         id = Realm.getDefaultInstance().where(Feed.class).equalTo("name", idb).findFirst();
         main = bundle.getBoolean("main", false);
         forceLoad = bundle.getBoolean("load", false);

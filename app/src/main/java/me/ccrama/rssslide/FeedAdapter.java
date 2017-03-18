@@ -7,6 +7,7 @@ package me.ccrama.rssslide;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -144,6 +145,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                    public void onSingleClick(View v) {
                                                        Intent i = new Intent(context, Website.class);
                                                        i.putExtra(Website.EXTRA_URL, obj.getLink());
+                                                       i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
                                                        context.startActivity(i);
                                                        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                                            @Override

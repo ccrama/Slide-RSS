@@ -16,6 +16,7 @@ public class Feed extends RealmObject {
     public String url;
 
     RealmList<Article> articles;
+    public int order;
 
     public void addArticle(Article a) {
         articles.add(a);

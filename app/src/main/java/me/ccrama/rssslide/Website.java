@@ -274,7 +274,6 @@ public class Website extends BaseActivityAnim {
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
             boolean ad;
-            LogUtil.v(url);
             if (!loadedUrls.containsKey(url)) {
                 ad = AdBlocker.isAd(url, Website.this);
                 loadedUrls.put(url, ad);

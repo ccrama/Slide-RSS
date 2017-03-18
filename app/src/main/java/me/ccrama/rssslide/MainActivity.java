@@ -88,6 +88,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
+import me.ccrama.rssslide.DragSort.ReorderSubreddits;
 
 public class MainActivity extends BaseActivity {
     public static final String IS_ONLINE = "online";
@@ -849,27 +850,51 @@ public class MainActivity extends BaseActivity {
         SettingValues.currentTheme = new ColorPreferences(this).getFontStyle().getThemeType();
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
+
         if ((!inNightMode && SettingValues.isNight()) || (inNightMode
                 && !SettingValues.isNight())) {
             restartTheme();
         }
 
-       /* TODO THIS
+     /* remove   if (datasetChanged && UserSubscriptions.hasSubs() && !usedArray.isEmpty()) {
+            usedArray = new ArrayList<>(UserSubscriptions.getSubscriptions(this));
+            adapter.notifyDataSetChanged();
+            sideArrayAdapter.notifyDataSetChanged();
+            datasetChanged = false;
+            if (mTabLayout != null) {
+                mTabLayout.setupWithViewPager(pager);
+                scrollToTabAfterLayout(pager.getCurrentItem());
+            }
+            setToolbarClick();
+        }*/
+        //Only refresh the view if a Setting was altered
         if (Settings.changed || SettingsTheme.changed) {
 
             reloadSubs();
             //If the user changed a Setting regarding the app's theme, restartTheme()
-            if (SettingsTheme.changed  || (usedArray != null && usedArray.size() != UserSubscriptions.getSubscriptions(this).size())) {
+            if (SettingsTheme.changed /* todo maybe later || (usedArray != null && usedArray.size() != UserSubscriptions.getSubscriptions(this).size())*/) {
                 restartTheme();
+            }
+
+            //Need to change the subreddit search method
+            if (SettingsGeneral.searchChanged) {
+                setDrawerSubList();
+
+                if (SettingValues.subredditSearchMethod
+                        == Constants.SUBREDDIT_SEARCH_METHOD_DRAWER) {
+                    mToolbar.setOnLongClickListener(
+                            null); //remove the long click listener from the toolbar
+                    findViewById(R.id.drawer_divider).setVisibility(View.GONE);
+                }
+                SettingsGeneral.searchChanged = false;
             }
             SettingsTheme.changed = false;
             Settings.changed = false;
             setToolbarClick();
-        }*/
+        }
     }
 
     @Override
@@ -933,30 +958,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSingleClick(View view) {
                 //todo manage feeds
-                new MaterialDialog.Builder(MainActivity.this)
-                        .alwaysCallInputCallback()
-                        .input("Feed URL", null,
-                                new MaterialDialog.InputCallback() {
-                                    @Override
-                                    public void onInput(@NonNull MaterialDialog dialog,
-                                                        CharSequence input) {
-                                        final EditText editText = dialog.getInputEditText();
-                                        if (input.length() >= 3 && input.length() <= 20) {
-                                            dialog.getActionButton(DialogAction.POSITIVE)
-                                                    .setEnabled(true);
-                                        }
-                                    }
-                                })
-                        .positiveText("Add feed")
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull final MaterialDialog d,
-                                                @NonNull DialogAction which) {
-                               new ParseFeedTask().execute(d.getInputEditText().getText().toString());
-                            }
-                        })
-                        .negativeText(R.string.btn_cancel)
-                        .show();
+                Intent i = new Intent(MainActivity.this, ReorderSubreddits.class);
+                startActivity(i);
 
             }
         });
@@ -1248,7 +1251,7 @@ public class MainActivity extends BaseActivity {
 
     public void setDrawerSubList() {
 
-        ArrayList<Feed> copy = new ArrayList<>(UserFeeds.getAllUserFeeds(this));
+        ArrayList<Feed> copy = new ArrayList<>(UserFeeds.getAllUserFeeds());
 
         sideArrayAdapter = new SideArrayAdapter(this, copy, drawerFeedList);
         drawerFeedList.setAdapter(sideArrayAdapter);
@@ -1693,72 +1696,6 @@ public class MainActivity extends BaseActivity {
             }
 
 
-        }
-    }
-
-    private class ParseFeedTask extends AsyncTask<String, Void, Feed>{
-
-        String url;
-
-        @Override
-        protected Feed doInBackground(String... input) {
-            url = input[0];
-            Feed f = UserFeeds.doAddFeed(url);
-            return f;
-        }
-
-        @Override
-        protected void onPostExecute(final Feed feed) {
-            if (feed != null) {
-                new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Feed added successfully!").setPositiveButton("Ok!", null).show();
-                Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.copyToRealmOrUpdate(feed);
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        toGoto = usedArray.size() + 1;
-                        usedArray.add(feed);
-                        setDataSet(usedArray, false);
-                    }
-                });
-            } else {
-                new SearchSiteTask().execute(url);
-            }
-        }
-    }
-
-    private class SearchSiteTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String url = strings[0];
-            Document doc = null;
-            try {
-                doc = Jsoup.connect(url).get();
-                Elements links = doc.select("link[type=application/rss+xml]");
-
-                if (links.size() > 0) {
-                    String rss_url = links.get(0).attr("abs:href").toString();
-                    return rss_url;
-                } else {
-                    return null;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String feed) {
-            if(feed == null){
-                new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Error adding feed! Make sure you have entered the URL correctly").setPositiveButton("Ok!", null).show();
-            } else {
-                new ParseFeedTask().execute(feed);
-            }
         }
     }
 }

@@ -1547,6 +1547,24 @@ public class MainActivity extends BaseActivity {
         return animator;
     }
 
+    public boolean feedContains(String base) {
+        for(Feed f : usedArray){
+            if(f.name.equalsIgnoreCase(base)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int feedIndexOf(String base) {
+        for(int i = 0; i < usedArray.size(); i++){
+            if(usedArray.get(i).name.equalsIgnoreCase(base)){
+                return i;
+            }
+        }
+        return 0;
+    }
+
     public class OverviewPagerAdapter extends FragmentStatePagerAdapter {
         protected FeedFragment mCurrentFragment;
 

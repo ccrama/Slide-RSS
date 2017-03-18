@@ -110,6 +110,10 @@ public class HeaderImageLinkView extends RelativeLayout {
 
         }
 
+        if(article.image == null || article.image.isEmpty()){
+            thumbImage2.setVisibility(View.GONE);
+        }
+
 
     }
 

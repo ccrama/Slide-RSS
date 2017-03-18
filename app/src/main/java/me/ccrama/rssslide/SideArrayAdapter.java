@@ -104,7 +104,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                 @Override
                 public void onClick(View view) {
                     if (base.startsWith(getContext().getString(R.string.search_goto) + " ")
-                            || !((MainActivity) getContext()).usedArray.contains(base)) {
+                            || !((MainActivity) getContext()).feedContains(base)) {
                         try {
                             //Hide the toolbar search UI without an animation because we're starting a new activity
                             if ((SettingValues.subredditSearchMethod
@@ -162,7 +162,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                         }
 
                         ((MainActivity) getContext()).pager.setCurrentItem(
-                                ((MainActivity) getContext()).usedArray.indexOf(base));
+                                ((MainActivity) getContext()).feedIndexOf(base));
                         ((MainActivity) getContext()).drawerLayout.closeDrawers();
                         if (((MainActivity) getContext()).drawerSearch != null) {
                             ((MainActivity) getContext()).drawerSearch.setText("");

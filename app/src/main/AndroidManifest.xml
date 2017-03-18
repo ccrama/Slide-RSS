@@ -63,6 +63,11 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:alwaysRetainTaskState="true"
             android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".FeedViewSingle"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
     </application>
 
 </manifest>

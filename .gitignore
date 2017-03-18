@@ -1,9 +1,34 @@
+# Built application files
+build/
+*.apk
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Gradle generated files
+.gradle/
+
+# Signing files
+.signing/
+
+# User-specific configurations
+.idea/*
+!.idea/codeStyleSettings.xml
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+projectFilesBackup/
+
+# OS-specific files
 .DS_Store
-/build
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+cd
+*.log
+
+# trace files
 /captures
-.externalNativeBuild
+
+/app/src/main/assets/secretconstants.properties

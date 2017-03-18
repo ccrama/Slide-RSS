@@ -26,6 +26,8 @@ public class XMLToRealm {
                     public void execute(Realm realm) {
                         ArrayList<Article> toAdd = new ArrayList<>();
                         for(Item i : items){
+                            LogUtil.v("Image is " + i.getImageLink());
+
                             Article a = new Article();
                             a.setAll(i);
                             boolean exists = false;

@@ -40,7 +40,7 @@ public class UserFeeds {
         if (feedList.isEmpty()) {
             doAddFeedAsync("https://www.reddit.com/r/slideforreddit/.rss", mainActivity);
         } else {
-            mainActivity.setDataSet(feedList);
+            mainActivity.setDataSet(feedList, true);
         }
     }
 
@@ -101,7 +101,7 @@ public class UserFeeds {
                 }, new Realm.Transaction.OnSuccess() {
                     @Override
                     public void onSuccess() {
-                        a.setDataSet(feedList);
+                        a.setDataSet(feedList, true);
                     }
                 });
 

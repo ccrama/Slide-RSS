@@ -77,10 +77,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -120,7 +123,7 @@ public class MainActivity extends BaseActivity {
     int back;
     private int headerHeight; //height of the header
     public int reloadItemNumber = -2;
-    private static       ImageLoader  defaultImageLoader;
+    private static ImageLoader defaultImageLoader;
 
     @Override
     public void onLowMemory() {
@@ -949,37 +952,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onClick(@NonNull final MaterialDialog d,
                                                 @NonNull DialogAction which) {
-                                new AsyncTask<Void, Void, Feed>(){
-                                    @Override
-                                    protected Feed doInBackground(Void... voids) {
-                                        String url =  d.getInputEditText().getText().toString();
-                                        Feed f = UserFeeds.doAddFeed(url);
-                                        return f;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(final Feed feed) {
-                                        if(feed != null){
-                                            new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Feed added successfully!").setPositiveButton("Ok!", null).show();
-                                            Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-                                                @Override
-                                                public void execute(Realm realm) {
-                                                    realm.copyToRealmOrUpdate(feed);
-                                                }
-                                            }, new Realm.Transaction.OnSuccess() {
-                                                @Override
-                                                public void onSuccess() {
-                                                    toGoto = usedArray.size() + 1;
-                                                    usedArray.add(feed);
-                                                    setDataSet(usedArray);
-                                                }
-                                            });
-
-                                        } else {
-                                            new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Error adding feed! Make sure you have entered the URL correctly").setPositiveButton("Ok!", null).show();
-                                        }
-                                    }
-                                }.execute();
+                               new ParseFeedTask().execute(d.getInputEditText().getText().toString());
                             }
                         })
                         .negativeText(R.string.btn_cancel)
@@ -1002,7 +975,7 @@ public class MainActivity extends BaseActivity {
         header.findViewById(R.id.nav_settings).setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-              Intent i = new Intent(MainActivity.this, Settings.class);
+                Intent i = new Intent(MainActivity.this, Settings.class);
                 startActivity(i);
                 drawerLayout.closeDrawers();
             }
@@ -1212,16 +1185,20 @@ public class MainActivity extends BaseActivity {
         ((FeedFragment) adapter.getCurrentFragment()).resetScroll();
     }
 
-    public void setDataSet(List<Feed> data) {
+    public void setDataSet(List<Feed> data, boolean sidebar) {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            setDrawerEdge(this, Constants.DRAWER_SWIPE_EDGE, drawerLayout);
+        setDrawerEdge(this, Constants.DRAWER_SWIPE_EDGE, drawerLayout);
 
+        if (sidebar) {
             doDrawer();
+        } else {
+            setDrawerSubList();
+        }
         if (data != null && !data.isEmpty()) {
             LogUtil.v("Done with " + data.get(0).name + " and " + data.get(0).url);
             usedArray = new ArrayList(data);
             if (adapter == null) {
-                    adapter = new OverviewPagerAdapter(getSupportFragmentManager());
+                adapter = new OverviewPagerAdapter(getSupportFragmentManager());
             } else {
                 adapter.notifyDataSetChanged();
             }
@@ -1271,7 +1248,7 @@ public class MainActivity extends BaseActivity {
 
     public void setDrawerSubList() {
 
-        ArrayList<Feed> copy  = new ArrayList<>(UserFeeds.getAllUserFeeds(this));
+        ArrayList<Feed> copy = new ArrayList<>(UserFeeds.getAllUserFeeds(this));
 
         sideArrayAdapter = new SideArrayAdapter(this, copy, drawerFeedList);
         drawerFeedList.setAdapter(sideArrayAdapter);
@@ -1548,8 +1525,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public boolean feedContains(String base) {
-        for(Feed f : usedArray){
-            if(f.name.equalsIgnoreCase(base)){
+        for (Feed f : usedArray) {
+            if (f.name.equalsIgnoreCase(base)) {
                 return true;
             }
         }
@@ -1557,8 +1534,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public int feedIndexOf(String base) {
-        for(int i = 0; i < usedArray.size(); i++){
-            if(usedArray.get(i).name.equalsIgnoreCase(base)){
+        for (int i = 0; i < usedArray.size(); i++) {
+            if (usedArray.get(i).name.equalsIgnoreCase(base)) {
                 return i;
             }
         }
@@ -1716,6 +1693,72 @@ public class MainActivity extends BaseActivity {
             }
 
 
+        }
+    }
+
+    private class ParseFeedTask extends AsyncTask<String, Void, Feed>{
+
+        String url;
+
+        @Override
+        protected Feed doInBackground(String... input) {
+            url = input[0];
+            Feed f = UserFeeds.doAddFeed(url);
+            return f;
+        }
+
+        @Override
+        protected void onPostExecute(final Feed feed) {
+            if (feed != null) {
+                new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Feed added successfully!").setPositiveButton("Ok!", null).show();
+                Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.copyToRealmOrUpdate(feed);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        toGoto = usedArray.size() + 1;
+                        usedArray.add(feed);
+                        setDataSet(usedArray, false);
+                    }
+                });
+            } else {
+                new SearchSiteTask().execute(url);
+            }
+        }
+    }
+
+    private class SearchSiteTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String url = strings[0];
+            Document doc = null;
+            try {
+                doc = Jsoup.connect(url).get();
+                Elements links = doc.select("link[type=application/rss+xml]");
+
+                if (links.size() > 0) {
+                    String rss_url = links.get(0).attr("abs:href").toString();
+                    return rss_url;
+                } else {
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String feed) {
+            if(feed == null){
+                new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Error adding feed! Make sure you have entered the URL correctly").setPositiveButton("Ok!", null).show();
+            } else {
+                new ParseFeedTask().execute(feed);
+            }
         }
     }
 }

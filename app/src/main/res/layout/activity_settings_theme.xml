@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/activity_background"
+    android:orientation="vertical">
+
+    <include layout="@layout/settings_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                cardview:cardBackgroundColor="?attr/card_background"
+                cardview:cardCornerRadius="2dp">
+            </android.support.v7.widget.CardView>
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="-24dp"
+                app:srcCompat="@drawable/more" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:id="@+id/appThemeHeader"
+                android:text="@string/app_theme"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:layout_width="match_parent"
+                android:textColor="?attr/colorAccent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/main"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="?android:selectableItemBackground"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:padding="16dp"
+                    android:tint="?attr/tint"
+                    app:srcCompat="@drawable/color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/theme_default_color"
+                    android:textColor="?attr/font"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/accent"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="?android:selectableItemBackground"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:padding="16dp"
+                    android:tint="?attr/tint"
+                    app:srcCompat="@drawable/accent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/theme_accent_color"
+                    android:textColor="?attr/font"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/theme"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="?android:selectableItemBackground"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:padding="16dp"
+                    android:tint="?attr/tint"
+                    app:srcCompat="@drawable/theme" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/theme_base"
+                    android:textColor="?attr/font"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/night"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="?android:selectableItemBackground"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:padding="16dp"
+                    android:tint="?attr/tint"
+                    app:srcCompat="@drawable/nighttheme" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/theme_night"
+                    android:textColor="?attr/font"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

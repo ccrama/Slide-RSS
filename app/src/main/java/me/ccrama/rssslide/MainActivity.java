@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -71,6 +72,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -196,7 +198,7 @@ public class MainActivity extends BaseActivity {
 
                 } else {
 
-                    runOnUiThread(new Runnable() {
+                   /* not yet runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             new AlertDialogWrapper.Builder(MainActivity.this).setTitle(
@@ -224,7 +226,7 @@ public class MainActivity extends BaseActivity {
                                             })
                                     .show();
                         }
-                    });
+                    });*/
 
                 }
             }
@@ -928,6 +930,61 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSingleClick(View view) {
                 //todo manage feeds
+                new MaterialDialog.Builder(MainActivity.this)
+                        .alwaysCallInputCallback()
+                        .input("Feed URL", null,
+                                new MaterialDialog.InputCallback() {
+                                    @Override
+                                    public void onInput(@NonNull MaterialDialog dialog,
+                                                        CharSequence input) {
+                                        final EditText editText = dialog.getInputEditText();
+                                        if (input.length() >= 3 && input.length() <= 20) {
+                                            dialog.getActionButton(DialogAction.POSITIVE)
+                                                    .setEnabled(true);
+                                        }
+                                    }
+                                })
+                        .positiveText("Add feed")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull final MaterialDialog d,
+                                                @NonNull DialogAction which) {
+                                new AsyncTask<Void, Void, Feed>(){
+                                    @Override
+                                    protected Feed doInBackground(Void... voids) {
+                                        String url =  d.getInputEditText().getText().toString();
+                                        Feed f = UserFeeds.doAddFeed(url);
+                                        return f;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(final Feed feed) {
+                                        if(feed != null){
+                                            new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Feed added successfully!").setPositiveButton("Ok!", null).show();
+                                            Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+                                                @Override
+                                                public void execute(Realm realm) {
+                                                    realm.copyToRealmOrUpdate(feed);
+                                                }
+                                            }, new Realm.Transaction.OnSuccess() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    toGoto = usedArray.size() + 1;
+                                                    usedArray.add(feed);
+                                                    setDataSet(usedArray);
+                                                }
+                                            });
+
+                                        } else {
+                                            new AlertDialogWrapper.Builder(MainActivity.this).setTitle("Error adding feed! Make sure you have entered the URL correctly").setPositiveButton("Ok!", null).show();
+                                        }
+                                    }
+                                }.execute();
+                            }
+                        })
+                        .negativeText(R.string.btn_cancel)
+                        .show();
+
             }
         });
         header.findViewById(R.id.nav_cache).setOnClickListener(new OnSingleClickListener() {
@@ -945,9 +1002,9 @@ public class MainActivity extends BaseActivity {
         header.findViewById(R.id.nav_settings).setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-              /* todo this  Intent i = new Intent(MainActivity.this, Settings.class);
+              Intent i = new Intent(MainActivity.this, Settings.class);
                 startActivity(i);
-                drawerLayout.closeDrawers();*/
+                drawerLayout.closeDrawers();
             }
         });
 
@@ -1156,7 +1213,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setDataSet(List<Feed> data) {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            setDrawerEdge(this, Constants.DRAWER_SWIPE_EDGE, drawerLayout);
+
+            doDrawer();
         if (data != null && !data.isEmpty()) {
+            LogUtil.v("Done with " + data.get(0).name + " and " + data.get(0).url);
             usedArray = new ArrayList(data);
             if (adapter == null) {
                     adapter = new OverviewPagerAdapter(getSupportFragmentManager());

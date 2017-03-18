@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 
 
@@ -23,16 +24,18 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
     private final RecyclerView listView;
     public final Feed feed;
     public Activity context;
+    private FeedFragment parent;
     public FeedLoader dataSet;
     private final int LOADING_SPINNER = 5;
     private final int NO_MORE = 3;
     private final int SPACER = 6;
     private ArrayList<String> seen;
 
-    public FeedAdapter(Activity context, FeedLoader dataSet, RecyclerView listView,
+    public FeedAdapter(Activity context, FeedFragment parent, FeedLoader dataSet, RecyclerView listView,
                        Feed feed) {
-        super(dataSet.listing.articles, true);
+        super(dataSet.feed.articles, true);
         this.feed = feed;
+        this.parent = parent;
         this.listView = listView;
         this.dataSet = dataSet;
         this.context = context;
@@ -41,17 +44,17 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        if (position <= 0 && !dataSet.listing.articles.isEmpty()) {
+        if (position <= 0 && !dataSet.feed.articles.isEmpty()) {
             return SPACER;
-        } else if (!dataSet.listing.articles.isEmpty()) {
+        } else if (!dataSet.feed.articles.isEmpty()) {
             position -= (1);
         }
-        if (position == dataSet.listing.articles.size()
-                && !dataSet.listing.articles.isEmpty()
+        if (position == dataSet.feed.articles.size()
+                && !dataSet.feed.articles.isEmpty()
                 && !dataSet.offline
                 && !dataSet.nomore) {
             return LOADING_SPINNER;
-        } else if (position == dataSet.listing.articles.size() && (dataSet.offline || dataSet.nomore)) {
+        } else if (position == dataSet.feed.articles.size() && (dataSet.offline || dataSet.nomore)) {
             return NO_MORE;
         }
         int SUBMISSION = 1;
@@ -95,6 +98,8 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                 listView.setItemAnimator(a);
             }
         }, 500);
+        parent.mSwipeRefreshLayout.setRefreshing(false);
+
     }
 
     public void refreshView(boolean ignore18) {
@@ -132,7 +137,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
         if (holder2 instanceof ArticleViewHolder) {
             final ArticleViewHolder holder = (ArticleViewHolder) holder2;
 
-            final Article obj = getItem(pos);
+            final Article obj = getItem(i);
 
             holder.itemView.setOnClickListener(new OnSingleClickListener() {
                                                    @Override
@@ -140,18 +145,25 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                        Intent i = new Intent(context, Website.class);
                                                        i.putExtra(Website.EXTRA_URL, obj.getLink());
                                                        context.startActivity(i);
+                                                       Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                                                           @Override
+                                                           public void execute(Realm realm) {
+                                                               obj.setSeen();
+                                                               realm.copyToRealmOrUpdate(obj);
+                                                           }
+                                                       });
                                                    }
                                                }
 
             );
-            new PopulateArticleViewHolder().populateArticleViewHolder(holder, obj, context, dataSet.listing, feed, listView);
+            new PopulateArticleViewHolder().populateArticleViewHolder(holder, obj, context, feed, listView);
         }
         if (holder2 instanceof SubmissionFooterViewHolder) {
             Handler handler = new Handler();
 
             final Runnable r = new Runnable() {
                 public void run() {
-                    notifyItemChanged(dataSet.listing.articles.size()
+                    notifyItemChanged(dataSet.feed.articles.size()
                             + 1); // the loading spinner to replaced by nomoreposts.xml
                 }
             };
@@ -218,7 +230,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
     @Override
     public int getItemCount() {
-        if (dataSet.listing.articles == null || dataSet.listing.articles.isEmpty()) {
+        if (dataSet.feed.articles == null || dataSet.feed.articles.isEmpty()) {
             return 0;
         } else {
             return super.getItemCount() + 2; // Always account for footer

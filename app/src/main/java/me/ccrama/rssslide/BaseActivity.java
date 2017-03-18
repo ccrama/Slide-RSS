@@ -194,11 +194,12 @@ public class BaseActivity extends AppCompatActivity
     protected void overrideRedditSwipeAnywhere() {
         overrideRedditSwipeAnywhere = true;
     }
-
     /**
      * Applies the activity's base color theme. Should be called before inflating any layouts.
      */
     protected void applyColorTheme() {
+        getTheme().applyStyle(new FontPreferences(this).getCommentFontStyle().getResId(), true);
+        getTheme().applyStyle(new FontPreferences(this).getPostFontStyle().getResId(), true);
         getTheme().applyStyle(new ColorPreferences(this).getFontStyle().getBaseId(), true);
     }
 
@@ -209,7 +210,9 @@ public class BaseActivity extends AppCompatActivity
      * @param subreddit The subreddit to base the theme on
      */
     protected void applyColorTheme(String subreddit) {
+        getTheme().applyStyle(new FontPreferences(this).getPostFontStyle().getResId(), true);
         getTheme().applyStyle(new ColorPreferences(this).getThemeSubreddit(subreddit), true);
+        getTheme().applyStyle(new FontPreferences(this).getCommentFontStyle().getResId(), true);
 
     }
 

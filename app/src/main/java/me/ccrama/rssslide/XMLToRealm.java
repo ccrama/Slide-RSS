@@ -2,32 +2,48 @@ package me.ccrama.rssslide;
 
 import android.app.Activity;
 
+import com.einmalfel.earl.Item;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by Carlos on 3/16/2017.
  */
 
 public class XMLToRealm {
-    public static void convert(final String feed, final List<FeedParser.Entry> items, final ConversionCallback c, Activity baseActivity){
+    public static <T extends Item>  void convert(final Feed feed, final List<T> items, final ConversionCallback c, Activity baseActivity){
         baseActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Listing l = realm.where(Listing.class).equalTo("feed", feed).findFirst();
-                        l.time = System.currentTimeMillis();
-                        l.init();
-                        for(FeedParser.Entry i : items){
+                        ArrayList<Article> toAdd = new ArrayList<>();
+                        for(Item i : items){
                             Article a = new Article();
                             a.setAll(i);
-                            realm.copyToRealmOrUpdate(a);
-                            l.addArticle(a);
+                            boolean exists = false;
+                            for(Article a2 : feed.articles){
+                                if(a2.getId().equals(a.getId())){
+                                    exists = true;
+                                }
+                            }
+                            if(!exists){
+                                realm.copyToRealmOrUpdate(a);
+                                toAdd.add(a);
+                            }
                         }
-                        c.onCompletion(l);
+                        Collections.reverse(toAdd);
+                        for(Article a : toAdd){
+                            feed.articles.add(0, a);
+                        }
+                        c.onCompletion(toAdd.size());
                     }
                 });
 

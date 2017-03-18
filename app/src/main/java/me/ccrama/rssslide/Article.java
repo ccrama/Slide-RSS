@@ -2,6 +2,8 @@ package me.ccrama.rssslide;
 
 import android.util.Log;
 
+import com.einmalfel.earl.Item;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -75,16 +77,18 @@ public class Article extends RealmObject {
         seen = true;
     }
 
-    public void setAll(FeedParser.Entry article) {
-        Log.v("Feed", "Converting " + article.title);
-        this.link = article.link;
-        if(article.id == null || article.id.isEmpty()){
-            article.id = article.title.replace(" ", "");
+    public void setAll(Item article) {
+        Log.v("Feed", "Converting " + article.getTitle());
+        this.link = article.getLink();
+        if(article.getId() == null || article.getId().isEmpty()){
+            this.id = article.getTitle().replace(" ", "");
+        } else {
+            this.id = article.getId();
         }
-        this.id = article.id;
-        this.published = article.published;
-        this.title = article.title;
-        this.summary = article.summary;
-        this.image = article.image;
+        if(article.getPublicationDate() != null)
+        this.published = article.getPublicationDate().getTime();
+        this.title = article.getTitle();
+        this.summary = article.getDescription();
+        this.image = article.getImageLink();
     }
 }

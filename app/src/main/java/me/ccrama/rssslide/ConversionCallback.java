@@ -5,5 +5,5 @@ package me.ccrama.rssslide;
  */
 
 public interface ConversionCallback{
-    public void onCompletion(final Listing l);
+    public void onCompletion(int size);
 }

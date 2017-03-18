@@ -42,8 +42,8 @@ public class PopulateArticleViewHolder {
     }
 
     public void showBottomSheet(final Activity mContext,
-                                final Article a, final ArticleViewHolder holder, final Listing posts,
-                                final Feed baseSub, final RecyclerView recyclerview) {
+                                final Article a, final ArticleViewHolder holder, final Feed posts,
+                                final RecyclerView recyclerview) {
 
         int[] attrs = new int[]{R.attr.tint};
         TypedArray ta = mContext.obtainStyledAttributes(attrs);
@@ -600,7 +600,7 @@ public class PopulateArticleViewHolder {
         */
     }
 
-    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final Listing parent, final Feed feed, final RecyclerView list) {
+    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final Feed feed, final RecyclerView list) {
 
         holder.title.setText(article.getTitle()); // title is a spoiler roboto textview so it will format the html
 
@@ -608,7 +608,7 @@ public class PopulateArticleViewHolder {
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottomSheet(context, article, holder, parent, feed, list);
+                showBottomSheet(context, article, holder, feed, list);
             }
         });
 
@@ -683,24 +683,28 @@ public class PopulateArticleViewHolder {
         }
         holder.body.setTypeface(typeface);
 
-        holder.body.setTextHtml(Html.fromHtml(
-                text.substring(0, text.contains("\n") ? text.indexOf("\n") : text.length()))
-                .toString()
-                .replace("<sup>", "<sup><small>")
-                .replace("</sup>", "</small></sup>"), "none ");
-        holder.body.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.itemView.callOnClick();
-            }
-        });
-        holder.body.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                holder.menu.callOnClick();
-                return true;
-            }
-        });
+        if(text != null && !text.isEmpty()) {
+            holder.body.setTextHtml(Html.fromHtml(
+                    text.substring(0, text.contains("\n") ? text.indexOf("\n") : text.length()))
+                    .toString()
+                    .replace("<sup>", "<sup><small>")
+                    .replace("</sup>", "</small></sup>"), "none ");
+            holder.body.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.itemView.callOnClick();
+                }
+            });
+            holder.body.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    holder.menu.callOnClick();
+                    return true;
+                }
+            });
+        } else {
+            holder.body.setTextHtml("");
+        }
 
         if (article.seen) {
             holder.title.setAlpha(0.54f);

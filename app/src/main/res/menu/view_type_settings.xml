@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tabs"
+        android:title="Feed tabs"/>
+
+    <item
+        android:id="@+id/notabs"
+        android:title="No feed tabs"/>
+
+</menu>

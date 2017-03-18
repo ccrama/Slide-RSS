@@ -201,6 +201,46 @@ public class CreateCardView {
         }
     }
 
+    public static View setActionbarVisible(boolean isChecked, ViewGroup parent) {
+
+        SettingValues.prefs.edit().putBoolean(SettingValues.PREF_ACTIONBAR_VISIBLE, isChecked).apply();
+        SettingValues.actionbarVisible = isChecked;
+        return CreateView(parent);
+
+    }
+
+    public static View setSwitchThumb(boolean b, ViewGroup parent) {
+
+
+        SettingValues.prefs.edit().putBoolean(SettingValues.PREF_SWITCH_THUMB, b).apply();
+        SettingValues.switchThumb = b;
+
+        return CreateView(parent);
+
+
+    }
+
+
+    public static View setCardViewType(CardEnum cardEnum, ViewGroup parent) {
+        SettingValues.prefs.edit().putBoolean("middleCard", false).apply();
+        SettingValues.middleImage = false;
+
+        SettingValues.prefs.edit().putString("defaultCardViewNew", cardEnum.name()).apply();
+        SettingValues.defaultCardView = cardEnum;
+
+        return CreateView(parent);
+    }
+
+    public static View setBigPicEnabled(Boolean b, ViewGroup parent) {
+        SettingValues.prefs.edit().putBoolean("bigPicEnabled", b).apply();
+        SettingValues.bigPicEnabled = b;
+
+        SettingValues.prefs.edit().putBoolean("bigPicCropped", false).apply();
+        SettingValues.bigPicCropped = false;
+
+        return CreateView(parent);
+    }
+
     private static void doHideObjects(final View v) {
         if (!SettingValues.actionbarVisible && !SettingValues.actionbarTap) {
             for (View v2 : getViewsByTag((ViewGroup) v, "tintactionbar")) {

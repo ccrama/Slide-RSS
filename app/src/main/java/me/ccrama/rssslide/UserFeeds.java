@@ -3,6 +3,8 @@ package me.ccrama.rssslide;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import com.einmalfel.earl.EarlParser;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -30,13 +33,15 @@ public class UserFeeds {
                     @Override
                     public void execute(Realm realm) {
                         feedList = realm.where(Feed.class).findAll();
-                        if (feedList.isEmpty()) {
-                            doAddFeed("https://www.reddit.com/r/slideforreddit/.rss", mainActivity);
-                        }
 
                     }
                 });
-                mainActivity.setDataSet(feedList);
+        LogUtil.v("Doing realm stuff");
+        if (feedList.isEmpty()) {
+            doAddFeedAsync("https://www.reddit.com/r/slideforreddit/.rss", mainActivity);
+        } else {
+            mainActivity.setDataSet(feedList);
+        }
     }
 
     public static RealmResults<Feed> getAllUserFeeds(MainActivity mainActivity) {
@@ -44,49 +49,63 @@ public class UserFeeds {
     }
     static InputStream stream = null;
 
-    public static void doAddFeed(final String url, final Activity a) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-
-
-                final FeedInfoParser xmlParser = new FeedInfoParser();
-                List<FeedParser.Entry> entries = null;
-
-                try {
-                    stream = downloadUrl(url);
-                    a.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final Feed f;
-                            try {
-                                f = xmlParser.parse(stream);
-                                f.url = url;
-                                Realm.getDefaultInstance().copyToRealmOrUpdate(f);
-
-                            } catch (XmlPullParserException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    // Makes sure that the InputStream is closed after the app is
-                    // finished using it.
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+    public static Feed doAddFeed(final String url){
+        LogUtil.v("Adding feed to " + url);
+        try {
+            stream = downloadUrl(url);
+            final Feed f;
+            try {
+                com.einmalfel.earl.Feed feedBase = EarlParser.parseOrThrow(stream, 0);
+                f = new Feed();
+                f.name = feedBase.getTitle();
+                f.icon = feedBase.getImageLink();
+                if(f.icon != null && f.icon.endsWith("/")){
+                    f.icon = f.icon.substring(0, f.icon.length() - 1);
+                }
+                f.url = url;
+                LogUtil.v("Doing feed " + f.name);
+                return f;
+            } catch (XmlPullParserException | DataFormatException e) {
+                e.printStackTrace();
+            } finally {
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
-                return null;
+            }
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void doAddFeedAsync(final String url, final MainActivity a) {
+        new AsyncTask<Void, Void, Feed>() {
+            @Override
+            protected Feed doInBackground(Void... params) {
+                return doAddFeed(url);
+            }
+
+            @Override
+            protected void onPostExecute(final Feed feed) {
+                Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.copyToRealmOrUpdate(feed);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        a.setDataSet(feedList);
+                    }
+                });
+
+
             }
         }.execute();
     }

@@ -119,6 +119,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="4dp"
+                android:layout_alignParentLeft="true"
                 android:tag="tintactionbar"
                 android:tint="?attr/tint"/>
 
@@ -129,7 +130,7 @@
                 android:textColor="?attr/tint"
                 android:layout_below="@+id/innerrelative"
                 android:layout_gravity="center_vertical"
-                android:layout_toRightOf="@+id/scoreimg"
+                android:layout_toRightOf="@+id/icon"
                 android:gravity="center_vertical"
                 android:tag="tintactionbar"
                 android:text="400"
@@ -154,7 +155,7 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_below="@+id/innerrelative"
-                android:layout_toLeftOf="@+id/mod"
+                android:layout_toLeftOf="@+id/share"
                 android:padding="8dp"
                 android:tag="tintactionbar"
                 android:tint="?attr/tint"
@@ -166,11 +167,11 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_below="@+id/innerrelative"
-                android:layout_toLeftOf="@+id/downvote"
+                android:layout_toLeftOf="@+id/menu"
                 android:padding="8dp"
                 android:tag="tintactionbar"
                 android:tint="?attr/tint"
-                app:srcCompat="@drawable/ic_menu_share" />
+                app:srcCompat="@drawable/ic_share" />
 
             <ImageView
                 android:id="@+id/menu"

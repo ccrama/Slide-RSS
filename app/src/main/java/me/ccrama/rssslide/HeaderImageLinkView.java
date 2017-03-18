@@ -28,7 +28,7 @@ public class HeaderImageLinkView extends RelativeLayout {
             .build();
     Activity activity = null;
     float position;
-    String lastDone;
+    String lastDone = "";
     public ImageView backdrop;
 
     public HeaderImageLinkView(Context context) {
@@ -89,6 +89,7 @@ public class HeaderImageLinkView extends RelativeLayout {
             thumbUsed = true;
         } else {
             url = article.image;
+            LogUtil.v("Image is " + url);
             if (forceThumb) {
                 thumbImage2.setVisibility(View.VISIBLE);
 

@@ -28,7 +28,41 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:alwaysRetainTaskState="true"
             android:theme="@style/swipeableweb"/>
-
+        <activity
+            android:name=".ReaderMode"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".Settings"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".SettingsGeneral"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".SettingsFont"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".SettingsTheme"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".SettingsViewType"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
+        <activity
+            android:name=".EditCardsLayout"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:alwaysRetainTaskState="true"
+            android:theme="@style/swipeableweb"/>
     </application>
 
 </manifest>

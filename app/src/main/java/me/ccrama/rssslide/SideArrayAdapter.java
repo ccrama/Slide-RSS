@@ -97,7 +97,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                     : SantitizeField.sanitizeString(
                     sub.replace(getContext().getString(R.string.search_goto) + " ", ""));
 
-            ImageView back = (ImageView) convertView.findViewById(R.id.color);
+            ImageView back = (ImageView) convertView.findViewById(R.id.icon);
             back.setImageDrawable(null);
             MainActivity.getImageLoader(getContext()).displayImage(fitems.get(position).icon, back);
             convertView.setOnClickListener(new View.OnClickListener() {

@@ -42,7 +42,7 @@ public class FeedFragment extends Fragment {
     private int visibleItemCount;
     private int pastVisiblesItems;
     private int totalItemCount;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    public SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -177,7 +177,7 @@ public class FeedFragment extends Fragment {
         if (MainActivity.shouldLoad == null
                 || id == null
                 || (MainActivity.shouldLoad != null
-                && MainActivity.shouldLoad.equals(id))
+                && MainActivity.shouldLoad.name.equals(id.name))
                 || !(getActivity() instanceof MainActivity)) {
             doAdapter();
         }
@@ -210,6 +210,7 @@ public class FeedFragment extends Fragment {
     FeedLoader dataSet;
 
     public void doAdapter() {
+        LogUtil.v("Doing adapter");
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -218,7 +219,7 @@ public class FeedFragment extends Fragment {
         });
 
         dataSet = new FeedLoader(id);
-        adapter = new FeedAdapter(getActivity(), dataSet, rv, id);
+        adapter = new FeedAdapter(getActivity(), this, dataSet, rv, id);
         adapter.setHasStableIds(true);
         rv.setAdapter(adapter);
         dataSet.loadMore(getActivity(), id, adapter);
@@ -230,9 +231,8 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    public Listing clearSeenPosts(boolean forever) {
+    public void clearSeenPosts(boolean forever) {
 
-        return null;
     }
 
     @Override
@@ -241,7 +241,7 @@ public class FeedFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         String idb= bundle.getString("id", "");
-        id = Realm.getDefaultInstance().where(Feed.class).equalTo("name", idb).findFirstAsync();
+        id = Realm.getDefaultInstance().where(Feed.class).equalTo("name", idb).findFirst();
         main = bundle.getBoolean("main", false);
         forceLoad = bundle.getBoolean("load", false);
 
@@ -253,8 +253,8 @@ public class FeedFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (adapter != null && adapterPosition > 0 && currentPosition == adapterPosition) {
-            if (adapter.dataSet.listing.articles.size() >= adapterPosition - 1
-                    && adapter.dataSet.listing.articles.get(adapterPosition - 1) == currentArticle) {
+            if (adapter.dataSet.feed.articles.size() >= adapterPosition - 1
+                    && adapter.dataSet.feed.articles.get(adapterPosition - 1) == currentArticle) {
                 adapter.performClick(adapterPosition);
                 adapterPosition = -1;
             }
@@ -308,7 +308,7 @@ public class FeedFragment extends Fragment {
                                             Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                                 @Override
                                                 public void execute(Realm realm) {
-                                                    Article a = dataSet.listing.articles.get(pastVisiblesItems - 1);
+                                                    Article a = dataSet.feed.articles.get(pastVisiblesItems - 1);
                                                     a.setSeen();
                                                     realm.copyToRealmOrUpdate(a);
                                                 }

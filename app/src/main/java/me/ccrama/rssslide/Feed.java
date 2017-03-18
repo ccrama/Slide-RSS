@@ -1,5 +1,6 @@
 package me.ccrama.rssslide;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -13,4 +14,10 @@ public class Feed extends RealmObject {
 
     @PrimaryKey
     public String url;
+
+    RealmList<Article> articles;
+
+    public void addArticle(Article a) {
+        articles.add(a);
+    }
 }

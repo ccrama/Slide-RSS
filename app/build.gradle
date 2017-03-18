@@ -47,6 +47,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.einmalfel:earl:1.2.0'
     compile 'io.realm:android-adapters:2.0.0'
     compile 'com.mikepenz:itemanimators:0.2.4@aar'
     compile 'com.github.ccrama:Android-RobotoTextView:28b71bcd9c'

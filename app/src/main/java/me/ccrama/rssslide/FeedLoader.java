@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.einmalfel.earl.EarlParser;
-import com.einmalfel.earl.Item;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -16,10 +18,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.DataFormatException;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by Carlos on 3/17/2017.
@@ -46,7 +44,7 @@ public class FeedLoader implements ConversionCallback {
 
     @Override
     public void onCompletion(int count) {
-        Toast.makeText(context,count + " articles loaded", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, count + " articles loaded", Toast.LENGTH_SHORT).show();
     }
 
     private class DownloadXmlTask extends AsyncTask<String, Void, List<Article>> {
@@ -75,24 +73,13 @@ public class FeedLoader implements ConversionCallback {
     // Uploads XML from stackoverflow.com, parses it, and combines it with
 // HTML markup. Returns HTML string.
     private List<Article> loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException, ParseException {
-        InputStream stream = null;
-        // Instantiate the parser
-        com.einmalfel.earl.Feed feedBase = null;
+        SyndFeed f = null;
         try {
-            stream = downloadUrl(urlString);
-            feedBase = EarlParser.parseOrThrow(stream, 0);
-        } catch (DataFormatException e) {
+            f = new SyndFeedInput().build(new XmlReader(new URL(urlString)));
+            XMLToRealm.convert(feed, f.getEntries(), this, context);
+        } catch (FeedException e) {
             e.printStackTrace();
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
         }
-
-
-        LogUtil.v("Converting " + feedBase.getItems());
-
-        XMLToRealm.convert(feed, feedBase.getItems(), this, context);
         return null;
     }
 

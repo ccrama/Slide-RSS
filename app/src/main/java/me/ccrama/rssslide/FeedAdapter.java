@@ -92,7 +92,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
     public void refreshView() {
         final RecyclerView.ItemAnimator a = listView.getItemAnimator();
         listView.setItemAnimator(null);
-        notifyItemChanged(clicked);
+        notifyDataSetChanged();
         listView.postDelayed(new Runnable() {
             @Override
             public void run() {

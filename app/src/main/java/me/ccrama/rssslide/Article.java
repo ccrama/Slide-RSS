@@ -1,8 +1,16 @@
 package me.ccrama.rssslide;
 
+import android.text.Html;
 import android.util.Log;
 
-import com.einmalfel.earl.Item;
+import com.rometools.rome.feed.synd.SyndEnclosure;
+import com.rometools.rome.feed.synd.SyndEntry;
+
+import org.jdom2.Element;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -73,22 +81,69 @@ public class Article extends RealmObject {
         this.starred = starred;
     }
 
-    public void setSeen(){
+    public void setSeen() {
         seen = true;
     }
 
-    public void setAll(Item article) {
+    public void setAll(SyndEntry article) {
         Log.v("Feed", "Converting " + article.getTitle());
         this.link = article.getLink();
-        if(article.getId() == null || article.getId().isEmpty()){
+        if (article.getUri() == null || article.getUri().isEmpty()) {
             this.id = article.getTitle().replace(" ", "");
         } else {
-            this.id = article.getId();
+            this.id = article.getUri();
         }
-        if(article.getPublicationDate() != null)
-        this.published = article.getPublicationDate().getTime();
+        if (article.getPublishedDate() != null)
+            this.published = article.getPublishedDate().getTime();
         this.title = article.getTitle();
-        this.summary = article.getDescription();
-        this.image = article.getImageLink();
+        if (article.getDescription() != null) {
+            this.summary = article.getDescription().getValue();
+        } else {
+            this.summary = "";
+        }
+        String imgURL = null;
+        List<Element> foreignMarkups = article.getForeignMarkup();
+        for (Element foreignMarkup : foreignMarkups) {
+            LogUtil.v(foreignMarkup.toString());
+            if (foreignMarkup.getAttribute("url") != null)
+                imgURL = foreignMarkup.getAttribute("url").getValue();
+            else
+                if(foreignMarkup.getChildren() != null){
+                    for(Element e : foreignMarkup.getChildren()){
+                        if (e.getAttribute("url") != null) {
+                            imgURL = e.getAttribute("url").getValue();
+                            break;
+                        }
+                    }
+                }
+
+        }
+        if (imgURL == null) {
+            List<SyndEnclosure> encls = article.getEnclosures();
+            if (!encls.isEmpty()) {
+                for (SyndEnclosure e : encls) {
+                    LogUtil.v(e.getUrl());
+
+                    imgURL = e.getUrl();
+                    if (!imgURL.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+        if(imgURL == null && article.getDescription() != null){
+            //Regex for possible images
+            String imgRegex = "<[iI][mM][gG][^>]+[sS][rR][cC]\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
+
+            Pattern p = Pattern.compile(imgRegex);
+            Matcher m = p.matcher(article.getDescription().getValue());
+
+            LogUtil.v(article.getDescription().getValue());
+            if (m.find()) {
+                imgURL = m.group(1);
+            }
+
+        }
+        this.image = imgURL;
     }
 }

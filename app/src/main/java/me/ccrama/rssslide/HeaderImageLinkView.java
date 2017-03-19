@@ -89,7 +89,6 @@ public class HeaderImageLinkView extends RelativeLayout {
             thumbUsed = true;
         } else {
             url = article.image;
-            LogUtil.v("Image is " + url);
             if (forceThumb) {
                 thumbImage2.setVisibility(View.VISIBLE);
 

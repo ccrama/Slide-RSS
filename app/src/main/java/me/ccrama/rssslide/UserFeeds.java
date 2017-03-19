@@ -1,23 +1,19 @@
 package me.ccrama.rssslide;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
-import com.einmalfel.earl.EarlParser;
-
-import org.xmlpull.v1.XmlPullParserException;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.DataFormatException;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -29,13 +25,13 @@ public class UserFeeds {
     public static RealmResults<Feed> feedList;
 
     public static void doMainActivitySubs(final MainActivity mainActivity) {
-                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        feedList = realm.where(Feed.class).findAllSorted("order");
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                feedList = realm.where(Feed.class).findAllSorted("order");
 
-                    }
-                });
+            }
+        });
         LogUtil.v("Doing realm stuff");
         if (feedList.isEmpty()) {
             doAddFeedAsync("https://www.reddit.com/r/slideforreddit/.rss", mainActivity);
@@ -47,25 +43,27 @@ public class UserFeeds {
     public static RealmResults<Feed> getAllUserFeeds() {
         return feedList;
     }
+
     static InputStream stream = null;
 
-    public static Feed doAddFeed(final String url){
+    public static Feed doAddFeed(final String url) {
         LogUtil.v("Adding feed to " + url);
         try {
             stream = downloadUrl(url);
             final Feed f;
             try {
-                com.einmalfel.earl.Feed feedBase = EarlParser.parseOrThrow(stream, 0);
+                SyndFeed feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
                 f = new Feed();
-                f.name = feedBase.getTitle();
-                f.icon = feedBase.getImageLink();
-                if(f.icon != null && f.icon.endsWith("/")){
+                f.name = feed.getTitle();
+                if(feed.getImage() != null)
+                f.icon = feed.getImage().getUrl();
+                if (f.icon != null && f.icon.endsWith("/")) {
                     f.icon = f.icon.substring(0, f.icon.length() - 1);
                 }
                 f.url = url;
                 LogUtil.v("Doing feed " + f.name);
                 return f;
-            } catch (XmlPullParserException | DataFormatException e) {
+            } catch (FeedException e) {
                 e.printStackTrace();
             } finally {
                 if (stream != null) {
@@ -122,7 +120,7 @@ public class UserFeeds {
         return conn.getInputStream();
     }
 
-    public static void addFeed(String url, GenerateFeedCallback c){
+    public static void addFeed(String url, GenerateFeedCallback c) {
 
     }
 
@@ -130,10 +128,10 @@ public class UserFeeds {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                for(int i = 0; i < subs.size(); i++){
+                for (int i = 0; i < subs.size(); i++) {
                     subs.get(i).order = i;
                 }
-                for(Feed f : subs ){
+                for (Feed f : subs) {
                     realm.insertOrUpdate(f);
                 }
             }

@@ -37,6 +37,11 @@
             app:showAsAction="never"/>
 
     <item
+        android:id="@+id/clear"
+        android:title="Clear cache"
+        app:showAsAction="never"/>
+
+    <item
             android:id="@+id/hide_posts"
             android:title="@string/hide_read_posts"
             app:showAsAction="never"/>

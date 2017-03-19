@@ -531,6 +531,15 @@ public class MainActivity extends BaseActivity {
             case R.id.hide_posts:
                 ((FeedFragment) adapter.getCurrentFragment()).clearSeenPosts(false);
                 return true;
+            case R.id.clear:
+                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        ((FeedFragment) adapter.getCurrentFragment()).dataSet.feed.articles.deleteAllFromRealm();
+                        ((FeedFragment) adapter.getCurrentFragment()).forceRefresh();
+                    }
+                });
+                return true;
             case R.id.share:
                 defaultShareText("Slide for Reddit",
                         "https://play.google.com/store/apps/details?id=me.ccrama.redditslide",

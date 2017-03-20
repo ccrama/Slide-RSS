@@ -186,10 +186,37 @@ public class PopulateArticleViewHolder {
         holder.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo star
+                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        article.starred = !article.starred;
+                        if (article.starred) {
+                            ((ImageView) holder.save).setColorFilter(
+                                    ContextCompat.getColor(context, R.color.md_amber_500),
+                                    PorterDuff.Mode.SRC_ATOP);
+                        } else {
+                            ((ImageView) holder.save).setColorFilter(
+                                    (((holder.itemView.getTag(holder.itemView.getId())) != null
+                                            && holder.itemView.getTag(holder.itemView.getId()).equals("none")
+                                    )) ? getCurrentTintColor(context) : getWhiteTintColor(),
+                                    PorterDuff.Mode.SRC_ATOP);
+                        }
+                    }
+                });
             }
         });
 
+        if (article.starred) {
+            ((ImageView) holder.save).setColorFilter(
+                    ContextCompat.getColor(context, R.color.md_amber_500),
+                    PorterDuff.Mode.SRC_ATOP);
+        } else {
+            ((ImageView) holder.save).setColorFilter(
+                    (((holder.itemView.getTag(holder.itemView.getId())) != null
+                            && holder.itemView.getTag(holder.itemView.getId()).equals("none")
+                    )) ? getCurrentTintColor(context) : getWhiteTintColor(),
+                    PorterDuff.Mode.SRC_ATOP);
+        }
         ImageView thumbImage2 = ((ImageView) holder.thumbimage);
 
         if (holder.leadImage.thumbImage2 == null) {

@@ -34,7 +34,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
     private final RecyclerView listView;
     public final Feed feed;
     public Activity context;
-    private FeedFragment parent;
+    public FeedFragment parent;
     public FeedLoader dataSet;
     private final int NO_MORE = 3;
     private final int SPACER = 6;
@@ -137,7 +137,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                }
 
             );
-            new PopulateArticleViewHolder().populateArticleViewHolder(holder, obj, context, feed, listView);
+            new PopulateArticleViewHolder().populateArticleViewHolder(holder, obj, context, this, listView);
         }
         if (holder2 instanceof SubmissionFooterViewHolder) {
             Handler handler = new Handler();

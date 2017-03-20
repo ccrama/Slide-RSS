@@ -74,14 +74,12 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rometools.rome.feed.synd.SyndEntry;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -1584,8 +1582,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void newArticles(int counter) {
-        if(counter > 0)
-        Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
+        if (counter > 0)
+            Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
     }
 
     public class OverviewPagerAdapter extends FragmentStatePagerAdapter {

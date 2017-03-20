@@ -23,6 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import me.ccrama.rssslide.Util.Constants;
 import me.ccrama.rssslide.Activities.FeedViewSingle;
 import me.ccrama.rssslide.Activities.MainActivity;
@@ -35,15 +37,22 @@ import me.ccrama.rssslide.SettingValues;
  * Created by ccrama on 8/17/2015.
  */
 public class SideArrayAdapter extends ArrayAdapter<Feed> {
-    private final List<Feed> objects;
+    private List<Feed> objects;
     private Filter filter;
     public ArrayList<Feed> fitems;
     public ListView parentL;
     public boolean openInSubView = true;
 
-    public SideArrayAdapter(Context context, ArrayList<Feed> objects, ListView view) {
+    public SideArrayAdapter(Context context, final ArrayList<Feed> objects, ListView view) {
         super(context, 0, objects);
         this.objects = objects;
+        new RealmChangeListener<Feed>() {
+            @Override
+            public void onChange(Feed element) {
+                SideArrayAdapter.this.objects = new ArrayList<>(Realm.getDefaultInstance().where(Feed.class).findAllSorted("order"));
+                SideArrayAdapter.this.fitems = new ArrayList<>(objects);
+            }
+        };
         filter = new SubFilter();
         fitems = new ArrayList<>(objects);
         parentL = view;

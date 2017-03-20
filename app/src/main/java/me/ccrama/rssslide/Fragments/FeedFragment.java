@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import me.ccrama.rssslide.Activities.BaseActivity;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.ColorPreferences;
@@ -226,7 +227,7 @@ public class FeedFragment extends Fragment {
     }
 
     public FeedLoader dataSet;
-    List<Article> unread;
+    public List<String> unread;
 
     public void doAdapter() {
         LogUtil.v("Doing adapter");
@@ -235,7 +236,22 @@ public class FeedFragment extends Fragment {
         dataSet = new FeedLoader(id);
         adapter = new FeedAdapter(getActivity(), this, dataSet, rv, id);
         adapter.setHasStableIds(true);
-        unread = new ArrayList<>(dataSet.feed.unseen);
+        unread = new ArrayList<>();
+        for(Article a : dataSet.feed.unseen){
+            unread.add(a.getTitle());
+        }
+        new RealmChangeListener<Feed>() {
+            @Override
+            public void onChange(Feed element) {
+                if(element.name.equals(adapter.feed.name)){
+                    unread = new ArrayList<>();
+                    for(Article a : element.unseen){
+                        unread.add(a.getTitle());
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        };
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

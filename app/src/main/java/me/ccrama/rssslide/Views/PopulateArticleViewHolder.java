@@ -28,6 +28,7 @@ import java.net.URISyntaxException;
 import io.realm.Realm;
 import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.Adapters.ArticleViewHolder;
+import me.ccrama.rssslide.Adapters.FeedAdapter;
 import me.ccrama.rssslide.FontPreferences;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
@@ -61,7 +62,7 @@ public class PopulateArticleViewHolder {
     }
 
     public void showBottomSheet(final Activity mContext,
-                                final Article a, final ArticleViewHolder holder, final Feed posts,
+                                final Article a, final ArticleViewHolder holder, final FeedAdapter posts,
                                 final RecyclerView recyclerview) {
 
         int[] attrs = new int[]{R.attr.tint};
@@ -127,9 +128,9 @@ public class PopulateArticleViewHolder {
                             @Override
                             public void execute(Realm realm) {
                                 a.hidden = !a.isHidden();
-                                final int index = posts.articles.indexOf(a);
+                                final int index = posts.feed.articles.indexOf(a);
                                 if (a.hidden) {
-                                    posts.articles.remove(a);
+                                    posts.feed.articles.remove(a);
                                 }
                                 Snackbar s = Snackbar.make(recyclerview, "Post hidden", Snackbar.LENGTH_SHORT);
                                 s.setAction("Undo", new View.OnClickListener() {
@@ -138,7 +139,7 @@ public class PopulateArticleViewHolder {
                                         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                             @Override
                                             public void execute(Realm realm) {
-                                                posts.articles.add(index, a);
+                                                posts.feed.articles.add(index, a);
                                                 a.hidden = false;
                                             }
                                         });
@@ -159,7 +160,7 @@ public class PopulateArticleViewHolder {
 
     }
 
-    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final Feed feed, final RecyclerView list) {
+    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final FeedAdapter adapter, final RecyclerView list) {
 
         holder.title.setText(article.getTitle()); // title is a spoiler roboto textview so it will format the html
 
@@ -167,13 +168,13 @@ public class PopulateArticleViewHolder {
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottomSheet(context, article, holder, feed, list);
+                showBottomSheet(context, article, holder, adapter, list);
             }
         });
 
-        holder.feed.setText(feed.name);
+        holder.feed.setText(adapter.feed.name);
         MainActivity.getImageLoader(context)
-                .displayImage(feed.icon, holder.icon);
+                .displayImage(adapter.feed.icon, holder.icon);
 
 
         final ImageView hideButton = (ImageView) holder.hide;
@@ -264,7 +265,12 @@ public class PopulateArticleViewHolder {
 
         });
 
-        holder.info.setText(getInfoSpannable(article, feed.name, context));
+        if(adapter.parent.unread.contains(article.getTitle())){
+            holder.title.setTextColor(Palette.getColor(adapter.feed.name));
+        } else {
+            holder.title.setTextColor(holder.info.getCurrentTextColor());
+        }
+        holder.info.setText(getInfoSpannable(article, adapter.feed.name, context));
 
         holder.body.setVisibility(View.VISIBLE);
         String text = article.summary;
@@ -276,6 +282,10 @@ public class PopulateArticleViewHolder {
             typeface = Typeface.DEFAULT;
         }
         holder.body.setTypeface(typeface);
+
+        if(article.seen){
+
+        }
 
         if (text != null && !text.isEmpty()) {
             holder.body.setTextHtml(Html.fromHtml(

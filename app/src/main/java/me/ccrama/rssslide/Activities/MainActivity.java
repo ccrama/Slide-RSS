@@ -1584,6 +1584,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void newArticles(int counter) {
+        if(counter > 0)
         Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
     }
 

@@ -16,6 +16,7 @@
 
 package me.ccrama.rssslide.DragSort;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -46,6 +47,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +61,7 @@ import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Activities.SettingsTheme;
 import me.ccrama.rssslide.UserFeeds;
+import me.ccrama.rssslide.Util.LogUtil;
 
 public class ReorderSubreddits extends BaseActivityAnim {
 
@@ -491,9 +494,14 @@ public class ReorderSubreddits extends BaseActivityAnim {
 
     }
 
-    private class ParseFeedTask extends AsyncTask<String, Void, Feed> {
+    public class ParseFeedTask extends AsyncTask<String, Void, Feed> {
 
         String url;
+
+        @Override
+        public void onPreExecute(){
+            super.onPreExecute();
+        }
 
         @Override
         protected Feed doInBackground(String... input) {
@@ -523,14 +531,14 @@ public class ReorderSubreddits extends BaseActivityAnim {
         }
     }
 
-    private class SearchSiteTask extends AsyncTask<String, Void, String> {
+    public class SearchSiteTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
             String urlBase = strings[0];
             Document doc = null;
             try {
-                String url = new URL(urlBase).toString();
+                String url = urlBase.startsWith("http")? urlBase : "http://" + urlBase;
                 doc = Jsoup.connect(url).get();
                 Elements links = doc.select("link[type=application/rss+xml]");
 

@@ -75,7 +75,14 @@
             android:alwaysRetainTaskState="true"
             android:theme="@style/swipeableweb"/>
         <receiver android:name=".CheckForPosts.CheckForPosts"></receiver>
-
+        <activity android:name=".Activities.AddFeedFromURL">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

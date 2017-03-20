@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +12,8 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.util.ArrayList;
 
+import me.ccrama.rssslide.Activities.MainActivity;
+import me.ccrama.rssslide.Util.LogUtil;
 import uz.shift.colorpicker.LineColorPicker;
 import uz.shift.colorpicker.OnColorChangedListener;
 

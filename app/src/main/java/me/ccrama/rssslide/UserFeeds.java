@@ -15,6 +15,10 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import me.ccrama.rssslide.Activities.MainActivity;
+import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Util.GenerateFeedCallback;
+import me.ccrama.rssslide.Util.LogUtil;
 
 /**
  * Created by Carlos on 3/16/2017.

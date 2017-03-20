@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import me.ccrama.rssslide.MainActivity;
+import me.ccrama.rssslide.Activities.MainActivity;
 
 /**
  * Created by carlo_000 on 10/13/2015.

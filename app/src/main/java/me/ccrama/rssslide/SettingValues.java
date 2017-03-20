@@ -4,6 +4,9 @@ import android.content.SharedPreferences;
 
 import java.util.Calendar;
 
+import me.ccrama.rssslide.Util.Constants;
+import me.ccrama.rssslide.Views.CreateCardView;
+
 /**
  * Created by ccrama on 9/19/2015.
  */

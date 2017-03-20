@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import me.ccrama.rssslide.Util.LogUtil;
+
 /**
  * Created by carlo_000 on 10/12/2015.
  */

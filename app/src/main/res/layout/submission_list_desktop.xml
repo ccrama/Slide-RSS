@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground">
 
-        <me.ccrama.rssslide.HeaderImageLinkView
+        <me.ccrama.rssslide.Views.HeaderImageLinkView
             android:id="@+id/headerimage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:layout_alignParentRight="true"
             android:paddingTop="6dp">
 
-            <me.ccrama.rssslide.RoundImageTriangleView
+            <me.ccrama.rssslide.Views.RoundImageTriangleView
                 android:id="@+id/thumbimage2"
                 android:layout_width="64dp"
                 android:layout_height="48dp"
@@ -63,7 +63,7 @@
                 android:paddingBottom="4dp"
                 android:layout_toRightOf="@+id/thumbimage2">
 
-                <me.ccrama.rssslide.TitleTextView
+                <me.ccrama.rssslide.Views.TitleTextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                     android:text="@string/example_time"
                     android:textSize="?attr/font_cardinfo" />
 
-                <me.ccrama.rssslide.SpoilerRobotoTextView
+                <me.ccrama.rssslide.Views.SpoilerRobotoTextView
                     android:id="@+id/body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

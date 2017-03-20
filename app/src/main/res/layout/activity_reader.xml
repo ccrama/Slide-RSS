@@ -9,7 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    <me.ccrama.rssslide.SpoilerRobotoTextView
+    <me.ccrama.rssslide.Views.SpoilerRobotoTextView
             android:id="@+id/body"
             android:layout_width="match_parent"
             android:paddingTop="16dp"

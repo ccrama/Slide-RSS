@@ -73,6 +73,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:alwaysRetainTaskState="true"
             android:theme="@style/swipeableweb"/>
+        <receiver android:name=".CheckForPosts.CheckForPosts"></receiver>
+
     </application>
 
 </manifest>

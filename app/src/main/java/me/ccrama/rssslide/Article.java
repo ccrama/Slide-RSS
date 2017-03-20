@@ -3,6 +3,7 @@ package me.ccrama.rssslide;
 import android.text.Html;
 import android.util.Log;
 
+import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEnclosure;
 import com.rometools.rome.feed.synd.SyndEntry;
 
@@ -138,11 +139,26 @@ public class Article extends RealmObject {
             Pattern p = Pattern.compile(imgRegex);
             Matcher m = p.matcher(article.getDescription().getValue());
 
-            LogUtil.v(article.getDescription().getValue());
             if (m.find()) {
                 imgURL = m.group(1);
             }
 
+        }
+        if(imgURL == null && article.getContents() != null){
+            for(SyndContent c : article.getContents()){
+                //Regex for possible images
+                String imgRegex = "<[iI][mM][gG][^>]+[sS][rR][cC]\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
+
+                Pattern p = Pattern.compile(imgRegex);
+                Matcher m = p.matcher(c.getValue());
+
+                if (m.find()) {
+                    imgURL = m.group(1);
+                }
+                if(this.summary == null || this.summary.trim().isEmpty()){
+                    this.summary = c.getValue();
+                }
+            }
         }
         this.image = imgURL;
     }

@@ -73,7 +73,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
             final String base = fitems.get(position).name;
             sub = fitems.get(position).name;
             final TextView t = ((TextView) convertView.findViewById(R.id.name));
-            t.setText(sub);
+            t.setText(fitems.get(position).getName());
 
             if (height == 0) {
                 final View finalConvertView = convertView;

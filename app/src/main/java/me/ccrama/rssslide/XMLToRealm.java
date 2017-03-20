@@ -15,7 +15,36 @@ import io.realm.Realm;
  */
 
 public class XMLToRealm {
-    public static void convert(final Feed feed, final List<SyndEntry> items, final ConversionCallback c, Activity baseActivity) {
+    public static void convert(final String feed, final List<SyndEntry> items, final ConversionCallback c) {
+        Realm.getInstance(MainActivity.config).executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Feed f = realm.where(Feed.class).equalTo("name", feed).findFirst();
+                ArrayList<Article> toAdd = new ArrayList<>();
+                for (SyndEntry i : items) {
+                    Article a = new Article();
+                    a.setAll(i);
+                    boolean exists = false;
+                    for (Article a2 : f.articles) {
+                        if (a2.getId().equals(a.getId())) {
+                            exists = true;
+                        }
+                    }
+                    if (!exists) {
+                        realm.copyToRealmOrUpdate(a);
+                        toAdd.add(a);
+                    }
+                }
+                Collections.reverse(toAdd);
+                for (Article a : toAdd) {
+                    f.articles.add(0, a);
+                }
+                c.onCompletion(toAdd.size());
+            }
+        });
+    }
+
+    public static void convertSync(final Feed feed, final List<SyndEntry> items, final ConversionCallback c, Activity baseActivity) {
         baseActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

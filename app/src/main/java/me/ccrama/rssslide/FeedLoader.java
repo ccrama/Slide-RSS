@@ -76,7 +76,7 @@ public class FeedLoader implements ConversionCallback {
         SyndFeed f = null;
         try {
             f = new SyndFeedInput().build(new XmlReader(new URL(urlString)));
-            XMLToRealm.convert(feed, f.getEntries(), this, context);
+            XMLToRealm.convertSync(feed, f.getEntries(), this, context);
         } catch (FeedException e) {
             e.printStackTrace();
         }

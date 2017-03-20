@@ -88,6 +88,8 @@ import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import me.ccrama.rssslide.CheckForPosts.NotificationJobScheduler;
 import me.ccrama.rssslide.DragSort.ReorderSubreddits;
 
 public class MainActivity extends BaseActivity {
@@ -99,6 +101,7 @@ public class MainActivity extends BaseActivity {
     public static int restartPage;
     public final long ANIMATE_DURATION = 250; //duration of animations
     private final long ANIMATE_DURATION_OFFSET = 45; //offset for smoothing out the exit animations
+    public static int                      notificationTime;
     public boolean singleMode;
     public ToggleSwipeViewPager pager;
     public ArrayList<Feed> usedArray;
@@ -743,6 +746,8 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
+    public static RealmConfiguration config= new RealmConfiguration.Builder().name("posts").deleteRealmIfMigrationNeeded().build();
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         inNightMode = SettingValues.isNight();
@@ -752,8 +757,9 @@ public class MainActivity extends BaseActivity {
             finish();
             return;
         }
-
         Realm.init(this);
+
+        Realm.setDefaultConfiguration(config);
         int widthDp = this.getResources().getConfiguration().screenWidthDp;
         int heightDp = this.getResources().getConfiguration().screenHeightDp;
 
@@ -766,6 +772,13 @@ public class MainActivity extends BaseActivity {
         } else {
             dpWidth = fina / 300;
         }
+
+        if (colors.contains("notificationOverride")) {
+            notificationTime = colors.getInt("notificationOverride", 360);
+        } else {
+            notificationTime = 30;
+        }
+
         SettingValues.setAllValues(colors);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -857,7 +870,14 @@ public class MainActivity extends BaseActivity {
          * 0 = Dark, 1 = Light, 2 = AMOLED, 3 = Dark blue, 4 = AMOLED with contrast, 5 = Sepia
          */
         SettingValues.currentTheme = new ColorPreferences(this).getFontStyle().getThemeType();
+
+        if (notificationTime != -1) {
+            notifications = new NotificationJobScheduler(MainActivity.this);
+            notifications.start(getApplicationContext());
+        }
     }
+
+    NotificationJobScheduler notifications;
 
     @Override
     public void onResume() {

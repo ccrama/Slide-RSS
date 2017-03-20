@@ -26,6 +26,9 @@ import android.widget.TextView;
 import com.mikepenz.itemanimators.AlphaInAnimator;
 import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
 
 public class FeedFragment extends Fragment {
@@ -208,21 +211,33 @@ public class FeedFragment extends Fragment {
     }
 
     FeedLoader dataSet;
+    List<Article> unread;
 
     public void doAdapter() {
         LogUtil.v("Doing adapter");
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
+
 
         dataSet = new FeedLoader(id);
         adapter = new FeedAdapter(getActivity(), this, dataSet, rv, id);
         adapter.setHasStableIds(true);
+        unread = new ArrayList<>(dataSet.feed.unseen);
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                dataSet.feed.setSeen();
+                realm.insertOrUpdate(dataSet.feed);
+            }
+        });
         rv.setAdapter(adapter);
-        dataSet.loadMore(getActivity(), id, adapter);
+       if(dataSet.feed.articles.isEmpty()) {
+           dataSet.loadMore(getActivity(), id, adapter);
+           mSwipeRefreshLayout.post(new Runnable() {
+               @Override
+               public void run() {
+                   mSwipeRefreshLayout.setRefreshing(true);
+               }
+           });
+       }
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

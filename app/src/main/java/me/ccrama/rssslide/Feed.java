@@ -16,9 +16,19 @@ public class Feed extends RealmObject {
     public String url;
 
     RealmList<Article> articles;
+    public RealmList<Article> unseen;
     public int order;
 
     public void addArticle(Article a) {
         articles.add(a);
+        unseen.add(a);
+    }
+
+    public void setSeen(){
+        unseen.clear();
+    }
+
+    public String getName(){
+        return name + (unseen.isEmpty()? "" : " [" + unseen.size() + "]");
     }
 }

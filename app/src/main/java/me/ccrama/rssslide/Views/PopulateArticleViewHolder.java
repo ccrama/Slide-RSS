@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
@@ -126,9 +127,24 @@ public class PopulateArticleViewHolder {
                             @Override
                             public void execute(Realm realm) {
                                 a.hidden = !a.isHidden();
+                                final int index = posts.articles.indexOf(a);
                                 if (a.hidden) {
                                     posts.articles.remove(a);
                                 }
+                                Snackbar s = Snackbar.make(recyclerview, "Post hidden", Snackbar.LENGTH_SHORT);
+                                s.setAction("Undo", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                posts.articles.add(index, a);
+                                                a.hidden = false;
+                                            }
+                                        });
+                                    }
+                                });
+                                s.show();
                             }
                         });
                         break;

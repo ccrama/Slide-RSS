@@ -20,8 +20,8 @@ public class Feed extends RealmObject {
     public int order;
 
     public void addArticle(Article a) {
-        articles.add(a);
-        unseen.add(a);
+        articles.add(0,a);
+        unseen.add(0,a);
     }
 
     public void setSeen(){

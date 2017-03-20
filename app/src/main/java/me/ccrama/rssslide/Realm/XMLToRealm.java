@@ -39,7 +39,7 @@ public class XMLToRealm {
                 }
                 Collections.reverse(toAdd);
                 for (Article a : toAdd) {
-                    f.articles.add(0, a);
+                    f.addArticle(a);
                 }
                 c.onCompletion(toAdd.size());
             }
@@ -57,12 +57,7 @@ public class XMLToRealm {
                         for (SyndEntry i : items) {
                             Article a = new Article();
                             a.setAll(i);
-                            boolean exists = false;
-                            for (Article a2 : feed.articles) {
-                                if (a2.getId().equals(a.getId())) {
-                                    exists = true;
-                                }
-                            }
+                            boolean exists = realm.where(Article.class).equalTo("id", a.getId()).findFirst() != null;
                             if (!exists) {
                                 realm.copyToRealmOrUpdate(a);
                                 toAdd.add(a);

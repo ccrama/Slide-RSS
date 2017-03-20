@@ -36,7 +36,6 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
     public Activity context;
     private FeedFragment parent;
     public FeedLoader dataSet;
-    private final int LOADING_SPINNER = 5;
     private final int NO_MORE = 3;
     private final int SPACER = 6;
     private ArrayList<String> seen;
@@ -63,7 +62,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                 && !dataSet.feed.articles.isEmpty()
                 && !dataSet.offline
                 && !dataSet.nomore) {
-            return LOADING_SPINNER;
+            return NO_MORE;
         } else if (position == dataSet.feed.articles.size() && (dataSet.offline || dataSet.nomore)) {
             return NO_MORE;
         }
@@ -82,11 +81,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                     .inflate(R.layout.spacer, viewGroup, false);
             return new SpacerViewHolder(v);
 
-        } else if (i == LOADING_SPINNER) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.loadingmore, viewGroup, false);
-            return new SubmissionFooterViewHolder(v);
-        } else if (i == NO_MORE) {
+        }  else if (i == NO_MORE) {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.nomoreposts, viewGroup, false);
             return new SubmissionFooterViewHolder(v);
@@ -110,33 +105,6 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
         }, 500);
         parent.mSwipeRefreshLayout.setRefreshing(false);
 
-    }
-
-    public void refreshView(boolean ignore18) {
-        final RecyclerView.ItemAnimator a = listView.getItemAnimator();
-        listView.setItemAnimator(null);
-        notifyItemChanged(clicked);
-        listView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                listView.setItemAnimator(a);
-            }
-        }, 500);
-    }
-
-    public void refreshView(ArrayList<Integer> seen) {
-        listView.setItemAnimator(null);
-        final RecyclerView.ItemAnimator a = listView.getItemAnimator();
-
-        for (int i : seen) {
-            notifyItemChanged(i + 1);
-        }
-        listView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                listView.setItemAnimator(a);
-            }
-        }, 500);
     }
 
     @Override

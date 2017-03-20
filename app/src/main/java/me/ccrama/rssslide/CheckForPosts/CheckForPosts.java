@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.NotificationCompat;
 
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -72,15 +73,18 @@ public class CheckForPosts extends BroadcastReceiver {
         public AsyncGetFeeds(Context context) {
             this.c = context;
         }
+        int amount;
 
         @Override
         public void onPostExecute(Boolean success) {
             if (success) {
+                amount = 0;
                 for (final String f : loaded.keySet()) {
                     XMLToRealm.convert(f, loaded.get(f), new ConversionCallback() {
                         @Override
                         public void onCompletion(int size) {
                             if (size > 0) {
+                                amount += size;
                                 NotificationManager notificationManager =
                                         (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
                                 NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
@@ -118,7 +122,12 @@ public class CheckForPosts extends BroadcastReceiver {
                         }
                     });
                 }
-                if (MainActivity.notificationTime != -1) new NotificationJobScheduler(c).start(c);
+                if(c instanceof MainActivity){
+                    ((MainActivity)c).newArticles(amount);
+                } else {
+                    if (MainActivity.notificationTime != -1)
+                        new NotificationJobScheduler(c).start(c);
+                }
             }
         }
 

@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -73,44 +74,45 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.rometools.rome.feed.synd.SyndEntry;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.Adapters.SideArrayAdapter;
-import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.rssslide.CheckForPosts.CheckForPosts;
 import me.ccrama.rssslide.CheckForPosts.NotificationJobScheduler;
 import me.ccrama.rssslide.ColorPreferences;
-import me.ccrama.rssslide.Util.Constants;
 import me.ccrama.rssslide.DragSort.ReorderSubreddits;
 import me.ccrama.rssslide.Fragments.FeedFragment;
-import me.ccrama.rssslide.Util.ImageLoaderUtils;
-import me.ccrama.rssslide.Util.LinkUtil;
-import me.ccrama.rssslide.Util.LogUtil;
-import me.ccrama.rssslide.Util.OnSingleClickListener;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.PreCachingLayoutManager;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
-import me.ccrama.rssslide.Views.ToggleSwipeViewPager;
 import me.ccrama.rssslide.UserFeeds;
+import me.ccrama.rssslide.Util.Constants;
+import me.ccrama.rssslide.Util.ImageLoaderUtils;
+import me.ccrama.rssslide.Util.LinkUtil;
+import me.ccrama.rssslide.Util.LogUtil;
+import me.ccrama.rssslide.Util.OnSingleClickListener;
+import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.rssslide.Views.ToggleSwipeViewPager;
 
 public class MainActivity extends BaseActivity {
-    public static final String IS_ONLINE = "online";
     // Instance state keys
     static final int SETTINGS_RESULT = 2;
     public static final String EXTRA_PAGE_TO = "pageTo";
     public static Feed shouldLoad;
     public static int restartPage;
-    public final long ANIMATE_DURATION = 250; //duration of animations
     private final long ANIMATE_DURATION_OFFSET = 45; //offset for smoothing out the exit animations
-    public static int                      notificationTime;
+    public static int notificationTime;
     public boolean singleMode;
     public ToggleSwipeViewPager pager;
     public ArrayList<Feed> usedArray;
@@ -877,6 +879,7 @@ public class MainActivity extends BaseActivity {
          */
         SettingValues.currentTheme = new ColorPreferences(this).getFontStyle().getThemeType();
 
+        new CheckForPosts.AsyncGetFeeds(this).execute();
         if (notificationTime != -1) {
             notifications = new NotificationJobScheduler(MainActivity.this);
             notifications.start(getApplicationContext());
@@ -1578,6 +1581,10 @@ public class MainActivity extends BaseActivity {
             }
         }
         return 0;
+    }
+
+    public void newArticles(int counter) {
+        Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
     }
 
     public class OverviewPagerAdapter extends FragmentStatePagerAdapter {

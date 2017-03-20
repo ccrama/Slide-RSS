@@ -46,6 +46,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -526,9 +527,10 @@ public class ReorderSubreddits extends BaseActivityAnim {
 
         @Override
         protected String doInBackground(String... strings) {
-            String url = strings[0];
+            String urlBase = strings[0];
             Document doc = null;
             try {
+                String url = new URL(urlBase).toString();
                 doc = Jsoup.connect(url).get();
                 Elements links = doc.select("link[type=application/rss+xml]");
 

@@ -110,7 +110,11 @@ public class CheckForPosts extends BroadcastReceiver {
         protected Boolean doInBackground(Void... params) {
             try {
                 loaded = new HashMap<>();
-
+                if(MainActivity.config == null){
+                    Realm.init(c);
+                    MainActivity.config = new RealmConfiguration.Builder().name("posts").deleteRealmIfMigrationNeeded().build();
+                    Realm.setDefaultConfiguration(MainActivity.config);
+                }
                 Realm r = Realm.getInstance(MainActivity.config);
                 r.executeTransaction(new Realm.Transaction() {
                     @Override

@@ -28,6 +28,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -101,6 +102,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                         }
                                     }
                                 })
+                        .inputType(InputType.TYPE_TEXT_VARIATION_URI)
                         .positiveText("Add feed")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override

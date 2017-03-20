@@ -746,7 +746,7 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
-    public static RealmConfiguration config= new RealmConfiguration.Builder().name("posts").deleteRealmIfMigrationNeeded().build();
+    public static RealmConfiguration config;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -759,6 +759,7 @@ public class MainActivity extends BaseActivity {
         }
         Realm.init(this);
 
+        config = new RealmConfiguration.Builder().name("posts").deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(config);
         int widthDp = this.getResources().getConfiguration().screenWidthDp;
         int heightDp = this.getResources().getConfiguration().screenHeightDp;

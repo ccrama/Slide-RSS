@@ -19,11 +19,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.ccrama.rssslide.Util.ConversionCallback;
-import me.ccrama.rssslide.Util.LogUtil;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.Realm.XMLToRealm;
+import me.ccrama.rssslide.Util.ConversionCallback;
+import me.ccrama.rssslide.Util.LogUtil;
 
 /**
  * Created by Carlos on 3/17/2017.
@@ -50,6 +50,7 @@ public class FeedLoader implements ConversionCallback {
 
     @Override
     public void onCompletion(int count) {
+        adapter.parent.unread.clear();
         Toast.makeText(context, count + " articles loaded", Toast.LENGTH_SHORT).show();
     }
 

@@ -133,6 +133,9 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                                parent.adapter.notifyDataSetChanged();
                                                            }
                                                        });
+                                                       if(parent.unread.contains(obj.getTitle())){
+                                                           parent.unread.remove(obj.getTitle());
+                                                       }
                                                    }
                                                }
 

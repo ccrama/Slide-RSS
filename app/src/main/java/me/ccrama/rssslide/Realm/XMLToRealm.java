@@ -24,15 +24,9 @@ public class XMLToRealm {
                 Feed f = realm.where(Feed.class).equalTo("name", feed).findFirst();
                 ArrayList<Article> toAdd = new ArrayList<>();
                 for (SyndEntry i : items) {
-                    Article a = new Article();
-                    a.setAll(i);
-                    boolean exists = false;
-                    for (Article a2 : f.articles) {
-                        if (a2.getId().equals(a.getId())) {
-                            exists = true;
-                        }
-                    }
-                    if (!exists) {
+                    if (realm.where(Article.class).equalTo("title", i.getTitle()).findFirst() == null) {
+                        Article a = new Article();
+                        a.setAll(i);
                         realm.copyToRealmOrUpdate(a);
                         toAdd.add(a);
                     }

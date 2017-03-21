@@ -143,6 +143,14 @@ public class Settings extends BaseActivity {
             }
         });
 
+        findViewById(R.id.handling).setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                Intent i = new Intent(Settings.this, SettingsHandling.class);
+                startActivityForResult(i, RESTART_SETTINGS_RESULT);
+            }
+        });
+
         findViewById(R.id.offline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

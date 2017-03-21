@@ -6,6 +6,7 @@ package me.ccrama.rssslide.Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
+import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.Activities.ReaderMode;
+import me.ccrama.rssslide.Activities.ShouldOpenExternally;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.Views.CreateCardView;
@@ -124,26 +127,31 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                    @Override
                                                    public void onSingleClick(View v) {
 
-                                                       if(SettingValues.readabilityDefault){
-                                                           Intent i = new Intent(context, ReaderMode.class);
-                                                           i.putExtra("url", obj.getLink());
-                                                           context.startActivity(i);
+                                                       if(ShouldOpenExternally.openExternal(obj.getLink())){
+                                                           Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(obj.getLink()));
+                                                           context.startActivity(browserIntent);
                                                        } else {
-                                                           Intent i = new Intent(context, Website.class);
-                                                           i.putExtra(Website.EXTRA_URL, obj.getLink());
-                                                           i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
-                                                           context.startActivity(i);
-                                                       }
-                                                       Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                                                           @Override
-                                                           public void execute(Realm realm) {
-                                                               obj.setSeen();
-                                                               realm.copyToRealmOrUpdate(obj);
-                                                               parent.adapter.notifyDataSetChanged();
+                                                           if (SettingValues.readabilityDefault) {
+                                                               Intent i = new Intent(context, ReaderMode.class);
+                                                               i.putExtra("url", obj.getLink());
+                                                               context.startActivity(i);
+                                                           } else {
+                                                               Intent i = new Intent(context, Website.class);
+                                                               i.putExtra(Website.EXTRA_URL, obj.getLink());
+                                                               i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
+                                                               context.startActivity(i);
                                                            }
-                                                       });
-                                                       if(parent.unread.contains(obj.getTitle())){
-                                                           parent.unread.remove(obj.getTitle());
+                                                           Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                                                               @Override
+                                                               public void execute(Realm realm) {
+                                                                   obj.setSeen();
+                                                                   realm.copyToRealmOrUpdate(obj);
+                                                                   parent.adapter.notifyDataSetChanged();
+                                                               }
+                                                           });
+                                                           if (parent.unread.contains(obj.getTitle())) {
+                                                               parent.unread.remove(obj.getTitle());
+                                                           }
                                                        }
                                                    }
                                                }

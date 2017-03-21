@@ -40,6 +40,25 @@ public class XMLToRealm {
         });
     }
 
+    public static void convertInTransaction(final Realm realm, final Feed feed, final List<SyndEntry> items, final ConversionCallback c) {
+
+        ArrayList<Article> toAdd = new ArrayList<>();
+        for (SyndEntry i : items) {
+            if (realm.where(Article.class).equalTo("title", i.getTitle()).findFirst() == null) {
+                Article a = new Article();
+                a.setAll(i);
+                realm.copyToRealmOrUpdate(a);
+                toAdd.add(a);
+            }
+        }
+        Collections.reverse(toAdd);
+        for (Article a : toAdd) {
+            feed.addArticle(a);
+        }
+        c.onCompletion(toAdd.size());
+    }
+
+
     public static void convertSync(final Feed feed, final List<SyndEntry> items, final ConversionCallback c, Activity baseActivity) {
         baseActivity.runOnUiThread(new Runnable() {
             @Override

@@ -133,7 +133,6 @@ public class Website extends BaseActivityAnim {
                 return true;
             case R.id.share:
                 MainActivity.defaultShareText(v.getTitle(), v.getUrl(), Website.this);
-
                 return true;
 
         }

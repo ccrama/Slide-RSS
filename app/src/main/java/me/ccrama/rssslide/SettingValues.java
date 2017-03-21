@@ -45,6 +45,7 @@ public class SettingValues {
     public static final String PREF_SAVE_BUTTON = "saveButton";
     public static final String PREF_IMAGE = "image";
     public static final String PREF_ALWAYS_EXTERNAL = "alwaysexternal";
+    public static final String PREF_READ_DEFAULT = "readabilitydefault";
 
     public static CreateCardView.CardEnum defaultCardView;
     public static boolean bigPicEnabled;
@@ -84,7 +85,7 @@ public class SettingValues {
 
     public static boolean fab = true;
     public static int fabType = Constants.FAB_POST;
-    public static boolean readabilityDefault = true;
+    public static boolean readabilityDefault;
     public static boolean hideButton;
     public static boolean tabletUI = true;
     public static boolean customtabs;
@@ -140,6 +141,7 @@ public class SettingValues {
         scrollSeen = prefs.getBoolean(PREF_SCROLL_SEEN, false);
         notifSound = prefs.getBoolean(PREF_SOUND_NOTIFS, false);
         cookies = prefs.getBoolean(PREF_COOKIES, true);
+        alwaysExternal = prefs.getString(SettingValues.PREF_ALWAYS_EXTERNAL, "");
 
         previews = prefs.getInt(PREVIEWS_LEFT, 10);
         nightStart = prefs.getInt(PREF_NIGHT_START, 9);
@@ -149,6 +151,7 @@ public class SettingValues {
         textFilters = prefs.getString(PREF_TEXT_FILTERS, "");
 
         dualPortrait = prefs.getBoolean(PREF_DUAL_PORTRAIT, false);
+        readabilityDefault = prefs.getBoolean(PREF_READ_DEFAULT, false);
 
         switchThumb = prefs.getBoolean(PREF_SWITCH_THUMB, true);
         bigThumbnails = prefs.getBoolean(PREF_BIG_THUMBS, false);

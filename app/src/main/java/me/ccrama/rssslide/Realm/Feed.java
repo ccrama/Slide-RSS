@@ -1,5 +1,7 @@
 package me.ccrama.rssslide.Realm;
 
+import java.util.ArrayList;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -11,24 +13,27 @@ import io.realm.annotations.PrimaryKey;
 public class Feed extends RealmObject {
     public String name;
     public String icon;
+    public long accessed;
 
     @PrimaryKey
     public String url;
 
     public RealmList<Article> articles;
-    public RealmList<Article> unseen;
     public int order;
 
     public void addArticle(Article a) {
-        articles.add(0,a);
-        unseen.add(0,a);
+        articles.add(0, a);
     }
 
-    public void setSeen(){
-        unseen.clear();
+    public void setSeen() {
+        accessed = System.currentTimeMillis();
     }
 
-    public String getName(){
-        return name + (unseen.isEmpty()? "" : " [" + unseen.size() + "]");
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<Article> getUnseen() {
+        return new ArrayList<>(articles.where().greaterThan("created", accessed).findAll());
     }
 }

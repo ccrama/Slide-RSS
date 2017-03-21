@@ -227,31 +227,14 @@ public class FeedFragment extends Fragment {
     }
 
     public FeedLoader dataSet;
-    public List<String> unread;
 
     public void doAdapter() {
         LogUtil.v("Doing adapter");
 
-
         dataSet = new FeedLoader(id);
-        adapter = new FeedAdapter(getActivity(), this, dataSet, rv, id);
+        adapter = new FeedAdapter(getActivity(), dataSet, rv, mSwipeRefreshLayout, id);
         adapter.setHasStableIds(true);
-        unread = new ArrayList<>();
-        for(Article a : dataSet.feed.unseen){
-            unread.add(a.getTitle());
-        }
-        new RealmChangeListener<Feed>() {
-            @Override
-            public void onChange(Feed element) {
-                if(element.name.equals(adapter.feed.name)){
-                    unread = new ArrayList<>();
-                    for(Article a : element.unseen){
-                        unread.add(a.getTitle());
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        };
+
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -261,7 +244,7 @@ public class FeedFragment extends Fragment {
         });
         rv.setAdapter(adapter);
        if(dataSet.feed.articles.isEmpty()) {
-           dataSet.loadMore(getActivity(), id, adapter);
+           dataSet.loadMore(getActivity(), adapter);
            mSwipeRefreshLayout.post(new Runnable() {
                @Override
                public void run() {
@@ -305,8 +288,8 @@ public class FeedFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (adapter != null && adapterPosition > 0 && currentPosition == adapterPosition) {
-            if (adapter.dataSet.feed.articles.size() >= adapterPosition - 1
-                    && adapter.dataSet.feed.articles.get(adapterPosition - 1) == currentArticle) {
+            if (id.articles.size() >= adapterPosition - 1
+                    && id.articles.get(adapterPosition - 1) == currentArticle) {
                 adapter.performClick(adapterPosition);
                 adapterPosition = -1;
             }
@@ -320,7 +303,7 @@ public class FeedFragment extends Fragment {
 
     private void refresh() {
         forced = true;
-        dataSet.loadMore(getActivity(), id, adapter);
+        dataSet.loadMore(getActivity(), adapter);
     }
 
     public void forceRefresh() {

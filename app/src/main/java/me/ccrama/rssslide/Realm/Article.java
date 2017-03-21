@@ -32,6 +32,7 @@ public class Article extends RealmObject {
     public String summary;
     public String image;
     private long published;
+    public long created;
     public boolean read;
     public boolean starred;
     public boolean seen;
@@ -90,8 +91,8 @@ public class Article extends RealmObject {
     }
 
     public void setAll(SyndEntry article) {
-        Log.v("Feed", "Converting " + article.getTitle());
         this.link = article.getLink();
+        this.created = System.currentTimeMillis();
         if (article.getUri() == null || article.getUri().isEmpty()) {
             this.id = article.getTitle().replace(" ", "");
         } else {

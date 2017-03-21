@@ -266,7 +266,7 @@ public class PopulateArticleViewHolder {
 
         });
 
-        if(adapter.parent.unread.contains(article.getTitle())){
+        if(adapter.feed.accessed < article.created){
             holder.title.setTextColor(Palette.getColor(adapter.feed.name));
         } else {
             holder.title.setTextColor(holder.info.getCurrentTextColor());

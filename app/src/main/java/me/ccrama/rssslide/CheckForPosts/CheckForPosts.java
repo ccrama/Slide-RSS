@@ -107,12 +107,14 @@ public class CheckForPosts extends BroadcastReceiver {
                                                     (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
                                             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
 
-                                            for (Article a : feed.unseen) {
+                                            int count = 0;
+                                            for (Article a : feed.getUnseen()) {
                                                 style.addLine(a.getTitle());
+                                                count ++;
                                             }
 
                                             style.setBigContentTitle("New " + feed.name + " articles")
-                                                    .setSummaryText("+" + feed.unseen.size() + " more");
+                                                    .setSummaryText("+" + count + " more");
 
                                             Intent openPIBase;
                                             openPIBase = new Intent(c, FeedViewSingle.class);

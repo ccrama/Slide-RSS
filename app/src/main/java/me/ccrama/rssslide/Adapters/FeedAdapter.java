@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,61 +16,56 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
-import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.Activities.ReaderMode;
 import me.ccrama.rssslide.Activities.ShouldOpenExternally;
-import me.ccrama.rssslide.SettingValues;
-import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.rssslide.Views.CreateCardView;
-import me.ccrama.rssslide.Fragments.FeedFragment;
-import me.ccrama.rssslide.Util.OnSingleClickListener;
+import me.ccrama.rssslide.Activities.Website;
 import me.ccrama.rssslide.Palette;
-import me.ccrama.rssslide.Views.PopulateArticleViewHolder;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
-import me.ccrama.rssslide.Activities.Website;
+import me.ccrama.rssslide.SettingValues;
+import me.ccrama.rssslide.Util.OnSingleClickListener;
+import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.rssslide.Views.CreateCardView;
+import me.ccrama.rssslide.Views.PopulateArticleViewHolder;
 
 
 public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.ViewHolder> {
 
     private final RecyclerView listView;
+    private final SwipeRefreshLayout refreshLayout;
     public final Feed feed;
     public Activity context;
-    public FeedFragment parent;
-    public FeedLoader dataSet;
+    public DataSet dataSet;
     private final int NO_MORE = 3;
     private final int SPACER = 6;
     private ArrayList<String> seen;
 
-    public FeedAdapter(Activity context, FeedFragment parent, FeedLoader dataSet, RecyclerView listView,
-                       Feed feed) {
+    public FeedAdapter(Activity context, FeedLoader dataSet, RecyclerView listView,
+                       SwipeRefreshLayout refreshLayout, Feed feed) {
         super(dataSet.feed.articles, true);
         this.feed = feed;
-        this.parent = parent;
         this.listView = listView;
         this.dataSet = dataSet;
         this.context = context;
+        this.refreshLayout = refreshLayout;
         this.seen = new ArrayList<>();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position <= 0 && !dataSet.feed.articles.isEmpty()) {
+        if (position <= 0 && !feed.articles.isEmpty()) {
             return SPACER;
-        } else if (!dataSet.feed.articles.isEmpty()) {
+        } else if (!feed.articles.isEmpty()) {
             position -= (1);
         }
-        if (position == dataSet.feed.articles.size()
-                && !dataSet.feed.articles.isEmpty()
-                && !dataSet.offline
-                && !dataSet.nomore) {
+        if (position == feed.articles.size()
+                && !feed.articles.isEmpty()) {
             return NO_MORE;
-        } else if (position == dataSet.feed.articles.size() && (dataSet.offline || dataSet.nomore)) {
+        } else if (position == feed.articles.size()) {
             return NO_MORE;
         }
         int SUBMISSION = 1;
@@ -87,7 +83,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                     .inflate(R.layout.spacer, viewGroup, false);
             return new SpacerViewHolder(v);
 
-        }  else if (i == NO_MORE) {
+        } else if (i == NO_MORE) {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.nomoreposts, viewGroup, false);
             return new SubmissionFooterViewHolder(v);
@@ -109,8 +105,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                 listView.setItemAnimator(a);
             }
         }, 500);
-        parent.mSwipeRefreshLayout.setRefreshing(false);
-
+        refreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -127,7 +122,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                    @Override
                                                    public void onSingleClick(View v) {
 
-                                                       if(ShouldOpenExternally.openExternal(obj.getLink())){
+                                                       if (ShouldOpenExternally.openExternal(obj.getLink())) {
                                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(obj.getLink()));
                                                            context.startActivity(browserIntent);
                                                        } else {
@@ -146,12 +141,9 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                                public void execute(Realm realm) {
                                                                    obj.setSeen();
                                                                    realm.copyToRealmOrUpdate(obj);
-                                                                   parent.adapter.notifyDataSetChanged();
+                                                                   notifyDataSetChanged();
                                                                }
                                                            });
-                                                           if (parent.unread.contains(obj.getTitle())) {
-                                                               parent.unread.remove(obj.getTitle());
-                                                           }
                                                        }
                                                    }
                                                }
@@ -164,7 +156,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
             final Runnable r = new Runnable() {
                 public void run() {
-                    notifyItemChanged(dataSet.feed.articles.size()
+                    notifyItemChanged(feed.articles.size()
                             + 1); // the loading spinner to replaced by nomoreposts.xml
                 }
             };
@@ -176,7 +168,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                         .setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dataSet.loadMore(context, feed, FeedAdapter.this);
+                                dataSet.loadMore(context, FeedAdapter.this);
                             }
                         });
 
@@ -231,7 +223,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
     @Override
     public int getItemCount() {
-        if (dataSet.feed.articles == null || dataSet.feed.articles.isEmpty()) {
+        if (feed.articles == null || feed.articles.isEmpty()) {
             return 0;
         } else {
             return super.getItemCount() + 2; // Always account for footer

@@ -29,7 +29,7 @@ import me.ccrama.rssslide.Util.LogUtil;
  * Created by Carlos on 3/17/2017.
  */
 
-public class FeedLoader implements ConversionCallback {
+public class FeedLoader implements ConversionCallback, DataSet {
     public boolean nomore;
     public boolean offline;
     public Feed feed;
@@ -41,7 +41,7 @@ public class FeedLoader implements ConversionCallback {
         feed = id;
     }
 
-    public void loadMore(Activity context, Feed feed, FeedAdapter adapter) {
+    public void loadMore(Activity context, FeedAdapter adapter) {
         this.context = context;
         this.adapter = adapter;
         LogUtil.v("Loading more!");
@@ -50,7 +50,6 @@ public class FeedLoader implements ConversionCallback {
 
     @Override
     public void onCompletion(int count) {
-        adapter.parent.unread.clear();
         Toast.makeText(context, count + " articles loaded", Toast.LENGTH_SHORT).show();
     }
 

@@ -29,6 +29,7 @@ import io.realm.Realm;
 import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.Adapters.ArticleViewHolder;
 import me.ccrama.rssslide.Adapters.FeedAdapter;
+import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.FontPreferences;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
@@ -173,7 +174,7 @@ public class PopulateArticleViewHolder {
         });
 
         holder.feed.setText(adapter.feed.name);
-        MainActivity.getImageLoader(context)
+        BaseApplication.getImageLoader(context)
                 .displayImage(adapter.feed.icon, holder.icon);
 
 

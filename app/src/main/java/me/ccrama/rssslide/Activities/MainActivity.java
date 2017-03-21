@@ -129,22 +129,8 @@ public class MainActivity extends BaseActivity {
     int back;
     private int headerHeight; //height of the header
     public int reloadItemNumber = -2;
-    private static ImageLoader defaultImageLoader;
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        getImageLoader(this).clearMemoryCache();
-    }
 
-    public static ImageLoader getImageLoader(Context context) {
-        if (defaultImageLoader == null || !defaultImageLoader.isInited()) {
-            ImageLoaderUtils.initImageLoader(context.getApplicationContext());
-            defaultImageLoader = ImageLoaderUtils.imageLoader;
-        }
-
-        return defaultImageLoader;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

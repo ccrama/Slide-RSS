@@ -2,8 +2,16 @@ package me.ccrama.rssslide.Activities;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.webkit.ValueCallback;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -19,6 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.ccrama.rssslide.R;
+import me.ccrama.rssslide.SettingValues;
+import me.ccrama.rssslide.Util.LogUtil;
 import me.ccrama.rssslide.Views.SpoilerRobotoTextView;
 
 public class ReaderMode extends BaseActivityAnim {
@@ -35,11 +45,17 @@ public class ReaderMode extends BaseActivityAnim {
         super.onCreate(savedInstanceState);
         applyColorTheme("");
         setContentView(R.layout.activity_reader);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setupAppBar(R.id.toolbar,"",true,true);
+
         if (getIntent().hasExtra("url")) {
             url = getIntent().getExtras().getString(EXTRA_URL, "");
+            ((Toolbar)findViewById(R.id.toolbar)).setTitle(url);
+
         }
 
         v = (SpoilerRobotoTextView) findViewById(R.id.body);
+
 
         new AsyncGetArticle().execute();
     }
@@ -47,7 +63,6 @@ public class ReaderMode extends BaseActivityAnim {
     public class AsyncGetArticle extends AsyncTask<Void, Void, Void> {
         String title = "";
         String articleText;
-        Dialog d;
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -84,13 +99,10 @@ public class ReaderMode extends BaseActivityAnim {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            try {
-                d.dismiss();
-            } catch (Exception e) {
-
-            }
+            ReaderMode.this.findViewById(R.id.progress).setVisibility(View.GONE);
             if (articleText != null) {
                 v.setTextHtml(articleText, "nosub");
+                ((Toolbar)findViewById(R.id.toolbar)).setTitle(v.getText().toString().substring(0, v.getText().toString().indexOf("\n")));
             } else {
                 new AlertDialogWrapper.Builder(ReaderMode.this)
                         .setTitle(R.string.internal_browser_extracting_error)
@@ -107,11 +119,40 @@ public class ReaderMode extends BaseActivityAnim {
 
         @Override
         protected void onPreExecute() {
-            d = new MaterialDialog.Builder(ReaderMode.this)
-                    .title(R.string.internal_browser_extracting_progress)
-                    .progress(true, 100)
-                    .content(R.string.misc_please_wait)
-                    .show();
+
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if(url != null) {
+            inflater.inflate(R.menu.menu_reader, menu);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.web:
+                Intent i = new Intent(this, Website.class);
+                i.putExtra(Website.EXTRA_URL, url);
+                ReaderMode.this.startActivity(i);
+                finish();
+                return true;
+            case R.id.share:
+                MainActivity.defaultShareText(((Toolbar)findViewById(R.id.toolbar)).getTitle().toString(), url, ReaderMode.this);
+
+                return true;
+
+        }
+        return false;
     }
 }

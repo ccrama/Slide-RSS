@@ -84,6 +84,7 @@ public class SettingValues {
 
     public static boolean fab = true;
     public static int fabType = Constants.FAB_POST;
+    public static boolean readabilityDefault = true;
     public static boolean hideButton;
     public static boolean tabletUI = true;
     public static boolean customtabs;

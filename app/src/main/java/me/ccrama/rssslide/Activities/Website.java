@@ -60,6 +60,17 @@ public class Website extends BaseActivityAnim {
         return url;
     }
 
+
+
+    @Override
+    public void onBackPressed() {
+        if (v.canGoBack()) {
+            v.goBack();
+        } else if (!isFinishing()) {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -71,15 +82,6 @@ public class Website extends BaseActivityAnim {
         item.setChecked(SettingValues.cookies);
 
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (v.canGoBack()) {
-            v.goBack();
-        } else if (!isFinishing()) {
-            super.onBackPressed();
-        }
     }
 
     @Override

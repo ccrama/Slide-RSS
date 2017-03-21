@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import me.ccrama.rssslide.Activities.MainActivity;
+import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.SettingValues;
@@ -95,14 +96,14 @@ public class HeaderImageLinkView extends RelativeLayout {
                 thumbImage2.setVisibility(View.VISIBLE);
 
                 loadedUrl = url;
-                MainActivity.getImageLoader(getContext())
+                BaseApplication.getImageLoader(getContext())
                         .displayImage(url, thumbImage2, bigOptions);
 
                 setVisibility(View.GONE);
 
             } else {
                 loadedUrl = url;
-                MainActivity.getImageLoader(getContext())
+                BaseApplication.getImageLoader(getContext())
                         .displayImage(url, backdrop);
                 setVisibility(View.VISIBLE);
                 thumbImage2.setVisibility(View.GONE);

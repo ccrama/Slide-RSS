@@ -51,6 +51,7 @@ import java.util.HashMap;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.Activities.BaseActivityAnim;
+import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.Activities.MainActivity;
@@ -342,7 +343,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                     holder.text.setTextColor(textColor);
                 }
 
-                MainActivity.getImageLoader(ReorderFeeds.this).displayImage(origPos.icon, ((ImageView) holder.icon));
+                BaseApplication.getImageLoader(ReorderFeeds.this).displayImage(origPos.icon, ((ImageView) holder.icon));
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {

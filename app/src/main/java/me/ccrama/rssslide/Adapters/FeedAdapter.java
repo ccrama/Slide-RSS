@@ -14,9 +14,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
+import me.ccrama.rssslide.Activities.ReaderMode;
+import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.Views.CreateCardView;
 import me.ccrama.rssslide.Fragments.FeedFragment;
@@ -121,10 +124,16 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                    @Override
                                                    public void onSingleClick(View v) {
 
-                                                       Intent i = new Intent(context, Website.class);
-                                                       i.putExtra(Website.EXTRA_URL, obj.getLink());
-                                                       i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
-                                                       context.startActivity(i);
+                                                       if(SettingValues.readabilityDefault){
+                                                           Intent i = new Intent(context, ReaderMode.class);
+                                                           i.putExtra("url", obj.getLink());
+                                                           context.startActivity(i);
+                                                       } else {
+                                                           Intent i = new Intent(context, Website.class);
+                                                           i.putExtra(Website.EXTRA_URL, obj.getLink());
+                                                           i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
+                                                           context.startActivity(i);
+                                                       }
                                                        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                                            @Override
                                                            public void execute(Realm realm) {

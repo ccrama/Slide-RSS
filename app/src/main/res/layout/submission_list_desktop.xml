@@ -40,6 +40,7 @@
                 android:layout_marginLeft="4dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                android:src="@drawable/chameleon"
                 app:riv_corner_radius="2dp" />
 
             <ImageView

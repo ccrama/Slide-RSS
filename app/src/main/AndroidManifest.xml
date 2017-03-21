@@ -70,7 +70,7 @@
             android:alwaysRetainTaskState="true"
             android:theme="@style/swipeableweb"/>
         <activity
-            android:name=".DragSort.ReorderSubreddits"
+            android:name=".DragSort.ReorderFeeds"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:alwaysRetainTaskState="true"
             android:theme="@style/swipeableweb"/>

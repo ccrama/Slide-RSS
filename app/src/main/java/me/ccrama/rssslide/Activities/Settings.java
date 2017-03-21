@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import me.ccrama.rssslide.DragSort.ReorderFeeds;
 import me.ccrama.rssslide.Util.OnSingleClickListener;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
@@ -154,8 +155,8 @@ public class Settings extends BaseActivity {
         findViewById(R.id.reorder).setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                //Manage feeds todo Intent inte = new Intent(Settings.this, ReorderSubreddits.class);
-                //Settings.this.startActivity(inte);
+                 Intent inte = new Intent(Settings.this, ReorderFeeds.class);
+                Settings.this.startActivity(inte);
             }
         });
 

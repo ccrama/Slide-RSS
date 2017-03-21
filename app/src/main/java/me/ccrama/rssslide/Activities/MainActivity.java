@@ -81,7 +81,7 @@ import me.ccrama.rssslide.Adapters.SideArrayAdapter;
 import me.ccrama.rssslide.CheckForPosts.CheckForPosts;
 import me.ccrama.rssslide.CheckForPosts.NotificationJobScheduler;
 import me.ccrama.rssslide.ColorPreferences;
-import me.ccrama.rssslide.DragSort.ReorderSubreddits;
+import me.ccrama.rssslide.DragSort.ReorderFeeds;
 import me.ccrama.rssslide.Fragments.FeedFragment;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.PreCachingLayoutManager;
@@ -987,7 +987,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSingleClick(View view) {
                 //todo manage feeds
-                Intent i = new Intent(MainActivity.this, ReorderSubreddits.class);
+                Intent i = new Intent(MainActivity.this, ReorderFeeds.class);
                 startActivity(i);
 
             }

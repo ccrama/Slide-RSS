@@ -16,7 +16,6 @@
 
 package me.ccrama.rssslide.DragSort;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -47,8 +46,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,9 +58,8 @@ import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Activities.SettingsTheme;
 import me.ccrama.rssslide.UserFeeds;
-import me.ccrama.rssslide.Util.LogUtil;
 
-public class ReorderSubreddits extends BaseActivityAnim {
+public class ReorderFeeds extends BaseActivityAnim {
 
     private ArrayList<Feed> subs;
     private CustomAdapter adapter;
@@ -85,7 +81,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                 finish();
                 return true;
             case R.id.add:
-                new MaterialDialog.Builder(ReorderSubreddits.this)
+                new MaterialDialog.Builder(ReorderFeeds.this)
                         .alwaysCallInputCallback()
                         .input("Feed URL", null,
                                 new MaterialDialog.InputCallback() {
@@ -270,7 +266,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                 @Override
                 public void onClick(View v) {
                     AlertDialogWrapper.Builder b =
-                            new AlertDialogWrapper.Builder(ReorderSubreddits.this).setTitle(
+                            new AlertDialogWrapper.Builder(ReorderFeeds.this).setTitle(
                                     R.string.reorder_remove_title)
                                     .setPositiveButton(R.string.btn_remove,
                                             new DialogInterface.OnClickListener() {
@@ -346,7 +342,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                     holder.text.setTextColor(textColor);
                 }
 
-                MainActivity.getImageLoader(ReorderSubreddits.this).displayImage(origPos.icon, ((ImageView) holder.icon));
+                MainActivity.getImageLoader(ReorderFeeds.this).displayImage(origPos.icon, ((ImageView) holder.icon));
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -386,7 +382,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                     @Override
                     public void onClick(View v) {
                         if (!isMultiple) {
-                            new AlertDialogWrapper.Builder(ReorderSubreddits.this).setItems(
+                            new AlertDialogWrapper.Builder(ReorderFeeds.this).setItems(
                                     new CharSequence[]{
                                             getString(R.string.reorder_move),
                                             getString(R.string.btn_delete)
@@ -396,7 +392,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                             if (which == 1) {
                                                 AlertDialogWrapper.Builder b =
                                                         new AlertDialogWrapper.Builder(
-                                                                ReorderSubreddits.this).setTitle(
+                                                                ReorderFeeds.this).setTitle(
                                                                 R.string.reorder_remove_title)
                                                                 .setPositiveButton(
                                                                         R.string.btn_remove,
@@ -513,7 +509,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
         @Override
         protected void onPostExecute(final Feed feed) {
             if (feed != null) {
-                new AlertDialogWrapper.Builder(ReorderSubreddits.this).setTitle("Feed added successfully!").setPositiveButton("Ok!", null).show();
+                new AlertDialogWrapper.Builder(ReorderFeeds.this).setTitle("Feed added successfully!").setPositiveButton("Ok!", null).show();
                 Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
@@ -557,7 +553,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
         @Override
         protected void onPostExecute(String feed) {
             if (feed == null) {
-                new AlertDialogWrapper.Builder(ReorderSubreddits.this).setTitle("Error adding feed! Make sure you have entered the URL correctly").setPositiveButton("Ok!", null).show();
+                new AlertDialogWrapper.Builder(ReorderFeeds.this).setTitle("Error adding feed! Make sure you have entered the URL correctly").setPositiveButton("Ok!", null).show();
             } else {
                 new ParseFeedTask().execute(feed);
             }

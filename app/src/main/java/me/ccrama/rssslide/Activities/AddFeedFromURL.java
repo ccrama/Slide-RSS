@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import io.realm.Realm;
-import me.ccrama.rssslide.DragSort.ReorderSubreddits;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.UserFeeds;
 import me.ccrama.rssslide.Util.LogUtil;

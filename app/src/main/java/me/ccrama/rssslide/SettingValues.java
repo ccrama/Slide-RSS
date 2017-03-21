@@ -85,7 +85,7 @@ public class SettingValues {
     public static boolean fab = true;
     public static int fabType = Constants.FAB_POST;
     public static boolean hideButton;
-    public static boolean tabletUI;
+    public static boolean tabletUI = true;
     public static boolean customtabs;
     public static boolean dualPortrait;
     public static boolean nightMode;

@@ -248,28 +248,6 @@
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:paddingTop="16dp"
-                    android:text="@string/settings_section_content"
-                    android:textSize="14sp"
-                    android:textColor="?attr/colorAccent"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="?attr/card_background"
-                android:elevation="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingTop="16dp"
                     android:text="@string/settings_section_other"
                     android:textSize="14sp"
                     android:textColor="?attr/colorAccent"

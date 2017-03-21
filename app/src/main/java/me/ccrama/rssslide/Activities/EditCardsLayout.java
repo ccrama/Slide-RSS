@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import java.util.Map;
 
-import me.ccrama.rssslide.Views.CreateCardView;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.SettingValues;
+import me.ccrama.rssslide.Views.CreateCardView;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -78,8 +78,8 @@ public class EditCardsLayout extends BaseActivityAnim {
         final TextView CURRENT_PICTURE = (TextView) findViewById(R.id.picture_current);
         assert CURRENT_PICTURE != null; //it won't be
 
-        if (SettingValues.bigPicCropped) {
-            CURRENT_PICTURE.setText(R.string.mode_cropped);
+        if (SettingValues.noImages) {
+            CURRENT_PICTURE.setText("No pictures");
         } else if (SettingValues.bigPicEnabled) {
             CURRENT_PICTURE.setText(R.string.mode_bigpic);
         } else {
@@ -98,33 +98,19 @@ public class EditCardsLayout extends BaseActivityAnim {
                             case R.id.bigpic:
                                 layout.removeAllViews();
                                 layout.addView(CreateCardView.setBigPicEnabled(true, layout));
-                            {
-                                SharedPreferences.Editor e = SettingValues.prefs.edit();
-                                for (Map.Entry<String, ?> map : SettingValues.prefs.getAll().entrySet()) {
-                                    if (map.getKey().startsWith("picsenabled")) {
-                                        e.remove(map.getKey()); //reset all overridden values
-                                    }
-                                }
-                                e.apply();
-                            }
-                            break;
+                                break;
                             case R.id.thumbnail:
                                 layout.removeAllViews();
                                 layout.addView(CreateCardView.setBigPicEnabled(false, layout));
-                            {
-                                SharedPreferences.Editor e = SettingValues.prefs.edit();
-                                for (Map.Entry<String, ?> map : SettingValues.prefs.getAll().entrySet()) {
-                                    if (map.getKey().startsWith("picsenabled")) {
-                                        e.remove(map.getKey()); //reset all overridden values
-                                    }
-                                }
-                                e.apply();
-                            }
-                            break;
+                                break;
+                            case R.id.none:
+                                layout.removeAllViews();
+                                layout.addView(CreateCardView.setNoPicsEnabled(layout));
+                                break;
                         }
 
-                        if (SettingValues.bigPicCropped) {
-                            CURRENT_PICTURE.setText(R.string.mode_cropped);
+                        if (SettingValues.noImages) {
+                            CURRENT_PICTURE.setText("No pictures");
                         } else if (SettingValues.bigPicEnabled) {
                             CURRENT_PICTURE.setText(R.string.mode_bigpic);
                         } else {
@@ -146,21 +132,6 @@ public class EditCardsLayout extends BaseActivityAnim {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SettingValues.prefs.edit().putBoolean("bigThumbnails", isChecked).apply();
                 SettingValues.bigThumbnails = isChecked;
-
-                if (!SettingValues.bigPicCropped && !SettingValues.bigPicCropped) {
-                    layout.removeAllViews();
-
-                    layout.addView(CreateCardView.setBigPicEnabled(false, layout));
-                    {
-                        SharedPreferences.Editor e = SettingValues.prefs.edit();
-                        for (Map.Entry<String, ?> map : SettingValues.prefs.getAll().entrySet()) {
-                            if (map.getKey().startsWith("picsenabled")) {
-                                e.remove(map.getKey()); //reset all overridden values
-                            }
-                        }
-                        e.apply();
-                    }
-                }
             }
         });
 

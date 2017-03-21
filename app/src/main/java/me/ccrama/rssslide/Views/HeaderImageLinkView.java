@@ -77,26 +77,22 @@ public class HeaderImageLinkView extends RelativeLayout {
         boolean forceThumb = false;
         thumbImage2.setImageResource(android.R.color.transparent);
 
-        if (article.image != null) {
+        if (article.image != null && SettingValues.bigPicEnabled) {
             backdrop.setLayoutParams(
                     new LayoutParams(LayoutParams.MATCH_PARENT,
                             dpToPx(200)));
-
         } else {
             forceThumb = true;
         }
 
         if (SettingValues.noImages) {
             setVisibility(View.GONE);
-            thumbImage2.setVisibility(View.VISIBLE);
-            thumbImage2.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.web));
-            thumbUsed = true;
+            thumbImage2.setVisibility(View.GONE);
+            thumbUsed = false;
         } else {
             url = article.image;
             if (forceThumb) {
                 thumbImage2.setVisibility(View.VISIBLE);
-
 
                 loadedUrl = url;
                 MainActivity.getImageLoader(getContext())

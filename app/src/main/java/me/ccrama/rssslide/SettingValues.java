@@ -47,9 +47,7 @@ public class SettingValues {
     public static final String PREF_ALWAYS_EXTERNAL = "alwaysexternal";
 
     public static CreateCardView.CardEnum defaultCardView;
-    public static boolean middleImage;
     public static boolean bigPicEnabled;
-    public static boolean bigPicCropped;
     public static ColorMatchingMode colorMatchingMode;
     public static ColorIndicator colorIndicator;
     public static Palette.ThemeEnum theme;
@@ -109,9 +107,6 @@ public class SettingValues {
         prefs = settings;
         defaultCardView = CreateCardView.CardEnum.valueOf(
                 settings.getString("defaultCardViewNew", "LARGE").toUpperCase());
-        middleImage = settings.getBoolean("middleCard", false);
-
-        bigPicCropped = settings.getBoolean("bigPicCropped", true);
         bigPicEnabled = settings.getBoolean("bigPicEnabled", true);
 
         colorMatchingMode = ColorMatchingMode.valueOf(

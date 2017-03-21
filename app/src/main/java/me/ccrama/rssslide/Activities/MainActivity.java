@@ -44,12 +44,9 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,13 +56,10 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -116,7 +110,6 @@ public class MainActivity extends BaseActivity {
     public ArrayList<Feed> usedArray;
     public DrawerLayout drawerLayout;
     public View hea;
-    public EditText drawerSearch;
     public View header;
     public OverviewPagerAdapter adapter;
     public int toGoto = 0;
@@ -1286,100 +1279,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setDrawerSubList() {
-
         ArrayList<Feed> copy = new ArrayList<>(UserFeeds.getAllUserFeeds());
 
         sideArrayAdapter = new SideArrayAdapter(this, copy, drawerFeedList);
         drawerFeedList.setAdapter(sideArrayAdapter);
 
-        drawerSearch = ((EditText) headerMain.findViewById(R.id.sort));
-        drawerSearch.setVisibility(View.VISIBLE);
-
         drawerFeedList.setFocusable(false);
-
-        headerMain.findViewById(R.id.close_search_drawer)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        drawerSearch.setText("");
-                    }
-                });
-
-        drawerSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                    drawerFeedList.smoothScrollToPositionFromTop(1, drawerSearch.getHeight(),
-                            100);
-                } else {
-                    getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                }
-            }
-        });
-        drawerSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
-                if (arg1 == EditorInfo.IME_ACTION_SEARCH) {
-                    //If it the input text doesn't match a subreddit from the list exactly, openInSubView is true
-                    if (sideArrayAdapter.fitems == null
-                            || sideArrayAdapter.openInSubView
-                            || !usedArray.contains(
-                            drawerSearch.getText().toString().toLowerCase())) {
-                        Intent inte = new Intent(MainActivity.this, FeedViewSingle.class);
-                        inte.putExtra(FeedViewSingle.EXTRA_FEED,
-                                drawerSearch.getText().toString());
-                        MainActivity.this.startActivityForResult(inte, 2001);
-                    } else {
-                        if (usedArray.contains(
-                                drawerSearch.getText().toString().toLowerCase())) {
-                            pager.setCurrentItem(usedArray.indexOf(
-                                    drawerSearch.getText().toString().toLowerCase()));
-                        } else {
-                            pager.setCurrentItem(
-                                    usedArray.indexOf(sideArrayAdapter.fitems.get(0)));
-                        }
-                        drawerLayout.closeDrawers();
-                        drawerSearch.setText("");
-                        View view = MainActivity.this.getCurrentFocus();
-                        if (view != null) {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(
-                                    INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                        }
-                    }
-                }
-                return false;
-            }
-        });
-
-        final View close = findViewById(R.id.close_search_drawer);
-        close.setVisibility(View.GONE);
-
-        drawerSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                final String result = editable.toString();
-                if (result.isEmpty()) {
-                    close.setVisibility(View.GONE);
-                } else {
-                    close.setVisibility(View.VISIBLE);
-                }
-                sideArrayAdapter.getFilter().filter(result);
-            }
-        });
     }
 
     public void setToolbarClick() {

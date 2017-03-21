@@ -227,7 +227,6 @@ public class CreateCardView {
 
     public static View setCardViewType(CardEnum cardEnum, ViewGroup parent) {
         SettingValues.prefs.edit().putBoolean("middleCard", false).apply();
-        SettingValues.middleImage = false;
 
         SettingValues.prefs.edit().putString("defaultCardViewNew", cardEnum.name()).apply();
         SettingValues.defaultCardView = cardEnum;
@@ -237,10 +236,17 @@ public class CreateCardView {
 
     public static View setBigPicEnabled(Boolean b, ViewGroup parent) {
         SettingValues.prefs.edit().putBoolean("bigPicEnabled", b).apply();
-        SettingValues.bigPicEnabled = b;
+        SettingValues.prefs.edit().putBoolean(SettingValues.PREF_NO_IMAGES, false).apply();
 
-        SettingValues.prefs.edit().putBoolean("bigPicCropped", false).apply();
-        SettingValues.bigPicCropped = false;
+        SettingValues.bigPicEnabled = b;
+        SettingValues.noImages = false;
+
+        return CreateView(parent);
+    }
+
+    public static View setNoPicsEnabled(ViewGroup parent) {
+        SettingValues.prefs.edit().putBoolean(SettingValues.PREF_NO_IMAGES, true).apply();
+        SettingValues.noImages = true;
 
         return CreateView(parent);
     }

@@ -25,12 +25,12 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import me.ccrama.rssslide.Util.Constants;
 import me.ccrama.rssslide.Activities.FeedViewSingle;
 import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
+import me.ccrama.rssslide.Util.Constants;
 
 
 /**
@@ -178,9 +178,6 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                         ((MainActivity) getContext()).pager.setCurrentItem(
                                 ((MainActivity) getContext()).feedIndexOf(base));
                         ((MainActivity) getContext()).drawerLayout.closeDrawers();
-                        if (((MainActivity) getContext()).drawerSearch != null) {
-                            ((MainActivity) getContext()).drawerSearch.setText("");
-                        }
                     }
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
                             Context.INPUT_METHOD_SERVICE);

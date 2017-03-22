@@ -1,6 +1,7 @@
 package me.ccrama.rssslide.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
@@ -23,36 +24,31 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import me.ccrama.rssslide.Activities.BaseActivity;
-import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.rssslide.ColorPreferences;
-import me.ccrama.rssslide.Util.Constants;
-import me.ccrama.rssslide.Views.CreateCardView;
-import me.ccrama.rssslide.Adapters.FeedAdapter;
-import me.ccrama.rssslide.Adapters.FeedLoader;
 import me.ccrama.rssslide.Activities.FeedViewSingle;
-import me.ccrama.rssslide.Util.LogUtil;
 import me.ccrama.rssslide.Activities.MainActivity;
+import me.ccrama.rssslide.Adapters.FeedAdapter;
+import me.ccrama.rssslide.Adapters.SearchLoader;
+import me.ccrama.rssslide.Adapters.ToolbarScrollHideHandler;
+import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
-import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
-import me.ccrama.rssslide.Adapters.ToolbarScrollHideHandler;
+import me.ccrama.rssslide.Util.Constants;
+import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.rssslide.Views.CreateCardView;
 
-public class FeedFragment extends Fragment {
+public class SearchFragment extends Fragment {
     public static int adapterPosition;
     private static int currentPosition;
     public RecyclerView rv;
     public FeedAdapter adapter;
-    public Feed id;
+    public String search;
     public boolean main;
     public boolean forced;
     int diff;
@@ -84,7 +80,7 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),
-                new ColorPreferences(inflater.getContext()).getThemeSubreddit(id.name));
+                new ColorPreferences(inflater.getContext()).getThemeSubreddit(""));
         final View v = ((LayoutInflater) contextThemeWrapper.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_verticalcontent,
                 container, false);
@@ -113,7 +109,7 @@ public class FeedFragment extends Fragment {
 
         mSwipeRefreshLayout =
                 (SwipeRefreshLayout) v.findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors(id.name, getContext()));
+        mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors("", getContext()));
 
         /**
          * If using List view mode, we need to remove the start margin from the SwipeRefreshLayout.
@@ -193,13 +189,7 @@ public class FeedFragment extends Fragment {
         header = getActivity().findViewById(R.id.header);
         resetScroll();
 
-        if (MainActivity.shouldLoad == null
-                || id == null
-                || (MainActivity.shouldLoad != null
-                && MainActivity.shouldLoad.name.equals(id.name))
-                || !(getActivity() instanceof MainActivity)) {
-            doAdapter();
-        }
+        doAdapter();
         return v;
     }
 
@@ -226,32 +216,22 @@ public class FeedFragment extends Fragment {
         return numColumns;
     }
 
-    public FeedLoader dataSet;
+    public SearchLoader dataSet;
 
     public void doAdapter() {
-        LogUtil.v("Doing adapter");
-
-        dataSet = new FeedLoader(id);
+        dataSet = new SearchLoader(search);
         adapter = new FeedAdapter(getActivity(), dataSet, rv, mSwipeRefreshLayout);
         adapter.setHasStableIds(true);
 
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                dataSet.feed.setSeen();
-                realm.insertOrUpdate(dataSet.feed);
-            }
-        });
         rv.setAdapter(adapter);
-       if(dataSet.feed.articles.isEmpty()) {
-           dataSet.loadMore(getActivity(), adapter);
-           mSwipeRefreshLayout.post(new Runnable() {
-               @Override
-               public void run() {
-                   mSwipeRefreshLayout.setRefreshing(true);
-               }
-           });
-       }
+        if (dataSet.getData().isEmpty()) {
+            new AlertDialogWrapper.Builder(getActivity()).setTitle("No results").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    getActivity().finish();
+                }
+            }).show();
+        }
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -274,50 +254,16 @@ public class FeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        String idb= bundle.getString("id", "");
-        LogUtil.v("Loading " + idb);
-        id = Realm.getDefaultInstance().where(Feed.class).equalTo("name", idb).findFirst();
+        search = bundle.getString("search", "");
         main = bundle.getBoolean("main", false);
         forceLoad = bundle.getBoolean("load", false);
 
-    }
-
-    public Article currentArticle;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adapter != null && adapterPosition > 0 && currentPosition == adapterPosition) {
-            if (id.articles.size() >= adapterPosition - 1
-                    && id.articles.get(adapterPosition - 1) == currentArticle) {
-                adapter.performClick(adapterPosition);
-                adapterPosition = -1;
-            }
-        }
-    }
-
-
-    public static void datachanged(int adaptorPosition2) {
-        adapterPosition = adaptorPosition2;
     }
 
     private void refresh() {
         forced = true;
         dataSet.loadMore(getActivity(), adapter);
     }
-
-    public void forceRefresh() {
-        rv.scrollToPosition(0);
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                refresh();
-            }
-        });
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
     public void resetScroll() {
         if (toolbarScroll == null) {
             toolbarScroll =
@@ -337,18 +283,6 @@ public class FeedFragment extends Fragment {
                                 if (firstVisibleItems != null && firstVisibleItems.length > 0) {
                                     for (int firstVisibleItem : firstVisibleItems) {
                                         pastVisiblesItems = firstVisibleItem;
-                                        if (SettingValues.scrollSeen
-                                                && pastVisiblesItems > 0
-                                                && SettingValues.storeHistory) {
-                                            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                                                @Override
-                                                public void execute(Realm realm) {
-                                                    Article a = dataSet.feed.articles.get(pastVisiblesItems - 1);
-                                                    a.setSeen();
-                                                    realm.copyToRealmOrUpdate(a);
-                                                }
-                                            });
-                                        }
                                     }
                                 }
                             }

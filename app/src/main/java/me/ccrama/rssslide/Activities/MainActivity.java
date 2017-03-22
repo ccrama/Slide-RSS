@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -66,8 +67,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -83,15 +84,14 @@ import me.ccrama.rssslide.CheckForPosts.NotificationJobScheduler;
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.DragSort.ReorderFeeds;
 import me.ccrama.rssslide.Fragments.FeedFragment;
+import me.ccrama.rssslide.Fragments.SearchFragment;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.PreCachingLayoutManager;
 import me.ccrama.rssslide.R;
-import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.UserFeeds;
 import me.ccrama.rssslide.Util.Constants;
-import me.ccrama.rssslide.Util.ImageLoaderUtils;
 import me.ccrama.rssslide.Util.LinkUtil;
 import me.ccrama.rssslide.Util.LogUtil;
 import me.ccrama.rssslide.Util.OnSingleClickListener;
@@ -131,7 +131,6 @@ public class MainActivity extends BaseActivity {
     int back;
     private int headerHeight; //height of the header
     public int reloadItemNumber = -2;
-
 
 
     @Override
@@ -285,6 +284,8 @@ public class MainActivity extends BaseActivity {
                 });
         return true;
     }
+
+    String term;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -456,7 +457,6 @@ public class MainActivity extends BaseActivity {
                 }
                 return true;
             case R.id.search:
-                /* TODO Search
                 MaterialDialog.Builder builder =
                         new MaterialDialog.Builder(this).title(R.string.search_title)
                                 .alwaysCallInputCallback()
@@ -470,51 +470,19 @@ public class MainActivity extends BaseActivity {
                                         });
 
                 //Add "search current sub" if it is not frontpage/all/random
-                if (!subreddit.equalsIgnoreCase("frontpage")
-                        && !subreddit.equalsIgnoreCase("all")
-                        && !subreddit.contains(".")
-                        && !subreddit.contains("/m/")
-                        && !subreddit.equalsIgnoreCase("friends")
-                        && !subreddit.equalsIgnoreCase("random")
-                        && !subreddit.equalsIgnoreCase("popular")
-                        && !subreddit.equalsIgnoreCase("myrandom")
-                        && !subreddit.equalsIgnoreCase("randnsfw")) {
-                    builder.positiveText(getString(R.string.search_subreddit, subreddit))
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog materialDialog,
-                                                    @NonNull DialogAction dialogAction) {
-                                    Intent i = new Intent(MainActivity.this, Search.class);
-                                    i.putExtra(Search.EXTRA_TERM, term);
-                                    i.putExtra(Search.EXTRA_SUBREDDIT, subreddit);
-                                    Log.v(LogUtil.getTag(),
-                                            "INTENT SHOWS " + term + " AND " + subreddit);
-                                    startActivity(i);
-                                }
-                            });
-                    builder.neutralText(R.string.search_all)
-                            .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog materialDialog,
-                                                    @NonNull DialogAction dialogAction) {
-                                    Intent i = new Intent(MainActivity.this, Search.class);
-                                    i.putExtra(Search.EXTRA_TERM, term);
-                                    startActivity(i);
-                                }
-                            });
-                } else {
-                    builder.positiveText(R.string.search_all)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog materialDialog,
-                                                    @NonNull DialogAction dialogAction) {
-                                    Intent i = new Intent(MainActivity.this, Search.class);
-                                    i.putExtra(Search.EXTRA_TERM, term);
-                                    startActivity(i);
-                                }
-                            });
-                }
-                builder.show();*/
+
+                builder.positiveText(R.string.search_all)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog materialDialog,
+                                                @NonNull DialogAction dialogAction) {
+                                Intent i = new Intent(MainActivity.this, SearchFeeds.class);
+                                i.putExtra(SearchFeeds.EXTRA_SEARCH, term);
+                                startActivity(i);
+                            }
+                        });
+
+                builder.show();
                 return true;
             case R.id.save:
                 /*TODO cache
@@ -1017,7 +985,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         super.onDrawerOpened(drawerView);
-                        ((TextView)findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeAgo(getLastUpdate(), MainActivity.this).toLowerCase() + ")");
+                        ((TextView) findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeAgo(getLastUpdate(), MainActivity.this).toLowerCase() + ")");
                     }
 
                     @Override
@@ -1483,7 +1451,7 @@ public class MainActivity extends BaseActivity {
             Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
         findViewById(R.id.currentlyDoing).setVisibility(View.GONE);
         findViewById(R.id.saving).setVisibility(View.VISIBLE);
-        ((TextView)findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeSince(time, this) + ")");
+        ((TextView) findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeSince(time, this) + ")");
     }
 
     public long getLastUpdate() {
@@ -1637,7 +1605,7 @@ public class MainActivity extends BaseActivity {
             if (usedArray != null) {
                 try {
                     return abbreviate(usedArray.get(position).name, 25);
-                } catch (Exception e ){
+                } catch (Exception e) {
                     return "";
                 }
             } else {

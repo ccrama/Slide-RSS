@@ -28,6 +28,7 @@ public class Article extends RealmObject {
     private String title;
     private String author;
     private String comments;
+    public String feed;
     private String link;
     public String summary;
     public String image;
@@ -90,7 +91,8 @@ public class Article extends RealmObject {
         seen = true;
     }
 
-    public void setAll(SyndEntry article) {
+    public void setAll(SyndEntry article, Feed feed) {
+        this.feed = feed.getName();
         this.link = article.getLink();
         this.created = System.currentTimeMillis();
         if (article.getUri() == null || article.getUri().isEmpty()) {

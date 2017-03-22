@@ -63,7 +63,7 @@ public class PopulateArticleViewHolder {
     }
 
     public void showBottomSheet(final Activity mContext,
-                                final Article a, final ArticleViewHolder holder, final FeedAdapter posts,
+                                final Article a, final ArticleViewHolder holder, final FeedAdapter posts, final Feed feed,
                                 final RecyclerView recyclerview) {
 
         int[] attrs = new int[]{R.attr.tint};
@@ -98,11 +98,13 @@ public class PopulateArticleViewHolder {
         }
         b.sheet(2, saved, save);
 
-        boolean hidden = a.isHidden();
-        if (!hidden) {
-            b.sheet(3, hide, mContext.getString(R.string.submission_hide));
-        } else {
-            b.sheet(3, hide, mContext.getString(R.string.submission_unhide));
+        if(feed != null) {
+            boolean hidden = a.isHidden();
+            if (!hidden) {
+                b.sheet(3, hide, mContext.getString(R.string.submission_hide));
+            } else {
+                b.sheet(3, hide, mContext.getString(R.string.submission_unhide));
+            }
         }
         b.sheet(4, open, mContext.getString(R.string.submission_link_extern));
 
@@ -129,9 +131,9 @@ public class PopulateArticleViewHolder {
                             @Override
                             public void execute(Realm realm) {
                                 a.hidden = !a.isHidden();
-                                final int index = posts.feed.articles.indexOf(a);
+                                final int index = feed.articles.indexOf(a);
                                 if (a.hidden) {
-                                    posts.feed.articles.remove(a);
+                                    feed.articles.remove(a);
                                 }
                                 Snackbar s = Snackbar.make(recyclerview, "Post hidden", Snackbar.LENGTH_SHORT);
                                 s.setAction("Undo", new View.OnClickListener() {
@@ -140,7 +142,7 @@ public class PopulateArticleViewHolder {
                                         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                             @Override
                                             public void execute(Realm realm) {
-                                                posts.feed.articles.add(index, a);
+                                                feed.articles.add(index, a);
                                                 a.hidden = false;
                                             }
                                         });
@@ -163,19 +165,21 @@ public class PopulateArticleViewHolder {
 
     public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final FeedAdapter adapter, final RecyclerView list) {
 
+        final Feed feed = Realm.getDefaultInstance().where(Feed.class).equalTo("name", article.feed).findFirst();
         holder.title.setText(article.getTitle()); // title is a spoiler roboto textview so it will format the html
 
 
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottomSheet(context, article, holder, adapter, list);
+                showBottomSheet(context, article, holder, adapter, feed, list);
             }
         });
 
-        holder.feed.setText(adapter.feed.name);
+
+        holder.feed.setText(feed.name);
         BaseApplication.getImageLoader(context)
-                .displayImage(adapter.feed.icon, holder.icon);
+                .displayImage(feed.icon, holder.icon);
 
 
         final ImageView hideButton = (ImageView) holder.hide;
@@ -266,12 +270,12 @@ public class PopulateArticleViewHolder {
 
         });
 
-        if(adapter.feed.accessed < article.created){
-            holder.title.setTextColor(Palette.getColor(adapter.feed.name));
+        if (feed.accessed < article.created) {
+            holder.title.setTextColor(Palette.getColor(feed.name));
         } else {
             holder.title.setTextColor(holder.info.getCurrentTextColor());
         }
-        holder.info.setText(getInfoSpannable(article, adapter.feed.name, context));
+        holder.info.setText(getInfoSpannable(article, feed.name, context));
 
         holder.body.setVisibility(View.VISIBLE);
         String text = article.summary;
@@ -284,7 +288,7 @@ public class PopulateArticleViewHolder {
         }
         holder.body.setTypeface(typeface);
 
-        if(article.seen){
+        if (article.seen) {
 
         }
 

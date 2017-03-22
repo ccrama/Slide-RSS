@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,14 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import java.util.ArrayList;
-
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import me.ccrama.rssslide.Activities.ReaderMode;
 import me.ccrama.rssslide.Activities.ShouldOpenExternally;
 import me.ccrama.rssslide.Activities.Website;
-import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
@@ -37,35 +35,31 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
     private final RecyclerView listView;
     private final SwipeRefreshLayout refreshLayout;
-    public final Feed feed;
     public Activity context;
     public DataSet dataSet;
     private final int NO_MORE = 3;
     private final int SPACER = 6;
-    private ArrayList<String> seen;
 
     public FeedAdapter(Activity context, DataSet dataSet, RecyclerView listView,
-                       SwipeRefreshLayout refreshLayout, Feed feed) {
+                       SwipeRefreshLayout refreshLayout) {
         super(dataSet.getData(), true);
-        this.feed = feed;
         this.listView = listView;
         this.dataSet = dataSet;
         this.context = context;
         this.refreshLayout = refreshLayout;
-        this.seen = new ArrayList<>();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position <= 0 && !feed.articles.isEmpty()) {
+        if (position <= 0 && !dataSet.getData().isEmpty()) {
             return SPACER;
-        } else if (!feed.articles.isEmpty()) {
+        } else if (!dataSet.getData().isEmpty()) {
             position -= (1);
         }
-        if (position == feed.articles.size()
-                && !feed.articles.isEmpty()) {
+        if (position == dataSet.getData().size()
+                && !dataSet.getData().isEmpty()) {
             return NO_MORE;
-        } else if (position == feed.articles.size()) {
+        } else if (position == dataSet.getData().size()) {
             return NO_MORE;
         }
         int SUBMISSION = 1;
@@ -133,7 +127,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                            } else {
                                                                Intent i = new Intent(context, Website.class);
                                                                i.putExtra(Website.EXTRA_URL, obj.getLink());
-                                                               i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
+                                                               //todo do color i.putExtra(Website.EXTRA_COLOR, Palette.getColor(feed.name));
                                                                context.startActivity(i);
                                                            }
                                                            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
@@ -156,7 +150,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
             final Runnable r = new Runnable() {
                 public void run() {
-                    notifyItemChanged(feed.articles.size()
+                    notifyItemChanged(dataSet.getData().size()
                             + 1); // the loading spinner to replaced by nomoreposts.xml
                 }
             };
@@ -223,7 +217,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
 
     @Override
     public int getItemCount() {
-        if (feed.articles == null || feed.articles.isEmpty()) {
+        if (dataSet.getData() == null || dataSet.getData().isEmpty()) {
             return 0;
         } else {
             return super.getItemCount() + 2; // Always account for footer

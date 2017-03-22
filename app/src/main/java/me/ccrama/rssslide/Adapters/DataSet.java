@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.Realm.XMLToRealm;
@@ -32,5 +33,5 @@ import me.ccrama.rssslide.Util.LogUtil;
 
 public interface DataSet {
     public void loadMore(Activity context, FeedAdapter adapter);
-    public RealmList<Article> getData();
+    public RealmResults<Article> getData();
 }

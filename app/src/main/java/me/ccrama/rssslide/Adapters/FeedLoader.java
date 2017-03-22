@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.Realm.XMLToRealm;
@@ -37,9 +38,11 @@ public class FeedLoader implements ConversionCallback, DataSet {
     Activity context;
     public boolean loading;
     FeedAdapter adapter;
+    RealmResults<Article> results;
 
     public FeedLoader(final Feed id) {
         feed = id;
+        results = feed.articles.where().findAll();
     }
 
     public void loadMore(Activity context, FeedAdapter adapter) {
@@ -50,13 +53,14 @@ public class FeedLoader implements ConversionCallback, DataSet {
     }
 
     @Override
-    public RealmList<Article> getData() {
-        return feed.articles;
+    public RealmResults<Article> getData() {
+        return results;
     }
 
     @Override
     public void onCompletion(int count) {
         Toast.makeText(context, count + " articles loaded", Toast.LENGTH_SHORT).show();
+        results = feed.articles.where().findAll();
     }
 
     private class DownloadXmlTask extends AsyncTask<String, Void, List<Article>> {

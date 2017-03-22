@@ -76,6 +76,11 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:theme="@style/swipeableweb" />
         <activity
+            android:name=".Activities.SearchFeeds"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:theme="@style/swipeableweb" />
+        <activity
             android:name=".DragSort.ReorderFeeds"
             android:alwaysRetainTaskState="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"

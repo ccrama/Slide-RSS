@@ -27,7 +27,7 @@ public class XMLToRealm {
                 for (SyndEntry i : items) {
                     if (realm.where(Article.class).equalTo("title", i.getTitle()).findFirst() == null) {
                         Article a = new Article();
-                        a.setAll(i);
+                        a.setAll(i, f);
                         realm.copyToRealmOrUpdate(a);
                         toAdd.add(a);
                     }
@@ -46,7 +46,7 @@ public class XMLToRealm {
         for (SyndEntry i : items) {
             if (realm.where(Article.class).equalTo("title", i.getTitle()).findFirst() == null) {
                 Article a = new Article();
-                a.setAll(i);
+                a.setAll(i, feed);
                 realm.copyToRealmOrUpdate(a);
                 toAdd.add(a);
             }
@@ -69,7 +69,7 @@ public class XMLToRealm {
                         ArrayList<Article> toAdd = new ArrayList<>();
                         for (SyndEntry i : items) {
                             Article a = new Article();
-                            a.setAll(i);
+                            a.setAll(i, feed);
                             boolean exists = realm.where(Article.class).equalTo("id", a.getId()).findFirst() != null;
                             if (!exists) {
                                 realm.copyToRealmOrUpdate(a);

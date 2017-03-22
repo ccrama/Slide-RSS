@@ -3,7 +3,9 @@ package me.ccrama.rssslide.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Build;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import me.ccrama.rssslide.Activities.FeedViewSingle;
 import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.Activities.SetupWidget;
 import me.ccrama.rssslide.BaseApplication;
+import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
@@ -116,7 +119,13 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
 
             ImageView back = (ImageView) convertView.findViewById(R.id.icon);
             back.setImageDrawable(null);
-            BaseApplication.getImageLoader(getContext()).displayImage(fitems.get(position).icon, back);
+            if(fitems.get(position).icon != null && !fitems.get(position).icon.isEmpty()) {
+                back.setBackgroundDrawable(null);
+                BaseApplication.getImageLoader(getContext()).displayImage(fitems.get(position).icon, back);
+            } else {
+                back.setBackgroundResource(R.drawable.circle);
+                back.getBackground().setColorFilter(Palette.getColor(base), PorterDuff.Mode.MULTIPLY);
+            }
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

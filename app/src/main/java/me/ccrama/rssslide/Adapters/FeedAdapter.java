@@ -44,9 +44,9 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
     private final int SPACER = 6;
     private ArrayList<String> seen;
 
-    public FeedAdapter(Activity context, FeedLoader dataSet, RecyclerView listView,
+    public FeedAdapter(Activity context, DataSet dataSet, RecyclerView listView,
                        SwipeRefreshLayout refreshLayout, Feed feed) {
-        super(dataSet.feed.articles, true);
+        super(dataSet.getData(), true);
         this.feed = feed;
         this.listView = listView;
         this.dataSet = dataSet;

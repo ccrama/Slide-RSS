@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmList;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.Realm.XMLToRealm;
@@ -46,6 +47,11 @@ public class FeedLoader implements ConversionCallback, DataSet {
         this.adapter = adapter;
         LogUtil.v("Loading more!");
         new DownloadXmlTask().execute(feed.url); //todo turn feed name into feed URL
+    }
+
+    @Override
+    public RealmList<Article> getData() {
+        return feed.articles;
     }
 
     @Override

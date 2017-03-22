@@ -1017,7 +1017,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         super.onDrawerOpened(drawerView);
-                        ((TextView)findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeSince(getLastUpdate(), MainActivity.this) + ")");
+                        ((TextView)findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeAgo(getLastUpdate(), MainActivity.this).toLowerCase() + ")");
                     }
 
                     @Override

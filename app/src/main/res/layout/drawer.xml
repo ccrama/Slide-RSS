@@ -91,20 +91,31 @@
         android:orientation="horizontal"
         android:paddingStart="0dp">
 
-        <ImageView
+        <RelativeLayout
             android:layout_width="26dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="26dp"
-            android:layout_marginStart="16dp"
-            android:tint="?attr/tint"
-            app:srcCompat="@drawable/save" />
+            android:layout_marginStart="16dp">
+
+            <ImageView
+                android:id="@+id/saving"
+                android:layout_width="26dp"
+                android:layout_height="match_parent"
+                android:tint="?attr/tint"
+                app:srcCompat="@drawable/save" />
+
+            <ProgressBar
+                android:id="@+id/currentlyDoing"
+                android:layout_width="26dp"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-
-            android:text="Cache now"
+            android:id="@+id/synced"
+            android:text="Sync all feeds now"
             android:textColor="?attr/font"
             android:textSize="14sp"
             android:textStyle="bold" />

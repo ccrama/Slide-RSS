@@ -119,7 +119,6 @@ public class Article extends RealmObject {
         String imgURL = null;
         List<Element> foreignMarkups = article.getForeignMarkup();
         for (Element foreignMarkup : foreignMarkups) {
-            LogUtil.v(foreignMarkup.toString());
             if (foreignMarkup.getAttribute("url") != null)
                 imgURL = foreignMarkup.getAttribute("url").getValue();
             else
@@ -137,8 +136,6 @@ public class Article extends RealmObject {
             List<SyndEnclosure> encls = article.getEnclosures();
             if (!encls.isEmpty()) {
                 for (SyndEnclosure e : encls) {
-                    LogUtil.v(e.getUrl());
-
                     imgURL = e.getUrl();
                     if (!imgURL.isEmpty()) {
                         break;

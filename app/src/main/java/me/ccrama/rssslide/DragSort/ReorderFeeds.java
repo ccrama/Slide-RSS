@@ -402,11 +402,17 @@ public class ReorderFeeds extends BaseActivityAnim {
                                                                             public void onClick(
                                                                                     DialogInterface dialog,
                                                                                     int which) {
-                                                                                subs.remove(
-                                                                                        items.get(
-                                                                                                position));
+                                                                                final Feed f = items.get(
+                                                                                        position);
+                                                                                subs.remove(f);
                                                                                 adapter.notifyItemRemoved(
                                                                                         position);
+                                                                                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                                                                                    @Override
+                                                                                    public void execute(Realm realm) {
+                                                                                        f.deleteFromRealm();
+                                                                                    }
+                                                                                });
                                                                             }
                                                                         })
                                                                 .setNegativeButton(

@@ -11,6 +11,7 @@ import java.util.List;
 import io.realm.Realm;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.Util.ConversionCallback;
+import me.ccrama.rssslide.Util.LogUtil;
 
 /**
  * Created by Carlos on 3/16/2017.
@@ -41,7 +42,6 @@ public class XMLToRealm {
     }
 
     public static void convertInTransaction(final Realm realm, final Feed feed, final List<SyndEntry> items, final ConversionCallback c) {
-
         ArrayList<Article> toAdd = new ArrayList<>();
         for (SyndEntry i : items) {
             if (realm.where(Article.class).equalTo("title", i.getTitle()).findFirst() == null) {

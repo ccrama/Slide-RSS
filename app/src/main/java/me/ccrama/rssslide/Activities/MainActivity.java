@@ -86,6 +86,7 @@ import me.ccrama.rssslide.Fragments.FeedFragment;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.PreCachingLayoutManager;
 import me.ccrama.rssslide.R;
+import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.UserFeeds;
@@ -94,6 +95,7 @@ import me.ccrama.rssslide.Util.ImageLoaderUtils;
 import me.ccrama.rssslide.Util.LinkUtil;
 import me.ccrama.rssslide.Util.LogUtil;
 import me.ccrama.rssslide.Util.OnSingleClickListener;
+import me.ccrama.rssslide.Util.TimeUtils;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.Views.ToggleSwipeViewPager;
 
@@ -856,7 +858,6 @@ public class MainActivity extends BaseActivity {
          */
         SettingValues.currentTheme = new ColorPreferences(this).getFontStyle().getThemeType();
 
-        new CheckForPosts.AsyncGetFeeds(this).execute();
         if (notificationTime != -1) {
             notifications = new NotificationJobScheduler(MainActivity.this);
             notifications.start(getApplicationContext());
@@ -978,10 +979,14 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        findViewById(R.id.currentlyDoing).setVisibility(View.GONE);
         header.findViewById(R.id.nav_cache).setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                //todo caching
+                new CheckForPosts.AsyncGetFeeds(MainActivity.this);
+                findViewById(R.id.currentlyDoing).setVisibility(View.VISIBLE);
+                findViewById(R.id.saving).setVisibility(View.GONE);
+
             }
         });
         header.findViewById(R.id.nav_support).setOnClickListener(new OnSingleClickListener() {
@@ -1012,6 +1017,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         super.onDrawerOpened(drawerView);
+                        ((TextView)findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeSince(getLastUpdate(), MainActivity.this) + ")");
                     }
 
                     @Override
@@ -1472,9 +1478,16 @@ public class MainActivity extends BaseActivity {
         return 0;
     }
 
-    public void newArticles(int counter) {
+    public void newArticles(int counter, long time) {
         if (counter > 0)
             Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
+        findViewById(R.id.currentlyDoing).setVisibility(View.GONE);
+        findViewById(R.id.saving).setVisibility(View.VISIBLE);
+        ((TextView)findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeSince(time, this) + ")");
+    }
+
+    public long getLastUpdate() {
+        return colors.getLong("lastUpate", System.currentTimeMillis());
     }
 
     public class OverviewPagerAdapter extends FragmentStatePagerAdapter {
@@ -1622,7 +1635,11 @@ public class MainActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
 
             if (usedArray != null) {
-                return abbreviate(usedArray.get(position).name, 25);
+                try {
+                    return abbreviate(usedArray.get(position).name, 25);
+                } catch (Exception e ){
+                    return "";
+                }
             } else {
                 return "";
             }

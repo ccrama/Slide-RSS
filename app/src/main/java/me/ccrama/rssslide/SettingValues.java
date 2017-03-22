@@ -37,6 +37,7 @@ public class SettingValues {
     public static final String PREF_COOKIES = "storeCookies";
     public static final String PREF_NIGHT_START = "nightStart";
     public static final String PREF_NIGHT_END = "nightEnd";
+    public static final String PREF_SUMMARY = "summary";
 
     public static final String PREF_FULL_COMMENT_OVERRIDE = "fullCommentOverride";
     public static final String PREF_EXIT = "Exit";
@@ -96,6 +97,7 @@ public class SettingValues {
     public static boolean switchThumb;
     public static boolean bigThumbnails;
     public static boolean commentPager;
+    public static boolean summary;
     public static boolean overrideLanguage;
     public static boolean immersiveMode;
     public static boolean showDomain;
@@ -128,6 +130,7 @@ public class SettingValues {
         nightTheme = prefs.getInt(PREF_NIGHT_THEME, 0);
         autoTime = prefs.getBoolean(PREF_AUTOTHEME, false);
         colorNavBar = prefs.getBoolean(PREF_COLOR_NAV_BAR, false);
+        summary = prefs.getBoolean(PREF_SUMMARY, true);
         colorEverywhere = prefs.getBoolean(PREF_COLOR_EVERYWHERE, true);
         noImages = prefs.getBoolean(PREF_NO_IMAGES, false);
 

@@ -123,17 +123,32 @@ public class EditCardsLayout extends BaseActivityAnim {
             }
         });
 
-        final SwitchCompat bigThumbnails = (SwitchCompat) findViewById(R.id.bigThumbnails);
-        assert bigThumbnails != null; //def won't be null
+        {
+            final SwitchCompat bigThumbnails = (SwitchCompat) findViewById(R.id.bigThumbnails);
+            assert bigThumbnails != null; //def won't be null
 
-        bigThumbnails.setChecked(SettingValues.bigThumbnails);
-        bigThumbnails.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SettingValues.prefs.edit().putBoolean("bigThumbnails", isChecked).apply();
-                SettingValues.bigThumbnails = isChecked;
-            }
-        });
+            bigThumbnails.setChecked(SettingValues.bigThumbnails);
+            bigThumbnails.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SettingValues.prefs.edit().putBoolean("bigThumbnails", isChecked).apply();
+                    SettingValues.bigThumbnails = isChecked;
+                }
+            });
+        }
+        {
+            final SwitchCompat summary = (SwitchCompat) findViewById(R.id.summary);
+
+            summary.setChecked(SettingValues.summary);
+            summary.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_SUMMARY, isChecked).apply();
+                    SettingValues.summary = isChecked;
+                }
+            });
+        }
+
 
         //Actionbar//
         ((TextView) findViewById(R.id.actionbar_current)).setText(!SettingValues.actionbarVisible ? (SettingValues.actionbarTap ? getString(R.string.tap_actionbar) : getString(R.string.press_actionbar)) : getString(R.string.always_actionbar));

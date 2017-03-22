@@ -228,20 +228,31 @@ public class FeedFragment extends Fragment {
 
     public FeedLoader dataSet;
 
-    public void doAdapter() {
-        LogUtil.v("Doing adapter");
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        if (!visible) {
+            if(viewed){
+                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        dataSet.feed.setSeen();
+                        realm.insertOrUpdate(dataSet.feed);
+                    }
+                });
+                LogUtil.v("Hiding");
+                viewed = false;
+            }
+        }
 
+        super.setMenuVisibility(visible);
+    }
+
+    public void doAdapter() {
+        viewed = true;
         dataSet = new FeedLoader(id);
         adapter = new FeedAdapter(getActivity(), dataSet, rv, mSwipeRefreshLayout);
         adapter.setHasStableIds(true);
 
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                dataSet.feed.setSeen();
-                realm.insertOrUpdate(dataSet.feed);
-            }
-        });
         rv.setAdapter(adapter);
        if(dataSet.feed.articles.isEmpty()) {
            dataSet.loadMore(getActivity(), adapter);
@@ -296,6 +307,7 @@ public class FeedFragment extends Fragment {
         }
     }
 
+    boolean viewed;
 
     public static void datachanged(int adaptorPosition2) {
         adapterPosition = adaptorPosition2;
@@ -304,6 +316,13 @@ public class FeedFragment extends Fragment {
     private void refresh() {
         forced = true;
         dataSet.loadMore(getActivity(), adapter);
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                dataSet.feed.setSeen();
+                realm.insertOrUpdate(dataSet.feed);
+            }
+        });
     }
 
     public void forceRefresh() {

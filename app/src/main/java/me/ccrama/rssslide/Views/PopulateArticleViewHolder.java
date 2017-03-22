@@ -292,7 +292,7 @@ public class PopulateArticleViewHolder {
 
         }
 
-        if (text != null && !text.isEmpty()) {
+        if (text != null && !text.isEmpty() && SettingValues.summary) {
             holder.body.setTextHtml(Html.fromHtml(
                     text.substring(0, text.contains("\n") ? text.indexOf("\n") : text.length()))
                     .toString().trim()

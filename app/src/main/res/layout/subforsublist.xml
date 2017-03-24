@@ -22,6 +22,9 @@
             android:layout_marginTop="8dp"
             android:adjustViewBounds="true"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
@@ -31,7 +34,21 @@
             android:maxLines="2"
             android:text="Android"
             android:textColor="?attr/font"
+            android:layout_toLeftOf="@+id/unread"
             android:textSize="16sp" />
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="4"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:padding="6dp"
+                android:textSize="14sp"
+                android:background="@drawable/unread"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="8dp"
+                android:id="@+id/unread"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

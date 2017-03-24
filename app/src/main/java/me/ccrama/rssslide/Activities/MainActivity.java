@@ -77,7 +77,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import me.ccrama.rssslide.Adapters.SideArrayAdapter;
 import me.ccrama.rssslide.CheckForPosts.CheckForPosts;
 import me.ccrama.rssslide.CheckForPosts.NotificationJobScheduler;
@@ -985,6 +989,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         super.onDrawerOpened(drawerView);
+                        sideArrayAdapter.notifyDataSetChanged();
                         ((TextView) findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeAgo(getLastUpdate(), MainActivity.this).toLowerCase() + ")");
                     }
 

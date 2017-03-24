@@ -33,6 +33,7 @@ import me.ccrama.rssslide.Activities.SetupWidget;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
+import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.Util.Constants;
@@ -88,9 +89,11 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (position < fitems.size()) {
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.subforsublist, parent, false);
-
+            if(convertView == null) {
+                convertView = LayoutInflater.from(getContext())
+                        .inflate(R.layout.subforsublist, parent, false);
+            }
+            updateCount(fitems.get(position), convertView);
             final String sub;
             final String base = fitems.get(position).name;
             sub = fitems.get(position).name;
@@ -126,6 +129,9 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                 back.setBackgroundResource(R.drawable.circle);
                 back.getBackground().setColorFilter(Palette.getColor(base), PorterDuff.Mode.MULTIPLY);
             }
+
+
+
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -273,6 +279,16 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
             }
         }
         return convertView;
+    }
+
+    private void updateCount(Feed feed, View v) {
+        int count = feed.getUnseen().size();
+        ((TextView)v.findViewById(R.id.unread)).setText("" + count);
+        if(count == 0){
+            v.findViewById(R.id.unread).setVisibility(View.GONE);
+        } else {
+            v.findViewById(R.id.unread).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

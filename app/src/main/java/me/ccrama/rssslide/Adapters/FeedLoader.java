@@ -19,7 +19,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
@@ -69,9 +68,7 @@ public class FeedLoader implements ConversionCallback, DataSet {
             loading = true;
             try {
                 return loadXmlFromNetwork(urls[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
+            } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();

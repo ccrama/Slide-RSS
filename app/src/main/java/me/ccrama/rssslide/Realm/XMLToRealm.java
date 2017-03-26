@@ -11,7 +11,6 @@ import java.util.List;
 import io.realm.Realm;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.Util.ConversionCallback;
-import me.ccrama.rssslide.Util.LogUtil;
 
 /**
  * Created by Carlos on 3/16/2017.

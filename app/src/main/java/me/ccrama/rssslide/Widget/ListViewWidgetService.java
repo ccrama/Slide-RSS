@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.BaseApplication;
-import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;

@@ -79,9 +79,7 @@ public class CheckForPosts extends BroadcastReceiver {
 
                 f = new SyndFeedInput().build(doc);
                 return f.getEntries();
-            } catch (FeedException | ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
+            } catch (FeedException | ParserConfigurationException | SAXException e) {
                 e.printStackTrace();
             }
             return null;

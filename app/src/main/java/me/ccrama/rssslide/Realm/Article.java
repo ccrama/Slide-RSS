@@ -1,7 +1,5 @@
 package me.ccrama.rssslide.Realm;
 
-import android.util.Log;
-
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEnclosure;
 import com.rometools.rome.feed.synd.SyndEntry;

@@ -37,7 +37,6 @@ import me.ccrama.rssslide.Adapters.ToolbarScrollHideHandler;
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
-import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.Util.Constants;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;

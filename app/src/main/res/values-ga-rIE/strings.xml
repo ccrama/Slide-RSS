@@ -4,9 +4,7 @@
   <!-- Generic text used anywhere -->
   <string name="general_confirm_exit">Dhearbhú scoir</string>
   <!-- Used when viewing a thread -->
-  <string name="submission_gild">Oscail i brabhsálaí</string>
-  <string name="submission_not_found">Ó, ní faigh an posta!</string>
-  <!-- Theme settings -->
+    <!-- Theme settings -->
   <string name="theme_light">Gile</string>
   <string name="theme_dark">Dorcha</string>
   <string name="theme_black">AMOLED dubh</string>
@@ -16,51 +14,26 @@
   <!-- For editing the submission card layout -->
   <!-- Settings for Multi-column view -->
   <!-- Drawer items (That's the one on the left) -->
-  <string name="drawer_hello">Dia duit,</string>
-  <string name="drawer_search">Téigh go dtí subreddit</string>
+    <string name="drawer_search">Téigh go dtí subreddit</string>
   <!-- Sidebar items (That's the one on the right) -->
   <!-- User profile -->
-  <string name="profile_downvoted">Síos vótail</string>
-  <string name="profile_tag_user">Cuir clib ar úsáideoir</string>
-  <!-- Comment text options -->
+    <!-- Comment text options -->
   <!-- Welcome view (first time setup) -->
   <!-- Sorting options -->
-  <string name="sorting_hot">Beo</string>
-  <string name="sorting_ama">C&amp;F (AMA)</string>
-  <string name="sorting_new">Nua</string>
-  <string name="sorting_old">Sean</string>
-  <string name="sorting_rising">Ag ardú</string>
-  <!-- Editor (save/submit a post) actions -->
-  <string name="editor_text">Téacs</string>
-  <string name="editor_title_link">Cuir téacs isteach</string>
-  <string name="editor_action_link">Cuir isteach</string>
-  <string name="editor_title">Teideal</string>
-  <string name="editor_err_msg">Iarracht eile tar éis cúpla nóiméad le do thoil.</string>
-  <string name="editor_uploading_image">Tá an íomhá ag uaslódáil chun Imgur</string>
-  <string name="editor_select_img">Pioc an phictiúir</string>
-  <string name="editor_hint_optional_body">Téacs (roghnach)</string>
-  <string name="editor_submit">Cuir postáil insteach</string>
-  <string name="editor_hint_subreddit">Subreddit</string>
-  <!-- General information / information without a category -->
+    <!-- Editor (save/submit a post) actions -->
+    <!-- General information / information without a category -->
   <!-- General errors / errors without a category -->
   <!-- Gif -->
   <!-- Multireddits -->
   <!-- Content types -->
-  <string name="type_vid">Físeán</string>
-  <!-- Content types plural (Content filters) -->
+    <!-- Content types plural (Content filters) -->
   <!-- Inbox/mail -->
-  <string name="mail_author_wrote">Scríobh %1$s&#8230;</string>
-  <!-- Miscellaneous/generic things that don't have a category or strings that are used for multiple categories -->
-  <string name="misc_err">Earráid</string>
-  <string name="misc_copy_text">Cóipeáil na téacs</string>
-  <!-- Goto User -->
+    <!-- Miscellaneous/generic things that don't have a category or strings that are used for multiple categories -->
+    <!-- Goto User -->
   <!-- Buttons -->
-  <string name="btn_done">Caite</string>
-  <string name="btn_no">Ní hea</string>
+    <string name="btn_no">Ní hea</string>
   <string name="btn_ok">Ceart go leor</string>
-  <string name="btn_sure">Cinnte!</string>
-  <string name="btn_undo">Cealaigh</string>
-  <string name="btn_yes">Tá</string>
+    <string name="btn_yes">Tá</string>
   <string name="btn_refresh">Athnuaigh</string>
   <!-- Backup -->
   <!-- Vote -->
@@ -74,8 +47,7 @@
   <!-- Captcha -->
   <!-- Settings -->
   <!-- Settings titles displayed in settings activity-->
-  <string name="settings_synccit_username">Ainm Úsáideora</string>
-  <!-- View types -->
+    <!-- View types -->
   <!--Search methods -->
   <!-- Subscription managing -->
   <!-- Save categories -->
@@ -90,8 +62,7 @@
   <!-- Over 18 prompt when visiting a NSFW subreddit -->
   <!-- Subreddit color synchronization - https://redd.it/41054l -->
   <!-- Discover section: find -->
-  <string name="discover_title">Faigh amach</string>
-  <!-- Subreddit post notifiactions -->
+    <!-- Subreddit post notifiactions -->
   <!-- Internal browser -->
   <!-- Live thread -->
   <!-- Used when viewing media -->

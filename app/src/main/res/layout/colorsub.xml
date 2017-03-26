@@ -44,7 +44,6 @@
                         android:textSize="18sp" />
 
                     <RelativeLayout
-                        android:id="@+id/body2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?attr/card_background"

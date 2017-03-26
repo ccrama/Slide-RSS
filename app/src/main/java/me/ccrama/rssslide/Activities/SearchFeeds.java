@@ -1,6 +1,5 @@
 package me.ccrama.rssslide.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,16 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 
-import java.util.ArrayList;
-
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.Fragments.BlankFragment;
 import me.ccrama.rssslide.Fragments.FeedFragment;
 import me.ccrama.rssslide.Fragments.SearchFragment;
-import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.SettingValues;
-import me.ccrama.rssslide.Util.Constants;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.Views.ToggleSwipeViewPager;
 

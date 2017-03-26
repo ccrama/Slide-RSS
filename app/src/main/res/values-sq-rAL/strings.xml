@@ -5,24 +5,11 @@
   <string name="general_confirm_exit">Konfirmo Daljen</string>
   <string name="general_confirm_exit_msg">Deshironi te dilni nga aplikacioni?</string>
   <string name="general_enable_shadowbox">Forma Shadowbox</string>
-  <string name="general_open_settings">Sidebar</string>
-  <!-- Used when viewing a thread -->
-  <string name="submission_post_saved">Postimi u ruajt</string>
-  <string name="submission_info_hidden">Postimi u fsheh perhere</string>
-  <string name="submission_stickied">Pinned</string>
-  <string name="submission_link_extern">Hape jashte</string>
-  <string name="submission_link_copy">Kopjo URL</string>
-  <string name="submission_link_share">Shperndaje</string>
-  <string name="submission_share_reddit">Reddit URL</string>
-  <string name="submission_share_content">URL e permbajtjes</string>
-  <string name="submission_hide">Fsheh postimin</string>
-  <string name="submission_report">Raporto postimin</string>
-  <string name="submission_gild">Hape ne browser</string>
-  <string name="submission_save">Ruaje postimin</string>
-  <string name="submission_load_full">Hap postimin e plote</string>
-  <string name="submission_tap_gif">Shtyp per te hapur GIF</string>
-  <string name="submission_not_found">Uh oh, postimi nuk u gjet!</string>
-  <!-- Theme settings -->
+    <!-- Used when viewing a thread -->
+    <string name="submission_link_extern">Hape jashte</string>
+    <string name="submission_link_share">Shperndaje</string>
+    <string name="submission_hide">Fsheh postimin</string>
+    <!-- Theme settings -->
   <!-- Font settings -->
   <!-- For editing the submission card layout -->
   <!-- Settings for Multi-column view -->
@@ -41,8 +28,7 @@
   <!-- Content types plural (Content filters) -->
   <!-- Inbox/mail -->
   <!-- Miscellaneous/generic things that don't have a category or strings that are used for multiple categories -->
-  <string name="misc_copy_text">Kopjo tekstin</string>
-  <!-- Goto User -->
+    <!-- Goto User -->
   <!-- Buttons -->
   <!-- Backup -->
   <!-- Vote -->

@@ -343,7 +343,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                     holder.text.setTextColor(textColor);
                 }
 
-                BaseApplication.getImageLoader(ReorderFeeds.this).displayImage(origPos.icon, ((ImageView) holder.icon));
+                BaseApplication.getImageLoader(ReorderFeeds.this).displayImage(origPos.icon, holder.icon);
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -546,7 +546,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                 Elements links = doc.select("link[type=application/rss+xml]");
 
                 if (links.size() > 0) {
-                    String rss_url = links.get(0).attr("abs:href").toString();
+                    String rss_url = links.get(0).attr("abs:href");
                     return rss_url;
                 } else {
                     return null;

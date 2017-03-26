@@ -41,7 +41,7 @@ public class FullScreenActivity extends BaseActivity {
                     //   Blurry.with(FullScreenActivity.this).radius(2).sampling(5).animate().color(Color.parseColor("#99000000")).onto((ViewGroup) findViewById(android.R.id.content));
                 }
             });
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         super.onPostCreate(savedInstanceState);

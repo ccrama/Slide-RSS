@@ -33,7 +33,6 @@
 
                 <TextView
                     style="@style/TextAppearance.AppCompat.Body2"
-                    android:id="@+id/displayHeader"
                     android:text="@string/display"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
@@ -282,7 +281,6 @@
 
                 <TextView
                     style="@style/TextAppearance.AppCompat.Body2"
-                    android:id="@+id/postButtonsHeader"
                     android:text="@string/post_buttons"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"

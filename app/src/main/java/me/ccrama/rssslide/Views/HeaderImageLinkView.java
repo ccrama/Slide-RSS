@@ -3,7 +3,6 @@ package me.ccrama.rssslide.Views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +12,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
-import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;

@@ -25,11 +25,7 @@ import android.widget.TextView;
 
 import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import me.ccrama.rssslide.Activities.BaseActivity;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.ColorPreferences;

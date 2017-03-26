@@ -5,36 +5,17 @@
   <string name="general_confirm_exit">تأكيد الخروج</string>
   <string name="general_confirm_exit_msg">هل تريد حقاً الخروج من سلايد؟</string>
   <string name="general_enable_shadowbox">نمط Shadowbox</string>
-  <string name="general_sub_sync">مزامنة الاشتراكات</string>
-  <!-- Used when viewing a thread -->
-  <string name="submission_info_unsaved">لم يتم حفظ البيانات</string>
-  <string name="submission_info_saved">تم حفظ الادخال</string>
-  <string name="submission_info_archived">هذا منشور مؤرشف. لن تتمكن من التصويت أو التعليق</string>
-  <string name="submission_post_saved">حُفظ المنشور</string>
-  <string name="submission_info_hidden">المنشور مخفى للأبد</string>
-  <string name="submission_stickied">مثبت</string>
-  <string name="submission_link_extern">فتح بالخارج</string>
-  <string name="submission_link_copy">انسخ الرابط</string>
-  <string name="submission_link_share">مشاركة الرابط</string>
-  <string name="submission_share_title">تريد مشاركة اي رابط ؟</string>
-  <string name="submission_share_reddit">رابط ريدات</string>
-  <string name="submission_share_content">رابط المحتوى</string>
-  <string name="submission_hide">إخفاء المنشور</string>
-  <string name="submission_report">إبلاغ المنشور</string>
-  <string name="submission_gild">فتح بالمتصفح</string>
-  <string name="submission_save">حفظ المنشور</string>
-  <string name="submission_load_full">فتح الموضوع بالكامل</string>
-  <string name="submission_tap_gif">اضغط لتنزيل الـGIF</string>
-  <string name="submission_not_found">أووه، لم يتم العثور على المنشور!</string>
-  <string name="submission_not_found_msg">عذرًا، لا يمكن العثور على هذا المنشور</string>
-  <!-- Theme settings -->
+    <!-- Used when viewing a thread -->
+    <string name="submission_link_extern">فتح بالخارج</string>
+    <string name="submission_link_share">مشاركة الرابط</string>
+    <string name="submission_hide">إخفاء المنشور</string>
+    <!-- Theme settings -->
   <string name="theme_light">فاتح (ابيض)</string>
   <string name="theme_dark">غامق</string>
   <string name="theme_black">AMOLED أسود</string>
   <string name="theme_dark_blue">ازرق غامق</string>
   <string name="theme_default_color">اللون الأساسي</string>
-  <string name="theme_subreddit_color">تغيير اللون</string>
-  <string name="theme_accent_color">لون مميز</string>
+    <string name="theme_accent_color">لون مميز</string>
   <string name="theme_base">الموضوع الأساسي</string>
   <string name="theme_card">بطاقة</string>
   <!-- Font settings -->
@@ -47,230 +28,81 @@
   <string name="font_size_tiny">صغير جدا</string>
   <!-- For editing the submission card layout -->
   <string name="card_hide_post_button">زر \"اخفاء البوست\" في شريط العمل</string>
-  <string name="card_tint_outside">التظليل فقط خارج السب ريديت</string>
-  <string name="card_save_button">زر حفظ البوست في شريط العمل</string>
+    <string name="card_save_button">زر حفظ البوست في شريط العمل</string>
   <!-- Settings for Multi-column view -->
   <string name="multi_column_title">متعدد الأعمدة</string>
   <string name="multi_column_landscape">أفقي</string>
   <string name="multi_column_portrait">أعمدة مزدوجة في الوضع العامودي</string>
   <!-- Drawer items (That's the one on the left) -->
-  <string name="drawer_profile">أنت</string>
-  <string name="drawer_support">اشتر نسخة Pro</string>
-  <string name="drawer_goto_profile">انتقل إلى الصفحة الشخصية</string>
-  <string name="drawer_add_account">إضافة حساب</string>
-  <string name="drawer_hello">مرحباً,</string>
-  <string name="drawer_search">اذهب إلى سب ريديت</string>
-  <string name="drawer_moderation">الإشراف</string>
-  <string name="drawer_offline">Slide غير متصل</string>
-  <string name="drawer_offline_retry">حاول لدخول وضع على الإنترنت</string>
-  <!-- Sidebar items (That's the one on the right) -->
+    <string name="drawer_support">اشتر نسخة Pro</string>
+    <string name="drawer_search">اذهب إلى سب ريديت</string>
+    <!-- Sidebar items (That's the one on the right) -->
   <!-- User profile -->
-  <string name="profile_message">رسالة خاصة</string>
-  <string name="profile_saved">تم الحفظ</string>
-  <string name="profile_upvoted">التصويت للأعلى</string>
-  <string name="profile_err_title">لم يتم العثور على المستخدم</string>
-  <string name="profile_err_msg">تعذر استرداد مستخدم ريديت.</string>
-  <string name="profile_overview">نظرة عامّة</string>
-  <string name="profile_comments">تعليقات</string>
-  <string name="profile_submitted">تم التسليم</string>
-  <string name="profile_downvoted">صوت للأسف</string>
-  <string name="profile_hidden">‮مخفي</string>
-  <string name="profile_friend">صديق</string>
-  <string name="profile_add_friend">أضف كصديق</string>
-  <string name="profile_remove_friend">حذف صديق</string>
-  <string name="profile_history">السّجل</string>
-  <string name="profile_tag">وسم</string>
-  <!-- Comment text options -->
-  <string name="comment_share">شارك التعليق</string>
-  <string name="comment_delete">حذف التعليق</string>
-  <string name="comment_delete_msg">هل تريد حذف هذا التعليق حقاً؟ وهذا لا يمكن التراجع عنه.</string>
-  <!-- Welcome view (first time setup) -->
+    <!-- Comment text options -->
+    <!-- Welcome view (first time setup) -->
   <!-- Sorting options -->
-  <string name="sorting_choose">اختر نوع الفرز</string>
-  <string name="sorting_change_sorting">تغييرطريقة فرزالمنشورات</string>
-  <string name="sorting_best">أفضل</string>
-  <string name="sorting_top">أعلى</string>
-  <string name="sorting_hot">ذات شعبية</string>
-  <string name="sorting_ama">س&amp;ج (أسألني أي شيء AMA)</string>
-  <string name="sorting_new">جديد</string>
-  <string name="sorting_old">قديم</string>
-  <string name="sorting_rising">صاعد</string>
-  <!-- Editor (save/submit a post) actions -->
-  <string name="editor_url">الرابط</string>
-  <string name="editor_text">النص</string>
-  <string name="editor_title_link">أدخل الربط</string>
-  <string name="editor_action_link">أدخل</string>
-  <string name="editor_title">عنوان</string>
-  <string name="editor_err_msg">الرجاء المحاولة مرة أخرى في بضع ثوان.</string>
-  <string name="editor_uploading_image">تحميل الصورة إلى Imgur</string>
-  <string name="editor_select_img">قم بأختيار صورة</string>
-  <string name="editor_hint_optional_body">الجسم (اختياري)</string>
-  <string name="editor_submit">أرسِل المنشورة</string>
-  <string name="editor_hint_subreddit">ريدّت فرعي</string>
-  <!-- General information / information without a category -->
-  <string name="info_photo_saved">حُفظت الصورة</string>
-  <!-- General errors / errors without a category -->
-  <string name="err_title">حدث خطأ!</string>
-  <string name="err_invalid_url">الرابط غير صالح</string>
-  <string name="err_loading_content">خطأ في تحميل المحتوى</string>
-  <string name="err_connection_lost">يبدو أنك فقدت الاتصال بشبكة الإنترنت. يرجى الاتصال بالإنترنت والذهاب مرة أخرى!</string>
-  <!-- Gif -->
-  <string name="gif_err_title">لم يتم العثور على GIF</string>
-  <string name="gif_err_msg">حدث خطأ عند تحميل ال GIF. الرجاء إعادة فتح GIF ثم أعد المحاولة.</string>
-  <!-- Multireddits -->
-  <string name="multireddit_title_empty">العنوان لا يمكن أن يكون فارغاً</string>
-  <!-- Content types -->
-  <string name="type_nsfw_img">صورة NSFW</string>
-  <string name="type_nsfw_gif">GIF NSFW</string>
-  <string name="type_reddit">رابط ريدّت</string>
-  <string name="type_link">رابط</string>
-  <string name="type_nsfw_link">رابط NSFW</string>
-  <string name="type_gif">GIF</string>
-  <string name="type_title_only">عنوان المنشورة</string>
-  <string name="type_album">ألبوم</string>
-  <string name="type_nsfw_album">ألبوم غير صالح للعمل</string>
-  <string name="type_img">صورة</string>
-  <string name="type_vid">فيديو</string>
-  <string name="type_nsfw_video">فيديو غير صالح للعمل</string>
-  <string name="type_emb">مضمّن</string>
-  <string name="type_nsfw_emb">غير صالح للعمل مضمّن</string>
-  <string name="type_imgur">محتوى Imgur</string>
-  <string name="type_nsfw_imgur">محتوى Imgur غير صالح للعمل</string>
-  <string name="type_external">خارجي</string>
-  <!-- Content types plural (Content filters) -->
-  <string name="type_albums">ألبومات</string>
-  <string name="type_nsfw_content">محتوى غير صالح للعمل</string>
-  <string name="type_links">روابط</string>
-  <!-- Inbox/mail -->
-  <string name="mail_hint_recipient">المُستلم</string>
-  <string name="mail_hint_subject">موضوع</string>
-  <string name="mail_hint_body">جسم</string>
-  <string name="mail_send_to">إرسال رسالة إلى %1$s</string>
-  <string name="mail_send">أرسل رسالة</string>
-  <string name="mail_reply_to">الرد على %1$s</string>
-  <string name="mail_notification_author">%1$s من %2$s</string>
-  <string name="mail_theirs">عرض الرسالة الخاصة بهم</string>
-  <!-- Miscellaneous/generic things that don't have a category or strings that are used for multiple categories -->
-  <string name="misc_err">خطأ</string>
-  <string name="misc_none">لاشيء</string>
-  <string name="misc_score_hidden">النقاط مخفية</string>
-  <string name="misc_nsfw">NSFW</string>
-  <string name="misc_continue">متابعة</string>
-  <string name="misc_copy_text">نسخ الكتابه</string>
-  <!-- Goto User -->
-  <string name="user_enter">أدخل اسم المستخدم</string>
-  <string name="user_btn_goto">الانتقال إلى استخدام</string>
-  <!-- Buttons -->
-  <string name="btn_add">اضف</string>
-  <string name="btn_cancel">الغاء</string>
+    <!-- Editor (save/submit a post) actions -->
+    <!-- General information / information without a category -->
+    <!-- General errors / errors without a category -->
+    <!-- Gif -->
+    <!-- Multireddits -->
+    <!-- Content types -->
+    <!-- Content types plural (Content filters) -->
+    <!-- Inbox/mail -->
+    <!-- Miscellaneous/generic things that don't have a category or strings that are used for multiple categories -->
+    <!-- Goto User -->
+    <!-- Buttons -->
+    <string name="btn_cancel">الغاء</string>
   <string name="btn_close">أغلق</string>
-  <string name="btn_discard">حذف</string>
-  <string name="btn_done">تمّ</string>
-  <string name="btn_go_back">رجوع</string>
-  <string name="btn_no_danks">لا شكرا</string>
+    <string name="btn_no_danks">لا شكرا</string>
   <string name="btn_no">لا</string>
   <string name="btn_ok">موافق</string>
   <string name="btn_remove">إزالة</string>
-  <string name="btn_reply">رد </string>
-  <string name="btn_reset">اعادة ضبط</string>
+    <string name="btn_reset">اعادة ضبط</string>
   <string name="btn_save">حفظ</string>
-  <string name="btn_submit">ارسال</string>
-  <string name="btn_sure">بالتأكيد!</string>
-  <string name="btn_undo">ارجع</string>
-  <string name="btn_yes">نعم</string>
+    <string name="btn_yes">نعم</string>
   <string name="btn_refresh">تحديث</string>
   <!-- Backup -->
-  <string name="backup_success">لقد نجحت عملية النسخ الإحتياطي!</string>
-  <string name="backup_restoring">استعادة الإعدادات الخاصة بك</string>
-  <string name="backup_backing_up">يتم نسخ النسخة الاحتياطي للإعدادات الخاصة بك</string>
-  <string name="backup_restarting">سيتم الآن إعادة تشغيل البرنامج.</string>
-  <string name="backup_btn">نسخة احتياطية</string>
-  <string name="backup_btn_restore">استعادة</string>
-  <!-- Vote -->
-  <string name="vote_err_login">يجب أن تكون مسجلاً للتصويت!</string>
-  <!-- Moderation tools -->
-  <string name="mod_reports">ابلاغ</string>
-  <string name="mod_no_reports">لا توجد تقارير</string>
-  <string name="mod_btn_mark_nsfw">علّم محتوى غير صالح للعمل</string>
-  <string name="mod_btn_unmark_nsfw">ألغ تعليم محتوى غير صالح للعمل</string>
-  <!-- Pleasantly asking the user if he made his mind up -->
+    <!-- Vote -->
+    <!-- Moderation tools -->
+    <!-- Pleasantly asking the user if he made his mind up -->
   <!-- If he did -->
   <!-- Subreddit Wiki -->
-  <string name="wiki_err">لم يتم العصور على wiki</string>
-  <!-- Subreddits -->
+    <!-- Subreddits -->
   <!-- Search -->
   <string name="search_goto">اذهب الى</string>
   <!-- Captcha -->
-  <string name="captcha_title">أثبت أنك لست روبوت</string>
-  <!-- Settings -->
+    <!-- Settings -->
   <string name="settings_layout_default">شكل الموضوع</string>
-  <string name="settings_link_album">عرض الالبومات بالداخل</string>
-  <string name="settings_link_gif">عرض الـGIF بالداخل</string>
-  <string name="settings_link_handling">التعامل مع الرابط</string>
-  <string name="settings_link_image">عرض الصور بالداخل</string>
-  <string name="settings_mail_check">التحقق من وجود بريد جديد</string>
-  <string name="settings_main_color_title">تحرير اللون الرئيسي</string>
-  <string name="settings_notification_short">تحقق كل %1$s</string>
-  <string name="share_link">مشاركة الرابط</string>
-  <string name="posts_hidden_forever">إخفاء الموضوع للأبد</string>
-  <string name="share_image">مشاركة الصوره</string>
-  <string name="settings_libs">مكتبات مفتوحة المصدر</string>
-  <string name="settings_bugs">أرسل تقريراً بالخطأ</string>
-  <string name="settings_changelog">عرض سجل التغيير</string>
-  <string name="settings_colored_navigation_bar">شريط التنقل ملون</string>
-  <!-- Settings titles displayed in settings activity-->
+    <string name="settings_link_handling">التعامل مع الرابط</string>
+    <string name="settings_main_color_title">تحرير اللون الرئيسي</string>
+    <string name="posts_hidden_forever">إخفاء الموضوع للأبد</string>
+    <!-- Settings titles displayed in settings activity-->
   <string name="settings_title_general">عامّ</string>
-  <string name="settings_title_history">السّجل</string>
-  <string name="settings_title_notifications">إعدادات التنبيهات</string>
-  <string name="settings_title_about">حول</string>
+    <string name="settings_title_about">حول</string>
   <string name="settings_title_fab">زر العمل عائم</string>
-  <string name="settings_title_filter">فلترة</string>
-  <string name="settings_title_font">الخط</string>
+    <string name="settings_title_font">الخط</string>
   <string name="settings_section_appearance">المظهر</string>
-  <string name="settings_synccit_username">إسم المستخدم</string>
-  <string name="settings_synccit_delete">حذف حساب synccit حقا ؟</string>
-  <string name="settings_synccit_connected">تم الاتصال بنجاح!</string>
-  <!-- View types -->
+    <!-- View types -->
   <!--Search methods -->
   <!-- Subscription managing -->
-  <string name="btn_add_subreddit">إضافة سوبريديت</string>
-  <string name="reorder_subreddit_name">اسم السوبريديت</string>
-  <string name="reorder_remove_title">إزالة هذا سوبريديت؟</string>
-  <string name="reorder_remove_msg">لن يتم الغاء الاشتراك, لاكن لن ترى هذا السوبريديت بالقائمة الجانبيه الخاصه بك!</string>
-  <!-- Save categories -->
+    <string name="reorder_remove_title">إزالة هذا سوبريديت؟</string>
+    <!-- Save categories -->
   <!-- Setting subheaders -->
   <!-- Titles displayed in action bar / head / recents overview-->
-  <string name="title_submit_post">إرسال المنشورة</string>
-  <string name="title_settings">إعدادات</string>
+    <string name="title_settings">إعدادات</string>
   <string name="title_share">مشاركة باستخدام</string>
-  <string name="title_login">تسجيل الدخول إلى Reddit</string>
-  <string name="title_inbox">صندوق الوارد</string>
-  <string name="title_theme_settings">المظهر</string>
-  <string name="title_create_multi">أنشاء multireddit</string>
-  <string name="title_mod">مشرف</string>
-  <!-- Text in Donation-Activity -->
-  <string name="donate_amount_title">هذا المبلغ&#8230;</string>
-  <string name="donate_info_student">أنا مطور طالب، وأنا ممتن جداً للتبرع السخي! أنهم ساهموا في جعل Slide (مجاني) حقيقه :)</string>
-  <string name="donate_btn">التبرع</string>
-  <string name="donate_amount_ads1">محفوظات</string>
-  <string name="donate_amount_ads2">إعلان من العرض</string>
-  <string name="donate_amount_hours1">تدعيمات</string>
-  <string name="donate_amount_hours2">ساعات من التطوير</string>
-  <string name="donate_title">دعم Slide for Reddit</string>
-  <string name="donate_err_title">لم ينجح التبرع :(</string>
-  <string name="donate_success_title">نجح التبرع!</string>
-  <!-- Offline mode -->
+    <string name="title_theme_settings">المظهر</string>
+    <!-- Text in Donation-Activity -->
+    <!-- Offline mode -->
   <!-- Website -->
   <!-- Time -->
   <!-- Time: shorthand durations for example 1 hour → 1h -->
   <!-- Strings present during the login process -->
   <!-- Over 18 prompt when visiting a NSFW subreddit -->
   <!-- Subreddit color synchronization - https://redd.it/41054l -->
-  <string name="color_sync_complete">تم أكمال المزامنة</string>
-  <!-- Discover section: find -->
-  <string name="discover_popular">الاكثر شعبية</string>
-  <string name="discover_trending">رائج</string>
-  <!-- Subreddit post notifiactions -->
+    <!-- Discover section: find -->
+    <!-- Subreddit post notifiactions -->
   <!-- Internal browser -->
   <!-- Live thread -->
   <!-- Used when viewing media -->
@@ -282,6 +114,4 @@
   <!-- Caching -->
   <!-- Saving location setting -->
   <!-- Unsorted ¯\\_(ツ)_/¯ -->
-  <string name="comment_load_more_number_unknown">إظهار المزيد من التعليقات</string>
-  <string name="btn_report">ابلاغ</string>
 </resources>

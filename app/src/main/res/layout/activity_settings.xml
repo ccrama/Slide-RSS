@@ -302,7 +302,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/support"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:background="?android:selectableItemBackground"
@@ -321,7 +320,6 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:text="@string/settings_title_support"
-                        android:id="@+id/donatetext"
                         android:textColor="?attr/font"
                         android:textSize="14sp" />
                 </LinearLayout>

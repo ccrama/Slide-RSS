@@ -77,18 +77,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.realm.OrderedCollectionChangeSet;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 import me.ccrama.rssslide.Adapters.SideArrayAdapter;
 import me.ccrama.rssslide.CheckForPosts.CheckForPosts;
 import me.ccrama.rssslide.CheckForPosts.NotificationJobScheduler;
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.DragSort.ReorderFeeds;
 import me.ccrama.rssslide.Fragments.FeedFragment;
-import me.ccrama.rssslide.Fragments.SearchFragment;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.PreCachingLayoutManager;
 import me.ccrama.rssslide.R;

@@ -20,8 +20,7 @@
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/fontStylesHeader"
-                    style="@style/TextAppearance.AppCompat.Body2"
+                style="@style/TextAppearance.AppCompat.Body2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingEnd="16dp"

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="md_amber_200">#ffe082</color>
     <color name="md_amber_300">#ffd54f</color>
     <color name="md_amber_400">#ffca28</color>
     <color name="md_amber_500">#ffc107</color>
@@ -72,7 +68,6 @@
     <color name="md_green_800">#2e7d32</color>
     <color name="md_green_900">#1b5e20</color>
     <color name="md_green_A400">#00e676</color>
-    <color name="md_grey_50">#fafafa</color>
     <color name="md_grey_300">#e0e0e0</color>
     <color name="md_grey_400">#bdbdbd</color>
     <color name="md_grey_500">#9e9e9e</color>
@@ -98,7 +93,6 @@
     <color name="md_light_blue_800">#0277bd</color>
     <color name="md_light_blue_900">#01579b</color>
     <color name="md_light_blue_A400">#00b0ff</color>
-    <color name="md_light_green_200">#c5e1a5</color>
     <color name="md_light_green_300">#aed581</color>
     <color name="md_light_green_400">#9ccc65</color>
     <color name="md_light_green_500">#8bc34a</color>
@@ -106,7 +100,6 @@
     <color name="md_light_green_700">#689f38</color>
     <color name="md_light_green_800">#558b2f</color>
     <color name="md_light_green_900">#33691e</color>
-    <color name="md_lime_200">#e6ee9c</color>
     <color name="md_lime_300">#dce775</color>
     <color name="md_lime_400">#d4e157</color>
     <color name="md_lime_500">#cddc39</color>
@@ -115,7 +108,6 @@
     <color name="md_lime_800">#9e9d24</color>
     <color name="md_lime_900">#827717</color>
     <color name="md_lime_A400">#c6ff00</color>
-    <color name="md_orange_200">#ffcc80</color>
     <color name="md_orange_300">#ffb74d</color>
     <color name="md_orange_400">#ffa726</color>
     <color name="md_orange_500">#ff9800</color>
@@ -166,6 +158,5 @@
     <color name="md_yellow_A400">#ffea00</color>
     <color name="orange">#ff5722</color>
     <color name="transparent">#00000000</color>
-    <color name="black">#000000</color>
     <color name="white">#ffffff</color>
 </resources>

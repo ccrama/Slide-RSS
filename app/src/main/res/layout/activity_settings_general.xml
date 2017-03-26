@@ -17,8 +17,7 @@
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/displayHeader"
-                    style="@style/TextAppearance.AppCompat.Body2"
+                style="@style/TextAppearance.AppCompat.Body2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingEnd="16dp"
@@ -91,8 +90,7 @@
             </RelativeLayout>
 
           <TextView
-                    android:id="@+id/miscHeader"
-                    style="@style/TextAppearance.AppCompat.Body2"
+              style="@style/TextAppearance.AppCompat.Body2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingEnd="16dp"

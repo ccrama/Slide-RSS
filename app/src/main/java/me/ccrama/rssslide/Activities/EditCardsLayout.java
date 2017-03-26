@@ -1,6 +1,5 @@
 package me.ccrama.rssslide.Activities;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.PopupMenu;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.Map;
 
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.SettingValues;

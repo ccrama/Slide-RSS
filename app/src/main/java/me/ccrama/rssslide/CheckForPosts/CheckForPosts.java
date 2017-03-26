@@ -111,7 +111,7 @@ public class CheckForPosts extends BroadcastReceiver {
                                         for (Article a : feed.getUnseen()) {
                                             style.addLine(a.getTitle());
                                             count++;
-                                            if (SettingValues.cacheWebsites) {
+                                            if (SettingValues.cacheWebsites && realm.where(WebsiteText.class).equalTo("url", a.getLink()).findFirst() == null) {
                                                 new AsyncCacheWebsite(realm).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, a);
                                             }
                                         }

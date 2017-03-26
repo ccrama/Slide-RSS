@@ -11,14 +11,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.SystemClock;
 import android.support.v7.app.NotificationCompat;
 
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
-import com.rometools.rome.io.XmlReader;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -26,9 +24,14 @@ import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,14 +40,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import io.realm.Realm;
 import me.ccrama.rssslide.Activities.FeedViewSingle;
 import me.ccrama.rssslide.Activities.MainActivity;
-import me.ccrama.rssslide.BaseApplication;
+import me.ccrama.rssslide.Activities.ReaderMode;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.WebsiteText;
 import me.ccrama.rssslide.Realm.XMLToRealm;
+import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.Util.ConversionCallback;
-import me.ccrama.rssslide.Util.LogUtil;
 
 public class CheckForPosts extends BroadcastReceiver {
 
@@ -89,11 +93,11 @@ public class CheckForPosts extends BroadcastReceiver {
             final Realm r = Realm.getDefaultInstance();
             r.executeTransactionAsync(new Realm.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(final Realm realm) {
                     List<Feed> f = realm.where(Feed.class).findAllSorted("order");
                     for (final Feed feed : f) {
                         try {
-                            List<SyndEntry> entries =  loadXmlFromNetwork(feed.url, feed);
+                            List<SyndEntry> entries = loadXmlFromNetwork(feed.url, feed);
                             XMLToRealm.convertInTransaction(realm, feed, entries, new ConversionCallback() {
                                 @Override
                                 public void onCompletion(int size) {
@@ -107,6 +111,9 @@ public class CheckForPosts extends BroadcastReceiver {
                                         for (Article a : feed.getUnseen()) {
                                             style.addLine(a.getTitle());
                                             count++;
+                                            if (SettingValues.cacheWebsites) {
+                                                new AsyncCacheWebsite(realm).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, a);
+                                            }
                                         }
 
                                         style.setBigContentTitle("New " + feed.name + " articles")
@@ -158,6 +165,60 @@ public class CheckForPosts extends BroadcastReceiver {
         }
 
         int amount;
+    }
+
+    public static class AsyncCacheWebsite extends AsyncTask<Article, Void, Void> {
+        String articleText;
+        String title;
+        Realm realm;
+        String url;
+
+        public AsyncCacheWebsite(Realm realm) {
+            this.realm = realm;
         }
+
+        @Override
+        protected Void doInBackground(Article... params) {
+            try {
+                url = params[0].getLink();
+                URL url = new URL(params[0].getLink());
+                URLConnection con = url.openConnection();
+                Pattern p = Pattern.compile("text/html;\\s+charset=([^\\s]+)\\s*");
+                Matcher m = p.matcher(con.getContentType());
+                String charset = m.matches() ? m.group(1) : "ISO-8859-1";
+                Reader r = new InputStreamReader(con.getInputStream(), charset);
+                StringBuilder buf = new StringBuilder();
+                while (true) {
+                    int ch = r.read();
+                    if (ch < 0) break;
+                    buf.append((char) ch);
+                }
+                String html = buf.toString();
+                ReaderMode.ReadabilityWrapper readability = new ReaderMode.ReadabilityWrapper(html);  // URL
+                readability.init();
+                title = readability.getArticleTitle().text();
+                articleText = readability.outerHtml();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (articleText != null) {
+                WebsiteText t = new WebsiteText();
+                t.url = url;
+                t.body = articleText;
+                t.title = title;
+                realm.insertOrUpdate(t);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+    }
 
 }

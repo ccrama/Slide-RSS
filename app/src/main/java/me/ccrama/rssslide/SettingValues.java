@@ -41,7 +41,7 @@ public class SettingValues {
 
     public static final String PREF_FULL_COMMENT_OVERRIDE = "fullCommentOverride";
     public static final String PREF_EXIT = "Exit";
-    public static final String PREF_FAB_CLEAR = "fabClear";
+    public static final String PREF_CACHE_WEBSITES = "cacheWeb";
     public static final String PREF_HIDEBUTTON = "Hidebutton";
     public static final String PREF_SAVE_BUTTON = "saveButton";
     public static final String PREF_IMAGE = "image";
@@ -75,6 +75,7 @@ public class SettingValues {
     public static boolean postNav;
     public static boolean exit;
     public static int subredditSearchMethod;
+    public static boolean cacheWebsites;
     public static int nightStart;
     public static int nightEnd;
 
@@ -133,6 +134,7 @@ public class SettingValues {
         summary = prefs.getBoolean(PREF_SUMMARY, true);
         colorEverywhere = prefs.getBoolean(PREF_COLOR_EVERYWHERE, true);
         noImages = prefs.getBoolean(PREF_NO_IMAGES, false);
+        cacheWebsites = prefs.getBoolean(PREF_CACHE_WEBSITES, false);
 
         fullCommentOverride = prefs.getBoolean(PREF_FULL_COMMENT_OVERRIDE, false);
         web = prefs.getBoolean(PREFS_WEB, true);

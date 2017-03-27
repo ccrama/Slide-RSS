@@ -248,7 +248,7 @@ public class FeedFragment extends Fragment {
 
     public void doAdapter() {
         viewed = true;
-        dataSet = new FeedLoader(id);
+        dataSet = new FeedLoader(id, getActivity());
         adapter = new FeedAdapter(getActivity(), dataSet, rv, mSwipeRefreshLayout);
         adapter.setHasStableIds(true);
 

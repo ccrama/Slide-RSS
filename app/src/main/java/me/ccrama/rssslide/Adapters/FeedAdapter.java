@@ -5,9 +5,12 @@ package me.ccrama.rssslide.Adapters;
  */
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,6 +48,9 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
         this.dataSet = dataSet;
         this.context = context;
         this.refreshLayout = refreshLayout;
+        if(dataSet instanceof FeedLoader) {
+            ((FeedLoader)dataSet).cancelNotifs();
+        }
     }
 
     @Override
@@ -98,6 +104,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
             }
         }, 500);
         refreshLayout.setRefreshing(false);
+
     }
 
     @Override

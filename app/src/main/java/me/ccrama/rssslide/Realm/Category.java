@@ -7,6 +7,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -27,7 +28,7 @@ public class Category extends RealmObject implements FeedWrapper {
         for(Feed f : feeds){
             a.equalTo("feed", f.getTitle()).or();
         }
-        return a.findAllSorted("published");
+        return a.findAllSorted("published", Sort.DESCENDING);
     }
 
     @Override

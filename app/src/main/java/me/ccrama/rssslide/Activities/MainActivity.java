@@ -1451,6 +1451,7 @@ public class MainActivity extends BaseActivity {
             Snackbar.make(drawerLayout, counter + " new articles loaded", Snackbar.LENGTH_SHORT).show();
         findViewById(R.id.currentlyDoing).setVisibility(View.GONE);
         findViewById(R.id.saving).setVisibility(View.VISIBLE);
+        sideArrayAdapter.notifyDataSetChanged();
         ((TextView) findViewById(R.id.synced)).setText("Sync feeds now (last update " + TimeUtils.getTimeSince(time, this) + ")");
     }
 

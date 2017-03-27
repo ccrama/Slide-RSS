@@ -1,6 +1,8 @@
 package me.ccrama.rssslide.Adapters;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -40,9 +42,18 @@ public class FeedLoader implements ConversionCallback, DataSet {
     FeedAdapter adapter;
     RealmResults<Article> results;
 
-    public FeedLoader(final FeedWrapper id) {
+    public FeedLoader(final FeedWrapper id, Activity context) {
         feed = id;
+        this.context = context;
         results = feed.getArticles();
+    }
+
+    public void cancelNotifs(){
+        if(feed instanceof Feed) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.cancel(feed.getOrder());
+        }
+
     }
 
     public void loadMore(Activity context, FeedAdapter adapter) {

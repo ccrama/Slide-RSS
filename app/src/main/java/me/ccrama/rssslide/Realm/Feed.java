@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -26,7 +27,7 @@ public class Feed extends RealmObject implements FeedWrapper {
 
     @Override
     public RealmResults<Article> getArticles() {
-        return Realm.getDefaultInstance().where(Article.class).equalTo("feed", getTitle()).findAllSorted("published");
+        return Realm.getDefaultInstance().where(Article.class).equalTo("feed", getTitle()).findAllSorted("published", Sort.DESCENDING);
     }
 
     @Override

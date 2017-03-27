@@ -83,7 +83,7 @@ public class AddFeedFromURL extends Activity {
                         ArrayList<Feed> subs = new ArrayList<>(realm.where(Feed.class).findAllSorted("order"));
                         subs.add(feed);
                         for (int i = 0; i < subs.size(); i++) {
-                            subs.get(i).order = i;
+                            subs.get(i).setOrder(i);
                         }
                         for (Feed f : subs) {
                             realm.insertOrUpdate(f);

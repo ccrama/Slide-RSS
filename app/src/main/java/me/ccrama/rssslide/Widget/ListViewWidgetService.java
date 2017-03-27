@@ -48,7 +48,7 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
         records = new ArrayList<>();
         String sub = SubredditWidgetProvider.getFeedFromId(id, mContext);
         Feed f = Realm.getDefaultInstance().where(Feed.class).equalTo("name", sub).findFirst();
-        for(Article a : f.articles){
+        for(Article a : f.getArticles()){
             records.add(a.getId());
         }
 

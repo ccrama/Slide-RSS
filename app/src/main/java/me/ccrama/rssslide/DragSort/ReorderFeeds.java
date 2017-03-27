@@ -332,7 +332,7 @@ public class ReorderFeeds extends BaseActivityAnim {
             if (holderB instanceof ViewHolder) {
                 final ViewHolder holder = (ViewHolder) holderB;
                 final Feed origPos = items.get(position);
-                holder.text.setText(origPos.name);
+                holder.text.setText(origPos.getTitle());
 
                 if (chosen.contains(origPos)) {
                     holder.itemView.setBackgroundColor(
@@ -343,7 +343,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                     holder.text.setTextColor(textColor);
                 }
 
-                BaseApplication.getImageLoader(ReorderFeeds.this).displayImage(origPos.icon, holder.icon);
+                BaseApplication.getImageLoader(ReorderFeeds.this).displayImage(origPos.getIcon(), holder.icon);
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {

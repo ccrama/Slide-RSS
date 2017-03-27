@@ -90,7 +90,7 @@ public class Article extends RealmObject {
     }
 
     public void setAll(SyndEntry article, Feed feed) {
-        this.feed = feed.getName();
+        this.feed = feed.getTitle();
         this.link = article.getLink();
         this.created = System.currentTimeMillis();
         if (article.getUri() == null || article.getUri().isEmpty()) {
@@ -100,6 +100,8 @@ public class Article extends RealmObject {
         }
         if (article.getPublishedDate() != null)
             this.published = article.getPublishedDate().getTime();
+        else
+            this.published = System.currentTimeMillis();
         this.title = article.getTitle();
         if (article.getDescription() != null) {
             this.summary = article.getDescription().getValue();
@@ -107,11 +109,11 @@ public class Article extends RealmObject {
             this.summary = "";
         }
 
-        if(article.getAuthor() != null && !article.getAuthor().isEmpty()){
+        if (article.getAuthor() != null && !article.getAuthor().isEmpty()) {
             author = article.getAuthor();
         }
 
-        if(article.getComments() != null && !article.getComments().isEmpty()){
+        if (article.getComments() != null && !article.getComments().isEmpty()) {
             LogUtil.v(article.getComments());
             comments = article.getComments();
         }
@@ -121,15 +123,14 @@ public class Article extends RealmObject {
         for (Element foreignMarkup : foreignMarkups) {
             if (foreignMarkup.getAttribute("url") != null)
                 imgURL = foreignMarkup.getAttribute("url").getValue();
-            else
-                if(foreignMarkup.getChildren() != null){
-                    for(Element e : foreignMarkup.getChildren()){
-                        if (e.getAttribute("url") != null) {
-                            imgURL = e.getAttribute("url").getValue();
-                            break;
-                        }
+            else if (foreignMarkup.getChildren() != null) {
+                for (Element e : foreignMarkup.getChildren()) {
+                    if (e.getAttribute("url") != null) {
+                        imgURL = e.getAttribute("url").getValue();
+                        break;
                     }
                 }
+            }
 
         }
         if (imgURL == null) {
@@ -143,7 +144,7 @@ public class Article extends RealmObject {
                 }
             }
         }
-        if(imgURL == null && article.getDescription() != null){
+        if (imgURL == null && article.getDescription() != null) {
             //Regex for possible images
             String imgRegex = "<[iI][mM][gG][^>]+[sS][rR][cC]\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
 
@@ -155,8 +156,8 @@ public class Article extends RealmObject {
             }
 
         }
-        if(imgURL == null && article.getContents() != null){
-            for(SyndContent c : article.getContents()){
+        if (imgURL == null && article.getContents() != null) {
+            for (SyndContent c : article.getContents()) {
                 //Regex for possible images
                 String imgRegex = "<[iI][mM][gG][^>]+[sS][rR][cC]\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
 
@@ -166,7 +167,7 @@ public class Article extends RealmObject {
                 if (m.find()) {
                     imgURL = m.group(1);
                 }
-                if(this.summary == null || this.summary.trim().isEmpty()){
+                if (this.summary == null || this.summary.trim().isEmpty()) {
                     this.summary = c.getValue();
                 }
             }

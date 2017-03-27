@@ -106,7 +106,7 @@ public class CheckForPosts extends BroadcastReceiver {
                                         NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
 
                                         int count = 0;
-                                        for (Article a : feed.getUnseen()) {
+                                        for (Article a : feed.getUnread()) {
                                             style.addLine(a.getTitle());
                                             count++;
                                             if (SettingValues.cacheWebsites && realm.where(WebsiteText.class).equalTo("url", a.getLink()).findFirst() == null) {
@@ -114,30 +114,30 @@ public class CheckForPosts extends BroadcastReceiver {
                                             }
                                         }
 
-                                        style.setBigContentTitle("New " + feed.name + " articles")
+                                        style.setBigContentTitle("New " + feed.getTitle() + " articles")
                                                 .setSummaryText("+" + count + " more");
 
                                         Intent openPIBase;
                                         openPIBase = new Intent(c, FeedViewSingle.class);
-                                        openPIBase.putExtra(FeedViewSingle.EXTRA_FEED, feed.name);
+                                        openPIBase.putExtra(FeedViewSingle.EXTRA_FEED, feed.getTitle());
                                         openPIBase.setFlags(
                                                 Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                                         PendingIntent openPi =
-                                                PendingIntent.getActivity(c, feed.order,
+                                                PendingIntent.getActivity(c, feed.getOrder(),
                                                         openPIBase, 0);
 
                                         Notification notifb = new NotificationCompat.Builder(c)
-                                                .setContentTitle(feed.name + " " + size + " new articles")
+                                                .setContentTitle(feed.getTitle() + " " + size + " new articles")
                                                 .setContentText(size + " new articles")
                                                 .setContentIntent(openPi)
                                                 .setSmallIcon(R.drawable.newarticle)
-                                                .setColor(Palette.getColor(feed.name))
+                                                .setColor(Palette.getColor(feed.getTitle()))
                                                 .setWhen(System.currentTimeMillis())
                                                 .setStyle(style)
                                                 .build();
 
-                                        notificationManager.notify(feed.order, notifb);
+                                        notificationManager.notify(feed.getOrder(), notifb);
                                     }
 
                                 }

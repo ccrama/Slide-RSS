@@ -88,6 +88,7 @@ import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.PreCachingLayoutManager;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.UserFeeds;
 import me.ccrama.rssslide.Util.Constants;
@@ -102,13 +103,13 @@ public class MainActivity extends BaseActivity {
     // Instance state keys
     static final int SETTINGS_RESULT = 2;
     public static final String EXTRA_PAGE_TO = "pageTo";
-    public static Feed shouldLoad;
+    public static FeedWrapper shouldLoad;
     public static int restartPage;
     private final long ANIMATE_DURATION_OFFSET = 45; //offset for smoothing out the exit animations
     public static int notificationTime;
     public boolean singleMode;
     public ToggleSwipeViewPager pager;
-    public ArrayList<Feed> usedArray;
+    public ArrayList<FeedWrapper> usedArray;
     public DrawerLayout drawerLayout;
     public View hea;
     public View header;
@@ -116,7 +117,7 @@ public class MainActivity extends BaseActivity {
     public int toGoto = 0;
     public TabLayout mTabLayout;
     public ListView drawerFeedList;
-    public Feed selectedFeed; //currently selected feed
+    public FeedWrapper selectedFeed; //currently selected feed
     public boolean commentPager = false;
     public String tabViewModeTitle;
     public boolean inNightMode;
@@ -267,7 +268,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int style = new ColorPreferences(MainActivity.this).getThemeSubreddit(
-                                selectedFeed.name);
+                                selectedFeed.getTitle());
                         final Context contextThemeWrapper =
                                 new ContextThemeWrapper(MainActivity.this, style);
                         LayoutInflater localInflater =
@@ -275,7 +276,7 @@ public class MainActivity extends BaseActivity {
                         final View dialoglayout =
                                 localInflater.inflate(R.layout.colorsub, null);
                         ArrayList<String> arrayList = new ArrayList<>();
-                        arrayList.add(selectedFeed.name);
+                        arrayList.add(selectedFeed.getTitle());
                         Palette.showSubThemeEditor(arrayList, MainActivity.this,
                                 dialoglayout);
                         return false;
@@ -495,7 +496,7 @@ public class MainActivity extends BaseActivity {
                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        ((FeedFragment) adapter.getCurrentFragment()).dataSet.feed.articles.deleteAllFromRealm();
+                        ((FeedFragment) adapter.getCurrentFragment()).dataSet.feed.getArticles().deleteAllFromRealm();
                         ((FeedFragment) adapter.getCurrentFragment()).forceRefresh();
                     }
                 });
@@ -1082,7 +1083,7 @@ public class MainActivity extends BaseActivity {
                 CLOSE_BUTTON.setVisibility(View.GONE);
 
                 if (SettingValues.single) {
-                    getSupportActionBar().setTitle(selectedFeed.name);
+                    getSupportActionBar().setTitle(selectedFeed.getTitle());
                 } else {
                     getSupportActionBar().setTitle(tabViewModeTitle);
                 }
@@ -1136,7 +1137,7 @@ public class MainActivity extends BaseActivity {
 
 
         if (SettingValues.single) {
-            getSupportActionBar().setTitle(shouldLoad.name);
+            getSupportActionBar().setTitle(shouldLoad.getTitle());
         }
 
         setToolbarClick();
@@ -1177,7 +1178,7 @@ public class MainActivity extends BaseActivity {
         ((FeedFragment) adapter.getCurrentFragment()).resetScroll();
     }
 
-    public void setDataSet(List<Feed> data, boolean sidebar) {
+    public void setDataSet(List<FeedWrapper> data, boolean sidebar) {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         setDrawerEdge(this, Constants.DRAWER_SWIPE_EDGE, drawerLayout);
 
@@ -1187,7 +1188,6 @@ public class MainActivity extends BaseActivity {
             setDrawerSubList();
         }
         if (data != null && !data.isEmpty()) {
-            LogUtil.v("Done with " + data.get(0).name + " and " + data.get(0).url);
             usedArray = new ArrayList(data);
             if (adapter == null) {
                 adapter = new OverviewPagerAdapter(getSupportFragmentManager());
@@ -1205,9 +1205,9 @@ public class MainActivity extends BaseActivity {
             }
             shouldLoad = usedArray.get(toGoto);
             selectedFeed = (usedArray.get(toGoto));
-            themeSystemBars(usedArray.get(toGoto).name);
+            themeSystemBars(usedArray.get(toGoto).getTitle());
 
-            final String USEDARRAY_0 = usedArray.get(0).name;
+            final String USEDARRAY_0 = usedArray.get(0).getTitle();
             header.setBackgroundColor(Palette.getColor(USEDARRAY_0));
 
             if (hea != null) {
@@ -1227,19 +1227,19 @@ public class MainActivity extends BaseActivity {
                     scrollToTabAfterLayout(toGoto);
                 }
             } else {
-                getSupportActionBar().setTitle(usedArray.get(toGoto).name);
+                getSupportActionBar().setTitle(usedArray.get(toGoto).getTitle());
                 pager.setCurrentItem(toGoto);
             }
             setToolbarClick();
 
-            setRecentBar(usedArray.get(toGoto).name);
+            setRecentBar(usedArray.get(toGoto).getTitle());
         } else {
             UserFeeds.doMainActivitySubs(this);
         }
     }
 
     public void setDrawerSubList() {
-        ArrayList<Feed> copy = new ArrayList<>(UserFeeds.getAllUserFeeds());
+        ArrayList<FeedWrapper> copy = new ArrayList<>(UserFeeds.getAllUserFeeds());
 
         sideArrayAdapter = new SideArrayAdapter(this, copy, drawerFeedList);
         drawerFeedList.setAdapter(sideArrayAdapter);
@@ -1429,8 +1429,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public boolean feedContains(String base) {
-        for (Feed f : usedArray) {
-            if (f.name.equalsIgnoreCase(base)) {
+        for (FeedWrapper f : usedArray) {
+            if (f.getTitle().equalsIgnoreCase(base)) {
                 return true;
             }
         }
@@ -1439,7 +1439,7 @@ public class MainActivity extends BaseActivity {
 
     public int feedIndexOf(String base) {
         for (int i = 0; i < usedArray.size(); i++) {
-            if (usedArray.get(i).name.equalsIgnoreCase(base)) {
+            if (usedArray.get(i).getTitle().equalsIgnoreCase(base)) {
                 return i;
             }
         }
@@ -1483,14 +1483,14 @@ public class MainActivity extends BaseActivity {
                     FeedFragment page = (FeedFragment) adapter.getCurrentFragment();
 
                     if (hea != null) {
-                        hea.setBackgroundColor(Palette.getColor(selectedFeed.name));
+                        hea.setBackgroundColor(Palette.getColor(selectedFeed.getTitle()));
                         if (accountsArea != null) {
-                            accountsArea.setBackgroundColor(Palette.getDarkerColor(selectedFeed.name));
+                            accountsArea.setBackgroundColor(Palette.getDarkerColor(selectedFeed.getTitle()));
                         }
                     }
 
                     int colorFrom = ((ColorDrawable) header.getBackground()).getColor();
-                    int colorTo = Palette.getColor(selectedFeed.name);
+                    int colorTo = Palette.getColor(selectedFeed.getTitle());
 
                     ValueAnimator colorAnimation =
                             ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -1516,14 +1516,14 @@ public class MainActivity extends BaseActivity {
                     colorAnimation.setDuration(200);
                     colorAnimation.start();
 
-                    setRecentBar(selectedFeed.name);
+                    setRecentBar(selectedFeed.getTitle());
 
                     if (SettingValues.single || mTabLayout == null) {
                         //Smooth out the fading animation for the toolbar subreddit search UI
-                        getSupportActionBar().setTitle(selectedFeed.name);
+                        getSupportActionBar().setTitle(selectedFeed.getTitle());
                     } else {
                         mTabLayout.setSelectedTabIndicatorColor(
-                                new ColorPreferences(MainActivity.this).getColor(selectedFeed.name));
+                                new ColorPreferences(MainActivity.this).getColor(selectedFeed.getTitle()));
                     }
                 }
 
@@ -1555,7 +1555,7 @@ public class MainActivity extends BaseActivity {
             FeedFragment f = new FeedFragment();
             Bundle args = new Bundle();
             String name;
-            name = usedArray.get(i).name;
+            name = usedArray.get(i).getTitle();
             args.putString("id", name);
             f.setArguments(args);
 
@@ -1604,7 +1604,7 @@ public class MainActivity extends BaseActivity {
 
             if (usedArray != null) {
                 try {
-                    return abbreviate(usedArray.get(position).name, 25);
+                    return abbreviate(usedArray.get(position).getTitle(), 25);
                 } catch (Exception e) {
                     return "";
                 }

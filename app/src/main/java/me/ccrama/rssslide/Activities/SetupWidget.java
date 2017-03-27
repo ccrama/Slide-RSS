@@ -9,13 +9,17 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.Adapters.SideArrayAdapter;
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.FontPreferences;
 import me.ccrama.rssslide.R;
+import me.ccrama.rssslide.Realm.Category;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.Widget.SubredditWidgetProvider;
 
 /**
@@ -59,7 +63,15 @@ public class SetupWidget extends BaseActivity {
         header = getLayoutInflater().inflate(R.layout.widget_header, null);
 
         ListView list = (ListView) findViewById(R.id.subs);
-        final ArrayList<Feed> sorted = new ArrayList<>(Realm.getDefaultInstance().where(Feed.class).findAll());
+        final ArrayList<FeedWrapper> sorted = new ArrayList<FeedWrapper>(Realm.getDefaultInstance().where(Feed.class).findAllSorted("order"));
+        sorted.addAll(Realm.getDefaultInstance().where(Category.class).findAllSorted("order"));
+        Collections.sort(sorted, new Comparator<FeedWrapper>() {
+            @Override
+            public int compare(FeedWrapper p1, FeedWrapper p2) {
+                return p1.getOrder() - p2.getOrder();// Ascending
+            }
+
+        });
         final SideArrayAdapter adapter = new SideArrayAdapter(this, sorted, list);
 
         list.addHeaderView(header);

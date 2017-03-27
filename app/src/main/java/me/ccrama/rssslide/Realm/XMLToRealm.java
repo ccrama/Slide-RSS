@@ -32,9 +32,6 @@ public class XMLToRealm {
                     }
                 }
                 Collections.reverse(toAdd);
-                for (Article a : toAdd) {
-                    f.addArticle(a);
-                }
                 c.onCompletion(toAdd.size());
             }
         });
@@ -51,9 +48,6 @@ public class XMLToRealm {
             }
         }
         Collections.reverse(toAdd);
-        for (Article a : toAdd) {
-            feed.addArticle(a);
-        }
         c.onCompletion(toAdd.size());
     }
 
@@ -76,9 +70,6 @@ public class XMLToRealm {
                             }
                         }
                         Collections.reverse(toAdd);
-                        for (Article a : toAdd) {
-                            feed.articles.add(0, a);
-                        }
                         c.onCompletion(toAdd.size());
                     }
                 });

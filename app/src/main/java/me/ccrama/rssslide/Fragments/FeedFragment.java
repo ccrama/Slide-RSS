@@ -27,6 +27,7 @@ import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.Activities.BaseActivity;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.ColorPreferences;
 import me.ccrama.rssslide.Util.Constants;
@@ -48,7 +49,7 @@ public class FeedFragment extends Fragment {
     private static int currentPosition;
     public RecyclerView rv;
     public FeedAdapter adapter;
-    public Feed id;
+    public FeedWrapper id;
     public boolean main;
     public boolean forced;
     int diff;
@@ -80,7 +81,7 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),
-                new ColorPreferences(inflater.getContext()).getThemeSubreddit(id.name));
+                new ColorPreferences(inflater.getContext()).getThemeSubreddit(id.getTitle()));
         final View v = ((LayoutInflater) contextThemeWrapper.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.fragment_verticalcontent,
                 container, false);
@@ -109,7 +110,7 @@ public class FeedFragment extends Fragment {
 
         mSwipeRefreshLayout =
                 (SwipeRefreshLayout) v.findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors(id.name, getContext()));
+        mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors(id.getTitle(), getContext()));
 
         /**
          * If using List view mode, we need to remove the start margin from the SwipeRefreshLayout.
@@ -192,7 +193,7 @@ public class FeedFragment extends Fragment {
         if (MainActivity.shouldLoad == null
                 || id == null
                 || (MainActivity.shouldLoad != null
-                && MainActivity.shouldLoad.name.equals(id.name))
+                && MainActivity.shouldLoad.getTitle().equals(id.getTitle()))
                 || !(getActivity() instanceof MainActivity)) {
             doAdapter();
         }
@@ -231,8 +232,10 @@ public class FeedFragment extends Fragment {
                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        dataSet.feed.setSeen();
-                        realm.insertOrUpdate(dataSet.feed);
+                        if(dataSet.feed instanceof Feed) {
+                            ((Feed)dataSet.feed).setSeen();
+                            realm.insertOrUpdate(((Feed)dataSet.feed));
+                        }
                     }
                 });
                 LogUtil.v("Hiding");
@@ -250,7 +253,7 @@ public class FeedFragment extends Fragment {
         adapter.setHasStableIds(true);
 
         rv.setAdapter(adapter);
-       if(dataSet.feed.articles.isEmpty()) {
+       if(dataSet.feed.getArticles().isEmpty()) {
            dataSet.loadMore(getActivity(), adapter);
            mSwipeRefreshLayout.post(new Runnable() {
                @Override
@@ -295,8 +298,8 @@ public class FeedFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (adapter != null && adapterPosition > 0 && currentPosition == adapterPosition) {
-            if (id.articles.size() >= adapterPosition - 1
-                    && id.articles.get(adapterPosition - 1) == currentArticle) {
+            if (id.getArticles().size() >= adapterPosition - 1
+                    && id.getArticles().get(adapterPosition - 1) == currentArticle) {
                 adapter.performClick(adapterPosition);
                 adapterPosition = -1;
             }
@@ -315,8 +318,10 @@ public class FeedFragment extends Fragment {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                dataSet.feed.setSeen();
-                realm.insertOrUpdate(dataSet.feed);
+                if(dataSet.feed instanceof Feed) {
+                    ((Feed)dataSet.feed).setSeen();
+                    realm.insertOrUpdate(((Feed)dataSet.feed));
+                }
             }
         });
     }
@@ -358,7 +363,7 @@ public class FeedFragment extends Fragment {
                                             Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                                 @Override
                                                 public void execute(Realm realm) {
-                                                    Article a = dataSet.feed.articles.get(pastVisiblesItems - 1);
+                                                    Article a = dataSet.feed.getArticles().get(pastVisiblesItems - 1);
                                                     a.setSeen();
                                                     realm.copyToRealmOrUpdate(a);
                                                 }

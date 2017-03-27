@@ -3,7 +3,9 @@ package me.ccrama.rssslide.Realm;
 import java.util.ArrayList;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
@@ -11,22 +13,21 @@ import io.realm.annotations.PrimaryKey;
  * Created by Carlos on 3/17/2017.
  */
 
-public class Feed extends RealmObject implements FeedWrapper {
-    private String name;
-    private String icon;
-    private long accessed;
+public class Category extends RealmObject implements FeedWrapper {
 
     @PrimaryKey
-    public String url;
+    private String name;
+    private RealmList<Feed> feeds;
+    private int accessed;
     private int order;
-
-    public void setSeen() {
-        accessed = System.currentTimeMillis();
-    }
 
     @Override
     public RealmResults<Article> getArticles() {
-        return Realm.getDefaultInstance().where(Article.class).equalTo("feed", getTitle()).findAllSorted("published");
+        RealmQuery<Article> a = Realm.getDefaultInstance().where(Article.class);
+        for(Feed f : feeds){
+            a.equalTo("feed", f.getTitle()).or();
+        }
+        return a.findAllSorted("published");
     }
 
     @Override
@@ -36,12 +37,13 @@ public class Feed extends RealmObject implements FeedWrapper {
 
     @Override
     public String getIcon() {
-        return icon;
+        return null;
     }
 
     @Override
     public RealmResults<Article> getUnread() {
-        return Realm.getDefaultInstance().where(Article.class).equalTo("feed", getTitle()).greaterThan("created", accessed).findAll();
+       //todo return getArticles().where().greaterThan("created", accessed).findAll();
+        return null;
     }
 
     @Override
@@ -60,22 +62,12 @@ public class Feed extends RealmObject implements FeedWrapper {
     }
 
     @Override
-    public ArrayList<Feed> getFeeds() {
-        return new ArrayList<Feed>() {{
-            add(Feed.this);
-        }};
-    }
-
-    @Override
     public void setOrder(int i) {
         order = i;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
+    @Override
+    public ArrayList<Feed> getFeeds() {
+        return new ArrayList<>(feeds);
     }
 }

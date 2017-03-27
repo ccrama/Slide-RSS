@@ -22,6 +22,7 @@ import java.util.List;
 import io.realm.RealmResults;
 import me.ccrama.rssslide.Realm.Article;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.Realm.XMLToRealm;
 import me.ccrama.rssslide.Util.ConversionCallback;
 import me.ccrama.rssslide.Util.LogUtil;
@@ -33,22 +34,24 @@ import me.ccrama.rssslide.Util.LogUtil;
 public class FeedLoader implements ConversionCallback, DataSet {
     public boolean nomore;
     public boolean offline;
-    public Feed feed;
+    public FeedWrapper feed;
     Activity context;
     public boolean loading;
     FeedAdapter adapter;
     RealmResults<Article> results;
 
-    public FeedLoader(final Feed id) {
+    public FeedLoader(final FeedWrapper id) {
         feed = id;
-        results = feed.articles.where().findAll();
+        results = feed.getArticles();
     }
 
     public void loadMore(Activity context, FeedAdapter adapter) {
         this.context = context;
         this.adapter = adapter;
         LogUtil.v("Loading more!");
-        new DownloadXmlTask().execute(feed.url); //todo turn feed name into feed URL
+        for (Feed f : feed.getFeeds()) {
+            new DownloadXmlTask(f).execute(f.url); //todo turn feed name into feed URL
+        }
     }
 
     @Override
@@ -59,15 +62,21 @@ public class FeedLoader implements ConversionCallback, DataSet {
     @Override
     public void onCompletion(int count) {
         Toast.makeText(context, count + " articles loaded", Toast.LENGTH_SHORT).show();
-        results = feed.articles.where().findAll();
+        results = feed.getArticles();
     }
 
     private class DownloadXmlTask extends AsyncTask<String, Void, List<Article>> {
+        Feed f;
+
+        public DownloadXmlTask(Feed f) {
+            this.f = f;
+        }
+
         @Override
         protected List<Article> doInBackground(String... urls) {
             loading = true;
             try {
-                return loadXmlFromNetwork(urls[0]);
+                return loadXmlFromNetwork(f, urls[0]);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             } catch (ParseException e) {
@@ -85,11 +94,11 @@ public class FeedLoader implements ConversionCallback, DataSet {
 
     // Uploads XML from stackoverflow.com, parses it, and combines it with
 // HTML markup. Returns HTML string.
-    private List<Article> loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException, ParseException {
+    private List<Article> loadXmlFromNetwork(Feed fe, String urlString) throws XmlPullParserException, IOException, ParseException {
         SyndFeed f = null;
         try {
             f = new SyndFeedInput().build(new XmlReader(new URL(urlString)));
-            XMLToRealm.convertSync(feed, f.getEntries(), this, context);
+            XMLToRealm.convertSync(fe, f.getEntries(), this, context);
         } catch (FeedException e) {
             e.printStackTrace();
         }

@@ -22,6 +22,8 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.realm.Realm;
@@ -32,7 +34,9 @@ import me.ccrama.rssslide.Activities.SetupWidget;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
+import me.ccrama.rssslide.Realm.Category;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.SettingValues;
 import me.ccrama.rssslide.Util.Constants;
 import me.ccrama.rssslide.Widget.SubredditWidgetProvider;
@@ -41,20 +45,28 @@ import me.ccrama.rssslide.Widget.SubredditWidgetProvider;
 /**
  * Created by ccrama on 8/17/2015.
  */
-public class SideArrayAdapter extends ArrayAdapter<Feed> {
-    private List<Feed> objects;
+public class SideArrayAdapter extends ArrayAdapter<FeedWrapper> {
+    private List<FeedWrapper> objects;
     private Filter filter;
-    public ArrayList<Feed> fitems;
+    public ArrayList<FeedWrapper> fitems;
     public ListView parentL;
     public boolean openInSubView = true;
 
-    public SideArrayAdapter(Context context, final ArrayList<Feed> objects, ListView view) {
+    public SideArrayAdapter(Context context, final ArrayList<FeedWrapper> objects, ListView view) {
         super(context, 0, objects);
         this.objects = objects;
         new RealmChangeListener<Feed>() {
             @Override
             public void onChange(Feed element) {
-                SideArrayAdapter.this.objects = new ArrayList<>(Realm.getDefaultInstance().where(Feed.class).findAllSorted("order"));
+                SideArrayAdapter.this.objects = new ArrayList<FeedWrapper>(Realm.getDefaultInstance().where(Feed.class).findAllSorted("order"));
+                SideArrayAdapter.this.objects.addAll(Realm.getDefaultInstance().where(Category.class).findAllSorted("order"));
+                Collections.sort(SideArrayAdapter.this.objects, new Comparator<FeedWrapper>() {
+                    @Override
+                    public int compare(FeedWrapper p1, FeedWrapper p2) {
+                        return p1.getOrder() - p2.getOrder();// Ascending
+                    }
+
+                });
                 SideArrayAdapter.this.fitems = new ArrayList<>(objects);
             }
         };
@@ -93,10 +105,10 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
             }
             updateCount(fitems.get(position), convertView);
             final String sub;
-            final String base = fitems.get(position).name;
-            sub = fitems.get(position).name;
+            final String base = fitems.get(position).getTitle();
+            sub = fitems.get(position).getTitle();
             final TextView t = ((TextView) convertView.findViewById(R.id.name));
-            t.setText(fitems.get(position).getName());
+            t.setText(fitems.get(position).getTitle());
 
             if (height == 0) {
                 final View finalConvertView = convertView;
@@ -120,9 +132,9 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
 
             ImageView back = (ImageView) convertView.findViewById(R.id.icon);
             back.setImageDrawable(null);
-            if(fitems.get(position).icon != null && !fitems.get(position).icon.isEmpty()) {
+            if(fitems.get(position).getIcon() != null && !fitems.get(position).getIcon().isEmpty()) {
                 back.setBackgroundDrawable(null);
-                BaseApplication.getImageLoader(getContext()).displayImage(fitems.get(position).icon, back);
+                BaseApplication.getImageLoader(getContext()).displayImage(fitems.get(position).getIcon(), back);
             } else {
                 back.setBackgroundResource(R.drawable.circle);
                 back.getBackground().setColorFilter(Palette.getColor(base), PorterDuff.Mode.MULTIPLY);
@@ -166,7 +178,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                                                     R.id.close_search_toolbar)));
                                     if (SettingValues.single) {
                                         ((MainActivity) getContext()).getSupportActionBar()
-                                                .setTitle(((MainActivity) getContext()).selectedFeed.name);
+                                                .setTitle(((MainActivity) getContext()).selectedFeed.getTitle());
                                     } else {
                                         ((MainActivity) getContext()).getSupportActionBar()
                                                 .setTitle(
@@ -236,7 +248,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
                                                 R.id.close_search_toolbar)));
                                 if (SettingValues.single) {
                                     ((MainActivity) getContext()).getSupportActionBar()
-                                            .setTitle(((MainActivity) getContext()).selectedFeed.name);
+                                            .setTitle(((MainActivity) getContext()).selectedFeed.getTitle());
                                 } else {
                                     ((MainActivity) getContext()).getSupportActionBar()
                                             .setTitle(((MainActivity) getContext()).tabViewModeTitle);
@@ -279,8 +291,8 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
         return convertView;
     }
 
-    private void updateCount(Feed feed, View v) {
-        int count = feed.getUnseen().size();
+    private void updateCount(FeedWrapper feed, View v) {
+        int count = feed.getUnread().size();
         ((TextView)v.findViewById(R.id.unread)).setText("" + count);
         if(count == 0){
             v.findViewById(R.id.unread).setVisibility(View.GONE);
@@ -301,17 +313,17 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
             String prefix = constraint.toString().toLowerCase();
 
             if (prefix == null || prefix.isEmpty()) {
-                ArrayList<Feed> list = new ArrayList<>(objects);
+                ArrayList<FeedWrapper> list = new ArrayList<>(objects);
                 results.values = list;
                 results.count = list.size();
             } else {
                 openInSubView = true;
-                final ArrayList<Feed> list = new ArrayList<>(objects);
-                final ArrayList<Feed> nlist = new ArrayList<>();
+                final ArrayList<FeedWrapper> list = new ArrayList<>(objects);
+                final ArrayList<FeedWrapper> nlist = new ArrayList<>();
 
-                for (Feed f : list) {
-                    if (StringUtils.containsIgnoreCase(f.name, prefix)) nlist.add(f);
-                    if (f.name.equals(prefix)) openInSubView = false;
+                for (FeedWrapper f : list) {
+                    if (StringUtils.containsIgnoreCase(f.getTitle(), prefix)) nlist.add(f);
+                    if (f.getTitle().equals(prefix)) openInSubView = false;
                 }
 
                 results.values = nlist;
@@ -324,7 +336,7 @@ public class SideArrayAdapter extends ArrayAdapter<Feed> {
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            fitems = (ArrayList<Feed>) results.values;
+            fitems = (ArrayList<FeedWrapper>) results.values;
             clear();
             if (fitems != null) {
                 addAll(fitems);

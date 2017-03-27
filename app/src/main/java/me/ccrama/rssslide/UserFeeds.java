@@ -12,11 +12,14 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import me.ccrama.rssslide.Activities.MainActivity;
+import me.ccrama.rssslide.Realm.Category;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.Util.GenerateFeedCallback;
 import me.ccrama.rssslide.Util.LogUtil;
 
@@ -26,14 +29,21 @@ import me.ccrama.rssslide.Util.LogUtil;
 
 public class UserFeeds {
 
-    public static RealmResults<Feed> feedList;
+    public static ArrayList<FeedWrapper> feedList;
 
     public static void doMainActivitySubs(final MainActivity mainActivity) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                feedList = realm.where(Feed.class).findAllSorted("order");
+                feedList = new ArrayList<FeedWrapper>(realm.where(Feed.class).findAllSorted("order"));
+                feedList.addAll(realm.where(Category.class).findAllSorted("order"));
+                Collections.sort(feedList, new Comparator<FeedWrapper>() {
+                    @Override
+                    public int compare(FeedWrapper p1, FeedWrapper p2) {
+                        return p1.getOrder() - p2.getOrder();// Ascending
+                    }
 
+                });
             }
         });
         LogUtil.v("Doing realm stuff");
@@ -44,7 +54,7 @@ public class UserFeeds {
         }
     }
 
-    public static RealmResults<Feed> getAllUserFeeds() {
+    public static ArrayList<FeedWrapper> getAllUserFeeds() {
         return feedList;
     }
 
@@ -58,14 +68,14 @@ public class UserFeeds {
             try {
                 SyndFeed feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
                 f = new Feed();
-                f.name = feed.getTitle();
-                if(feed.getImage() != null)
-                f.icon = feed.getImage().getUrl();
-                if (f.icon != null && f.icon.endsWith("/")) {
-                    f.icon = f.icon.substring(0, f.icon.length() - 1);
+                f.setName(feed.getTitle());
+                if (feed.getImage() != null)
+                    f.setIcon(feed.getImage().getUrl());
+                if (f.getIcon() != null && f.getIcon().endsWith("/")) {
+                    f.setIcon(f.getIcon().substring(0, f.getIcon().length() - 1));
                 }
                 f.url = url;
-                LogUtil.v("Doing feed " + f.name);
+                LogUtil.v("Doing feed " + f.getTitle());
                 return f;
             } catch (FeedException e) {
                 e.printStackTrace();
@@ -133,7 +143,7 @@ public class UserFeeds {
             @Override
             public void execute(Realm realm) {
                 for (int i = 0; i < subs.size(); i++) {
-                    subs.get(i).order = i;
+                    subs.get(i).setOrder(i);
                 }
                 for (Feed f : subs) {
                     realm.insertOrUpdate(f);

@@ -131,24 +131,28 @@ public class PopulateArticleViewHolder {
                             @Override
                             public void execute(Realm realm) {
                                 a.hidden = !a.isHidden();
-                                final int index = feed.articles.indexOf(a);
-                                if (a.hidden) {
-                                    feed.articles.remove(a);
-                                }
-                                Snackbar s = Snackbar.make(recyclerview, "Post hidden", Snackbar.LENGTH_SHORT);
-                                s.setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                                            @Override
-                                            public void execute(Realm realm) {
-                                                feed.articles.add(index, a);
-                                                a.hidden = false;
-                                            }
-                                        });
+                                final int index;
+                                if (feed != null) {
+                                    index = feed.getArticles().indexOf(a);
+
+                                    if (a.hidden) {
+                                        feed.getArticles().remove(a);
                                     }
-                                });
-                                s.show();
+                                    Snackbar s = Snackbar.make(recyclerview, "Post hidden", Snackbar.LENGTH_SHORT);
+                                    s.setAction("Undo", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                                                @Override
+                                                public void execute(Realm realm) {
+                                                    feed.getArticles().add(index, a);
+                                                    a.hidden = false;
+                                                }
+                                            });
+                                        }
+                                    });
+                                    s.show();
+                                }
                             }
                         });
                         break;
@@ -177,9 +181,9 @@ public class PopulateArticleViewHolder {
         });
 
 
-        holder.feed.setText(feed.name);
+        holder.feed.setText(feed.getTitle());
         BaseApplication.getImageLoader(context)
-                .displayImage(feed.icon, holder.icon);
+                .displayImage(feed.getIcon(), holder.icon);
 
 
         final ImageView hideButton = (ImageView) holder.hide;
@@ -270,12 +274,12 @@ public class PopulateArticleViewHolder {
 
         });
 
-        if (feed.accessed < article.created) {
-            holder.title.setTextColor(Palette.getColor(feed.name));
+        if (feed.getAccessed() < article.created) {
+            holder.title.setTextColor(Palette.getColor(feed.getTitle()));
         } else {
             holder.title.setTextColor(holder.info.getCurrentTextColor());
         }
-        holder.info.setText(getInfoSpannable(article, feed.name, context));
+        holder.info.setText(getInfoSpannable(article, feed.getTitle(), context));
 
         holder.body.setVisibility(View.VISIBLE);
         String text = article.summary;

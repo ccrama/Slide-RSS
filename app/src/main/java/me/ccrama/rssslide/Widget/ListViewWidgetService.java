@@ -15,7 +15,9 @@ import io.realm.Realm;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Realm.Article;
+import me.ccrama.rssslide.Realm.Category;
 import me.ccrama.rssslide.Realm.Feed;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.Util.TimeUtils;
 
 /**
@@ -47,7 +49,10 @@ class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactor
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
         records = new ArrayList<>();
         String sub = SubredditWidgetProvider.getFeedFromId(id, mContext);
-        Feed f = Realm.getDefaultInstance().where(Feed.class).equalTo("name", sub).findFirst();
+        FeedWrapper f = Realm.getDefaultInstance().where(Feed.class).equalTo("name", sub).findFirst();
+        if(f == null){
+            f = Realm.getDefaultInstance().where(Category.class).equalTo("name", sub).findFirst();
+        }
         for(Article a : f.getArticles()){
             records.add(a.getId());
         }

@@ -18,7 +18,7 @@ public class Category extends RealmObject implements FeedWrapper {
 
     @PrimaryKey
     private String name;
-    private RealmList<Feed> feeds;
+    public RealmList<Feed> feeds;
     private int accessed;
     private int order;
 
@@ -43,8 +43,11 @@ public class Category extends RealmObject implements FeedWrapper {
 
     @Override
     public RealmResults<Article> getUnread() {
-       //todo return getArticles().where().greaterThan("created", accessed).findAll();
-        return null;
+       return getArticles().where().greaterThan("created", accessed).findAll();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

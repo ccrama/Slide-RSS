@@ -138,15 +138,19 @@ public class UserFeeds {
 
     }
 
-    public static void setFeeds(final ArrayList<Feed> subs) {
+    public static void setFeeds(final ArrayList<FeedWrapper> subs) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 for (int i = 0; i < subs.size(); i++) {
                     subs.get(i).setOrder(i);
                 }
-                for (Feed f : subs) {
-                    realm.insertOrUpdate(f);
+                for (FeedWrapper f : subs) {
+                    if(f instanceof Feed){
+                        realm.insertOrUpdate((Feed)f);
+                    } else {
+                        realm.insertOrUpdate((Category)f);
+                    }
                 }
             }
         });

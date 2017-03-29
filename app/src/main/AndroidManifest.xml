@@ -85,7 +85,11 @@
             android:alwaysRetainTaskState="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:theme="@style/swipeableweb" />
-
+        <activity
+            android:name=".Activities.CreateCategory"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:theme="@style/swipeableweb" />
         <receiver android:name=".CheckForPosts.CheckForPosts"></receiver>
 
         <activity android:name=".Activities.AddFeedFromURL">

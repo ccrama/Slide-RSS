@@ -17,6 +17,7 @@
 package me.ccrama.rssslide.DragSort;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -51,18 +52,21 @@ import java.util.HashMap;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.Activities.BaseActivityAnim;
+import me.ccrama.rssslide.Activities.CreateCategory;
 import me.ccrama.rssslide.BaseApplication;
 import me.ccrama.rssslide.ColorPreferences;
+import me.ccrama.rssslide.Realm.Category;
 import me.ccrama.rssslide.Realm.Feed;
 import me.ccrama.rssslide.Activities.MainActivity;
 import me.ccrama.rssslide.Palette;
 import me.ccrama.rssslide.R;
 import me.ccrama.rssslide.Activities.SettingsTheme;
+import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.UserFeeds;
 
 public class ReorderFeeds extends BaseActivityAnim {
 
-    private ArrayList<Feed> subs;
+    private ArrayList<FeedWrapper> subs;
     private CustomAdapter adapter;
     private RecyclerView recyclerView;
     private String input;
@@ -108,6 +112,10 @@ public class ReorderFeeds extends BaseActivityAnim {
                         .negativeText(R.string.btn_cancel)
                         .show();
                 return true;
+            case R.id.category:
+                Intent i = new Intent(this, CreateCategory.class);
+                startActivity(i);
+                return true;
         }
         return false;
     }
@@ -123,6 +131,14 @@ public class ReorderFeeds extends BaseActivityAnim {
         super.onPause();
     }
 
+    boolean hasShown = false;
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(hasShown)
+        doShowSubs();
+    }
+
     @Override
     public void onBackPressed() {
         if (isMultiple) {
@@ -135,7 +151,7 @@ public class ReorderFeeds extends BaseActivityAnim {
         }
     }
 
-    private ArrayList<Feed> chosen = new ArrayList<>();
+    private ArrayList<FeedWrapper> chosen = new ArrayList<>();
     HashMap<String, Boolean> isSubscribed;
     private boolean isMultiple;
     private int done = 0;
@@ -152,6 +168,7 @@ public class ReorderFeeds extends BaseActivityAnim {
 
         isSubscribed = new HashMap<>();
         doShowSubs();
+        hasShown = true;
     }
 
     public void doShowSubs() {
@@ -172,7 +189,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                 if (to == subs.size()) {
                     to -= 1;
                 }
-                Feed item = subs.remove(from);
+                FeedWrapper item = subs.remove(from);
                 subs.add(to, item);
                 adapter.notifyDataSetChanged();
             }
@@ -231,9 +248,9 @@ public class ReorderFeeds extends BaseActivityAnim {
     }
 
     public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private final ArrayList<Feed> items;
+        private final ArrayList<FeedWrapper> items;
 
-        public CustomAdapter(ArrayList<Feed> items) {
+        public CustomAdapter(ArrayList<FeedWrapper> items) {
             this.items = items;
         }
 
@@ -274,7 +291,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                                                 @Override
                                                 public void onClick(DialogInterface dialog,
                                                                     int which) {
-                                                    for (Feed s : chosen) {
+                                                    for (FeedWrapper s : chosen) {
                                                         int index = subs.indexOf(s);
                                                         subs.remove(index);
                                                         adapter.notifyItemRemoved(index);
@@ -282,8 +299,12 @@ public class ReorderFeeds extends BaseActivityAnim {
                                                     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                                         @Override
                                                         public void execute(Realm realm) {
-                                                            for (Feed s : chosen) {
-                                                                s.deleteFromRealm();
+                                                            for (FeedWrapper f : chosen) {
+                                                                if(f instanceof Feed){
+                                                                    ((Feed)f).deleteFromRealm();
+                                                                } else {
+                                                                    ((Category)f).deleteFromRealm();
+                                                                }
                                                             }
                                                         }
                                                     });
@@ -303,7 +324,7 @@ public class ReorderFeeds extends BaseActivityAnim {
             mToolbar.findViewById(R.id.top).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (Feed s : chosen) {
+                    for (FeedWrapper s : chosen) {
                         int index = subs.indexOf(s);
                         subs.remove(index);
                         subs.add(0, s);
@@ -331,7 +352,7 @@ public class ReorderFeeds extends BaseActivityAnim {
         public void onBindViewHolder(final RecyclerView.ViewHolder holderB, final int position) {
             if (holderB instanceof ViewHolder) {
                 final ViewHolder holder = (ViewHolder) holderB;
-                final Feed origPos = items.get(position);
+                final FeedWrapper origPos = items.get(position);
                 holder.text.setText(origPos.getTitle());
 
                 if (chosen.contains(origPos)) {
@@ -402,7 +423,7 @@ public class ReorderFeeds extends BaseActivityAnim {
                                                                             public void onClick(
                                                                                     DialogInterface dialog,
                                                                                     int which) {
-                                                                                final Feed f = items.get(
+                                                                                final FeedWrapper f = items.get(
                                                                                         position);
                                                                                 subs.remove(f);
                                                                                 adapter.notifyItemRemoved(
@@ -410,8 +431,11 @@ public class ReorderFeeds extends BaseActivityAnim {
                                                                                 Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                                                                                     @Override
                                                                                     public void execute(Realm realm) {
-                                                                                        f.deleteFromRealm();
-                                                                                    }
+                                                                                        if(f instanceof Feed){
+                                                                                            ((Feed)f).deleteFromRealm();
+                                                                                        } else {
+                                                                                            ((Category)f).deleteFromRealm();
+                                                                                        }                                                                                    }
                                                                                 });
                                                                             }
                                                                         })
@@ -428,7 +452,7 @@ public class ReorderFeeds extends BaseActivityAnim {
 
                                                 b.show();
                                             } else {
-                                                Feed s = items.get(holder.getAdapterPosition());
+                                                FeedWrapper s = items.get(holder.getAdapterPosition());
                                                 int index = subs.indexOf(s);
                                                 subs.remove(index);
                                                 subs.add(0, s);

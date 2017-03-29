@@ -8,4 +8,9 @@
         android:title="@string/alphabetize_subreddits"
         app:showAsAction="always"
         android:icon="@drawable/add" />
+    <item
+        android:id="@+id/category"
+        android:title="@string/alphabetize_subreddits"
+        app:showAsAction="always"
+        android:icon="@drawable/category" />
 </menu>

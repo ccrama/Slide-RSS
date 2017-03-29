@@ -27,6 +27,7 @@ import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
 import io.realm.Realm;
 import me.ccrama.rssslide.Activities.BaseActivity;
+import me.ccrama.rssslide.Realm.Category;
 import me.ccrama.rssslide.Realm.FeedWrapper;
 import me.ccrama.rssslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.rssslide.ColorPreferences;
@@ -287,6 +288,9 @@ public class FeedFragment extends Fragment {
         String idb= bundle.getString("id", "");
         LogUtil.v("Loading " + idb);
         id = Realm.getDefaultInstance().where(Feed.class).equalTo("name", idb).findFirst();
+        if(id == null){
+            id = Realm.getDefaultInstance().where(Category.class).equalTo("name", idb).findFirst();
+        }
         main = bundle.getBoolean("main", false);
         forceLoad = bundle.getBoolean("load", false);
 

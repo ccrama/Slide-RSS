@@ -71,6 +71,11 @@ public class FeedLoader implements ConversionCallback, DataSet {
     }
 
     @Override
+    public long getAccessed() {
+        return feed.getAccessed();
+    }
+
+    @Override
     public void onCompletion(int count) {
         Toast.makeText(context, count + " articles loaded", Toast.LENGTH_SHORT).show();
         results = feed.getArticles();

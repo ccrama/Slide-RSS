@@ -29,4 +29,9 @@ public class SearchLoader implements DataSet {
         return results;
     }
 
+    @Override
+    public long getAccessed() {
+        return System.currentTimeMillis();
+    }
+
 }

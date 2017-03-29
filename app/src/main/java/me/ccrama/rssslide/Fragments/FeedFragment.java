@@ -236,6 +236,9 @@ public class FeedFragment extends Fragment {
                         if(dataSet.feed instanceof Feed) {
                             ((Feed)dataSet.feed).setSeen();
                             realm.insertOrUpdate(((Feed)dataSet.feed));
+                        } else {
+                                ((Category)dataSet.feed).setSeen();
+                                realm.insertOrUpdate(((Category)dataSet.feed));
                         }
                     }
                 });
@@ -325,6 +328,9 @@ public class FeedFragment extends Fragment {
                 if(dataSet.feed instanceof Feed) {
                     ((Feed)dataSet.feed).setSeen();
                     realm.insertOrUpdate(((Feed)dataSet.feed));
+                } else {
+                    ((Category)dataSet.feed).setSeen();
+                    realm.insertOrUpdate(((Category)dataSet.feed));
                 }
             }
         });

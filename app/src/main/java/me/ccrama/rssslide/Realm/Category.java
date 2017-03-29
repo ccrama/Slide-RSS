@@ -19,7 +19,7 @@ public class Category extends RealmObject implements FeedWrapper {
     @PrimaryKey
     private String name;
     public RealmList<Feed> feeds;
-    private int accessed;
+    private long accessed;
     private int order;
 
     @Override
@@ -39,6 +39,10 @@ public class Category extends RealmObject implements FeedWrapper {
     @Override
     public String getIcon() {
         return null;
+    }
+
+    public void setSeen() {
+        accessed = System.currentTimeMillis();
     }
 
     @Override

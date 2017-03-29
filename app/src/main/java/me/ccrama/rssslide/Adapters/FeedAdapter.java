@@ -148,7 +148,7 @@ public class FeedAdapter extends RealmRecyclerViewAdapter<Article, RecyclerView.
                                                }
 
             );
-            new PopulateArticleViewHolder().populateArticleViewHolder(holder, obj, context, this, listView);
+            new PopulateArticleViewHolder().populateArticleViewHolder(holder, obj, context, this, listView, dataSet.getAccessed());
         }
         if (holder2 instanceof SubmissionFooterViewHolder) {
             Handler handler = new Handler();

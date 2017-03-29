@@ -12,4 +12,5 @@ import me.ccrama.rssslide.Realm.Article;
 public interface DataSet {
     public void loadMore(Activity context, FeedAdapter adapter);
     public RealmResults<Article> getData();
+    long getAccessed();
 }

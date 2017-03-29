@@ -64,7 +64,7 @@ public class PopulateArticleViewHolder {
 
     public void showBottomSheet(final Activity mContext,
                                 final Article a, final ArticleViewHolder holder, final FeedAdapter posts, final Feed feed,
-                                final RecyclerView recyclerview) {
+                                final RecyclerView recyclerview, final long accessed) {
 
         int[] attrs = new int[]{R.attr.tint};
         TypedArray ta = mContext.obtainStyledAttributes(attrs);
@@ -121,7 +121,7 @@ public class PopulateArticleViewHolder {
                             @Override
                             public void execute(Realm realm) {
                                 a.starred = !a.starred;
-                                populateArticleViewHolder(holder, a, mContext, posts, recyclerview);
+                                populateArticleViewHolder(holder, a, mContext, posts, recyclerview, accessed);
                             }
                         });
                     }
@@ -167,7 +167,7 @@ public class PopulateArticleViewHolder {
 
     }
 
-    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final FeedAdapter adapter, final RecyclerView list) {
+    public void populateArticleViewHolder(final ArticleViewHolder holder, final Article article, final Activity context, final FeedAdapter adapter, final RecyclerView list, final long accessed) {
 
         final Feed feed = Realm.getDefaultInstance().where(Feed.class).equalTo("name", article.feed).findFirst();
         holder.title.setText(article.getTitle()); // title is a spoiler roboto textview so it will format the html
@@ -176,7 +176,7 @@ public class PopulateArticleViewHolder {
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottomSheet(context, article, holder, adapter, feed, list);
+                showBottomSheet(context, article, holder, adapter, feed, list, accessed);
             }
         });
 
@@ -274,7 +274,7 @@ public class PopulateArticleViewHolder {
 
         });
 
-        if (feed.getAccessed() < article.created) {
+        if (accessed < article.created) {
             holder.title.setTextColor(Palette.getColor(feed.getTitle()));
         } else {
             holder.title.setTextColor(holder.info.getCurrentTextColor());

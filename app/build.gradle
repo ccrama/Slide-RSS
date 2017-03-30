@@ -47,6 +47,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.7'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.7'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'com.google.code.gson:gson:2.8.0'
     compile 'io.realm:android-adapters:2.0.0'
     compile 'com.mikepenz:itemanimators:0.2.4@aar'
     compile 'com.github.ccrama:Android-RobotoTextView:28b71bcd9c'
